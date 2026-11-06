@@ -1,5 +1,5 @@
 import { cn } from "cn"
-import ChatSidebar from "./chat-sidebar"
+import ChatSidebar from "./sidebar/chat-sidebar"
 import ChatMain from "./chat-main"
 import ChatDetails from "./chat-details"
 import {
@@ -14,26 +14,26 @@ interface ChatLayoutProps {
 
 function ChatLayout({ className }: ChatLayoutProps) {
   return (
-    <div className={cn("flex w-full h-full min-h-0", className)}>
+    <div className={cn("flex h-full min-h-0 w-full", className)}>
       <ResizablePanelGroup orientation="horizontal" className="h-full w-full">
         <ResizablePanel
           defaultSize="20%"
           minSize="12%"
           maxSize="35%"
-          className="min-w-0 min-h-0"
+          className="min-h-0 min-w-0"
         >
           <ChatSidebar />
         </ResizablePanel>
 
-        <ResizableHandle className="relative z-10 w-2 -mx-1 cursor-col-resize bg-transparent hover:bg-transparent focus-visible:ring-0 focus-visible:outline-hidden after:hidden" />
+        <ResizableHandle className="relative z-10 -mx-1 w-2 cursor-col-resize bg-transparent after:hidden hover:bg-transparent focus-visible:ring-0 focus-visible:outline-hidden" />
 
-        <ResizablePanel defaultSize="80%" className="min-w-0 min-h-0">
-          <div className="flex h-full w-full min-w-0 min-h-0 gap-3 pl-3">
-            <div className="flex-1 min-w-0 min-h-0">
+        <ResizablePanel defaultSize="80%" className="min-h-0 min-w-0">
+          <div className="flex h-full min-h-0 w-full min-w-0 gap-3 pl-3">
+            <div className="min-h-0 min-w-0 flex-1">
               <ChatMain />
             </div>
 
-            <div className="w-[280px] shrink-0 min-h-0">
+            <div className="min-h-0 w-[280px] shrink-0">
               <ChatDetails />
             </div>
           </div>
