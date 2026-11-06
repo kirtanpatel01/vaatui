@@ -8,6 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { motion, AnimatePresence } from "motion/react"
 import { cn } from "cn"
 
 export interface FilterTabItem {
@@ -54,8 +55,7 @@ function FilterTabs({
   const itemRefs = React.useRef<Map<string, HTMLButtonElement>>(new Map())
   const actionButtonRef = React.useRef<HTMLButtonElement>(null)
 
-  // Initially: only 1 tab ("All") is visible + the three-dots dropdown.
-  // This guarantees zero flicker on initial render / page load / dynamic fetch.
+  // Initially only 1 tab ("All") is visible + the three-dots dropdown.
   const [isReady, setIsReady] = React.useState(false)
   const [visibleCount, setVisibleCount] = React.useState<number>(1)
 
@@ -77,7 +77,6 @@ function FilterTabs({
       for (let i = 0; i < tabs.length; i++) {
         const tab = tabs[i]
         const el = itemRefs.current.get(tab.id)
-        // If not rendered in probe yet, take a conservative unmeasured fallback
         const tabWidth = el?.offsetWidth ?? 70
 
         if (i === tabs.length - 1) {
@@ -160,77 +159,130 @@ function FilterTabs({
         ))}
       </div>
 
-      {/* Visible Tabs list */}
+      {/* Visible Tabs list with layout animation */}
       <div
         ref={containerRef}
         className={cn("flex min-w-0 items-center gap-1.5 overflow-hidden", className)}
         {...props}
       >
-        {visibleButtons.map((tab) => {
-          const isActive = activeTab === tab.id
-          return (
-            <Button
-              key={tab.id}
-              variant={isActive ? "default" : "secondary"}
-              onClick={() => handleSelectTab(tab.id)}
-              className="shrink-0"
-            >
-              {tab.label}
-            </Button>
-          )
-        })}
+        <AnimatePresence initial={false} mode="popLayout">
+          {visibleButtons.map((tab) => {
+            const isActive = activeTab === tab.id
+            return (
+              <motion.div
+                key={tab.id}
+                layout
+                initial={{ opacity: 0, scale: 0.9, x: -8 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                exit={{ opacity: 0, scale: 0.85, x: 8 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 420,
+                  damping: 30,
+                  mass: 0.8,
+                }}
+                className="relative shrink-0"
+              >
+                {/* Active animated pill indicator */}
+                {isActive && (
+                  <motion.div
+                    layoutId="activeFilterTabPill"
+                    className="absolute inset-0 rounded-4xl bg-primary shadow-sm"
+                    transition={{
+                      type: "spring",
+                      stiffness: 450,
+                      damping: 32,
+                    }}
+                  />
+                )}
 
-        {showThreeDots && (
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className="shrink-0"
-                  aria-label="More tabs"
-                />
-              }
-            >
-              <IconDots />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="min-w-36">
-              {dropdownTabs.map((tab) => (
-                <DropdownMenuItem
-                  key={tab.id}
+                <button
+                  type="button"
                   onClick={() => handleSelectTab(tab.id)}
+                  className={cn(
+                    "relative z-10 inline-flex h-9 items-center justify-center rounded-4xl px-3 text-sm font-medium transition-colors select-none",
+                    isActive
+                      ? "text-primary-foreground font-semibold"
+                      : "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)]"
+                  )}
                 >
                   {tab.label}
-                </DropdownMenuItem>
-              ))}
+                </button>
+              </motion.div>
+            )
+          })}
+        </AnimatePresence>
 
-              {/* When in dropdown-selected mode, the Add Tab action also sits inside the menu */}
-              {isSelectedFromDropdown && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={onAddTab}>
-                    <IconPlus className="size-4" />
-                    Add tab
+        {showThreeDots && (
+          <motion.div
+            layout
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: "spring", stiffness: 420, damping: 30 }}
+            className="shrink-0"
+          >
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    className="shrink-0"
+                    aria-label="More tabs"
+                  />
+                }
+              >
+                <IconDots />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="min-w-36">
+                {dropdownTabs.map((tab) => (
+                  <DropdownMenuItem
+                    key={tab.id}
+                    onClick={() => handleSelectTab(tab.id)}
+                  >
+                    {tab.label}
                   </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                ))}
+
+                {/* When in dropdown-selected mode, the Add Tab action also sits inside the menu */}
+                {isSelectedFromDropdown && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={onAddTab}>
+                      <IconPlus className="size-4" />
+                      Add tab
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </motion.div>
         )}
 
         {/* Show add button on the bar when measured and not in dropdown-selected mode */}
-        {showAddButtonOnBar && (
-          <Button
-            ref={actionButtonRef}
-            variant="secondary"
-            size="icon"
-            className="shrink-0"
-            onClick={onAddTab}
-            aria-label="Add tab"
-          >
-            <IconPlus />
-          </Button>
-        )}
+        <AnimatePresence>
+          {showAddButtonOnBar && (
+            <motion.div
+              layout
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.85 }}
+              transition={{ type: "spring", stiffness: 420, damping: 30 }}
+              className="shrink-0"
+            >
+              <Button
+                ref={actionButtonRef}
+                variant="secondary"
+                size="icon"
+                className="shrink-0"
+                onClick={onAddTab}
+                aria-label="Add tab"
+              >
+                <IconPlus />
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </>
   )
