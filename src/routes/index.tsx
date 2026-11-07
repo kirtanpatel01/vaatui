@@ -6,8 +6,8 @@ export const Route = createFileRoute("/")({ component: App })
 
 function App() {
   return (
-    <div className="flex min-h-svh p-4">
-      <ChatProvider>
+    <div className="flex h-svh w-screen overflow-hidden p-4">
+      <ChatProvider className="h-full">
         <ChatLayout />
       </ChatProvider>
     </div>

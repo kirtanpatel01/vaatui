@@ -21,7 +21,6 @@ export const DEFAULT_FILTER_TABS: FilterTabItem[] = [
   { id: "unread", label: "Unread" },
   { id: "favorites", label: "Favorites" },
   { id: "groups", label: "Groups" },
-  { id: "archived", label: "Archived" },
 ]
 
 interface FilterTabsProps extends React.ComponentProps<"div"> {

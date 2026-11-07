@@ -1,28 +1,57 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { IconFolderPlus, IconX } from "@tabler/icons-react"
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+  IconFolderPlus,
+  IconX,
+  IconUsers,
+  IconSpeakerphone,
+} from "@tabler/icons-react"
+import { type UserProfile } from "@/data/mock-contacts"
 import { cn } from "cn"
 
 interface CreateTabSheetProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onCreateTab: (name: string) => void
+  contacts: UserProfile[]
+  onCreateTab: (name: string, selectedContactIds: string[]) => void
 }
 
 export function CreateTabSheet({
   open,
   onOpenChange,
+  contacts,
   onCreateTab,
 }: CreateTabSheetProps) {
   const [tabName, setTabName] = React.useState("")
+  const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set())
+
+  // Reset state when sheet opens
+  React.useEffect(() => {
+    if (open) {
+      setTabName("")
+      setSelectedIds(new Set())
+    }
+  }, [open])
+
+  const toggleContact = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const trimmed = tabName.trim()
     if (!trimmed) return
-    onCreateTab(trimmed)
-    setTabName("")
+    onCreateTab(trimmed, Array.from(selectedIds))
     onOpenChange(false)
   }
 
@@ -49,7 +78,7 @@ export function CreateTabSheet({
       )}
     >
       {/* Header */}
-      <div className="relative flex items-center justify-between border-b p-4 pb-3">
+      <div className="relative flex items-center justify-between border-b p-4 pb-3 shrink-0">
         <div className="flex items-center gap-2">
           <div className="flex size-8 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
             <IconFolderPlus className="size-4" />
@@ -59,7 +88,7 @@ export function CreateTabSheet({
               New Filter Tab
             </h3>
             <p className="text-xs text-muted-foreground mt-1">
-              Create a customized tab for your conversations.
+              Select conversations for this tab.
             </p>
           </div>
         </div>
@@ -77,8 +106,8 @@ export function CreateTabSheet({
       </div>
 
       {/* Form Content */}
-      <form onSubmit={handleSubmit} className="flex flex-1 flex-col justify-between p-4">
-        <div className="space-y-3">
+      <form onSubmit={handleSubmit} className="flex flex-1 flex-col justify-between overflow-hidden">
+        <div className="p-4 space-y-4 flex-1 overflow-y-auto min-h-0">
           <div className="space-y-1.5">
             <label htmlFor="tab-name-input" className="text-xs font-medium text-foreground">
               Tab Name
@@ -91,10 +120,73 @@ export function CreateTabSheet({
               autoFocus={open}
             />
           </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-muted-foreground">
+                Include Conversations ({selectedIds.size})
+              </span>
+              <button
+                type="button"
+                onClick={() =>
+                  setSelectedIds(
+                    selectedIds.size === contacts.length
+                      ? new Set()
+                      : new Set(contacts.map((c) => c.id))
+                  )
+                }
+                className="text-[11px] text-primary hover:underline font-medium cursor-pointer"
+              >
+                {selectedIds.size === contacts.length ? "Deselect All" : "Select All"}
+              </button>
+            </div>
+
+            <div className="space-y-1">
+              {contacts.map((contact) => {
+                const isSelected = selectedIds.has(contact.id)
+                return (
+                  <button
+                    key={contact.id}
+                    type="button"
+                    onClick={() => toggleContact(contact.id)}
+                    className={cn(
+                      "flex w-full items-center gap-2.5 rounded-xl p-2 text-left transition-colors select-none cursor-pointer",
+                      isSelected
+                        ? "bg-secondary font-medium"
+                        : "hover:bg-muted/60 text-muted-foreground"
+                    )}
+                  >
+                    <Checkbox
+                      checked={isSelected}
+                      onCheckedChange={() => toggleContact(contact.id)}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+
+                    <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold">
+                      {contact.type === "group" ? (
+                        <IconUsers className="size-4 text-muted-foreground" />
+                      ) : contact.type === "announcement" ? (
+                        <IconSpeakerphone className="size-4 text-muted-foreground" />
+                      ) : (
+                        <span>{contact.name[0]}</span>
+                      )}
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-foreground truncate">{contact.name}</p>
+                      <p className="text-[10px] text-muted-foreground truncate">
+                        {contact.lastMessage.text}
+                      </p>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
         </div>
 
         {/* Footer Actions */}
-        <div className="flex justify-end gap-2 pt-4">
+        <div className="flex justify-end gap-2 border-t p-4 shrink-0 bg-popover">
           <Button
             type="button"
             variant="secondary"

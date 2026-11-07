@@ -28,7 +28,7 @@ function SidebarHeader({
   ...props
 }: SidebarHeaderProps) {
   return (
-    <div className={cn("space-y-2 p-2 min-w-0", className)} {...props}>
+    <div className={cn("space-y-2 p-2 min-w-0 shrink-0", className)} {...props}>
       <div className="flex gap-2 min-w-0">
         <SidebarSearch
           value={searchValue}
