@@ -2,6 +2,7 @@ import { cn } from "cn"
 import ChatSidebar from "./sidebar/chat-sidebar"
 import ChatMain from "./chat-main"
 import ChatDetails from "./chat-details"
+import { useChat } from "./chat-provider"
 import {
   ResizableHandle,
   ResizablePanel,
@@ -13,6 +14,8 @@ interface ChatLayoutProps {
 }
 
 function ChatLayout({ className }: ChatLayoutProps) {
+  const { chatDetailsOpen, setActiveContact } = useChat()
+
   return (
     <div className={cn("flex h-full min-h-0 w-full", className)}>
       <ResizablePanelGroup orientation="horizontal" className="h-full w-full">
@@ -22,7 +25,7 @@ function ChatLayout({ className }: ChatLayoutProps) {
           maxSize="35%"
           className="min-h-0 min-w-0"
         >
-          <ChatSidebar />
+          <ChatSidebar onSelectContact={setActiveContact} />
         </ResizablePanel>
 
         <ResizableHandle className="relative z-10 -mx-1 w-2 cursor-col-resize bg-transparent after:hidden hover:bg-transparent focus-visible:ring-0 focus-visible:outline-hidden" />
@@ -33,9 +36,11 @@ function ChatLayout({ className }: ChatLayoutProps) {
               <ChatMain />
             </div>
 
-            <div className="min-h-0 w-[280px] shrink-0">
-              <ChatDetails />
-            </div>
+            {chatDetailsOpen && (
+              <div className="min-h-0 w-[280px] shrink-0">
+                <ChatDetails />
+              </div>
+            )}
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
