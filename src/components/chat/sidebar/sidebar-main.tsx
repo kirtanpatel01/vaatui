@@ -28,7 +28,6 @@ function SidebarMain({
   onUpdateContact,
   onDeleteChat,
 }: SidebarMainProps) {
-  const [selectedId, setSelectedId] = React.useState(activeChatId)
   const [activeMenuContactId, setActiveMenuContactId] = React.useState<string | null>(null)
   const containerRef = React.useRef<HTMLDivElement>(null)
   const [canScrollDown, setCanScrollDown] = React.useState(false)
@@ -75,7 +74,6 @@ function SidebarMain({
   }, [filteredContacts, checkScroll])
 
   const handleSelect = (contact: UserProfile) => {
-    setSelectedId(contact.id)
     onSelectContact?.(contact)
   }
 
@@ -124,7 +122,7 @@ function SidebarMain({
                 <SidebarMainItem
                   key={contact.id}
                   contact={contact}
-                  isActive={selectedId === contact.id}
+                  isActive={activeChatId === contact.id}
                   isMenuOpen={activeMenuContactId === contact.id}
                   onMenuOpenChange={(open) =>
                     setActiveMenuContactId(open ? contact.id : null)
@@ -156,7 +154,7 @@ function SidebarMain({
                   <SidebarMainItem
                     key={contact.id}
                     contact={contact}
-                    isActive={selectedId === contact.id}
+                    isActive={activeChatId === contact.id}
                     isMenuOpen={activeMenuContactId === contact.id}
                     onMenuOpenChange={(open) =>
                       setActiveMenuContactId(open ? contact.id : null)

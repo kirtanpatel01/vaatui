@@ -39,13 +39,14 @@ export function MessageReactions({
   return (
     <div
       className={cn(
-        "absolute -bottom-4 z-10 flex items-center gap-1 select-none",
+        "absolute -bottom-3 z-10 flex items-center gap-1 select-none",
         isSentByMe ? "right-2" : "left-2",
         className
       )}
     >
       {reactions.map((reaction, rIdx) => {
         const isOpen = openPopoverIndex === rIdx
+        const isSingle = reaction.count <= 1
 
         return (
           <Popover
@@ -58,18 +59,19 @@ export function MessageReactions({
                 <button
                   type="button"
                   className={cn(
-                    "flex items-center justify-center rounded-full bg-background shadow-xs cursor-pointer border-0 outline-none",
-                    reaction.count > 1 ? "w-auto px-2 gap-1 rounded-full" : "size-6.5"
+                    "flex items-center justify-center rounded-full border border-border/80 bg-background shadow-xs cursor-pointer hover:bg-accent/60 transition-colors select-none",
+                    isSingle ? "size-6" : "h-6 px-2 gap-1.5",
+                    reaction.hasReacted && "border-primary/40 bg-primary/5"
                   )}
                   title={`Reacted with ${reaction.emoji}`}
                 />
               }
             >
-              <span className="text-sm leading-none flex items-center justify-center">
+              <span className="text-xs leading-none flex items-center justify-center">
                 {reaction.emoji}
               </span>
-              {reaction.count > 1 && (
-                <span className="text-[10px] font-medium text-muted-foreground leading-none">
+              {!isSingle && (
+                <span className="text-[11px] font-medium text-muted-foreground tabular-nums leading-none">
                   {reaction.count}
                 </span>
               )}

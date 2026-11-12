@@ -5,8 +5,9 @@ import SidebarMain from "./sidebar-main"
 import SidebarFooter from "./sidebar-footer"
 import CreateTabSheet from "./header/create-tab-sheet"
 import ArchivedChatsSheet from "./archived-chats-sheet"
+import { useChat } from "@/components/chat/chat-provider"
 import { type FilterTabItem, DEFAULT_FILTER_TABS } from "./header/filter-tabs"
-import { MOCK_CONTACTS, type UserProfile } from "@/data/mock-contacts"
+import { type UserProfile } from "@/data/mock-contacts"
 
 interface ChatSidebarProps {
   className?: string
@@ -19,9 +20,9 @@ function ChatSidebar({
   showScrollbar = false,
   onSelectContact,
 }: ChatSidebarProps) {
+  const { contacts, setContacts, activeContact, setActiveContact } = useChat()
   const [tabs, setTabs] = React.useState<FilterTabItem[]>(DEFAULT_FILTER_TABS)
   const [activeTab, setActiveTab] = React.useState<string>("all")
-  const [contacts, setContacts] = React.useState<UserProfile[]>(MOCK_CONTACTS)
   const [isSheetOpen, setIsSheetOpen] = React.useState(false)
   const [isArchivedOpen, setIsArchivedOpen] = React.useState(false)
 
@@ -74,9 +75,13 @@ function ChatSidebar({
       <SidebarMain
         contacts={contacts}
         activeTab={activeTab}
+        activeChatId={activeContact?.id}
         showScrollbar={showScrollbar}
         onOpenArchived={() => setIsArchivedOpen(true)}
-        onSelectContact={onSelectContact}
+        onSelectContact={(c) => {
+          onSelectContact?.(c)
+          setActiveContact(c)
+        }}
         onUpdateContact={handleUpdateContact}
         onDeleteChat={handleDeleteChat}
       />

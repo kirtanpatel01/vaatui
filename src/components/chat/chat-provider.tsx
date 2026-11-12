@@ -1,20 +1,28 @@
 import * as React from 'react'
 import { cn } from 'cn'
 import { type UserProfile, MOCK_CONTACTS } from '@/data/mock-contacts'
-import { type ChatMessage, type MessageReply, MOCK_MESSAGES } from '@/data/mock-messages'
+import { type ChatMessage, type MessageReply, type MessageAttachment, MOCK_MESSAGES } from '@/data/mock-messages'
 
 interface ChatContextValue {
   chatDetailsOpen: boolean
   setChatDetailsOpen: React.Dispatch<React.SetStateAction<boolean>>
   activeContact: UserProfile
   setActiveContact: (contact: UserProfile) => void
+  contacts: UserProfile[]
+  setContacts: React.Dispatch<React.SetStateAction<UserProfile[]>>
   messages: ChatMessage[]
-  sendMessage: (text: string, replyTo?: MessageReply | null) => void
+  sendMessage: (text: string, replyTo?: MessageReply | null, attachment?: MessageAttachment) => void
   toggleReaction: (messageId: string, emoji: string) => void
+  votePoll: (messageId: string, optionId: string) => void
   forwardMessage: (targetChatIds: string[], messageToForward: ChatMessage) => void
   toggleStar: (messageId: string) => void
   togglePin: (messageId: string) => void
   deleteMessage: (messageId: string) => void
+  clearMessages: () => void
+  isMuted: boolean
+  toggleMute: () => void
+  isBlocked: boolean
+  toggleBlock: () => void
 }
 
 const ChatContext = React.createContext<ChatContextValue | null>(null)
@@ -33,15 +41,73 @@ export function ChatProvider({
   defaultContactId = "chat_2",
 }: ChatProviderProps) {
   const [chatDetailsOpen, setChatDetailsOpen] = React.useState(defaultChatDetailsOpen)
-  const [activeContact, setActiveContact] = React.useState<UserProfile>(() => {
-    return MOCK_CONTACTS.find((c) => c.id === defaultContactId) ?? MOCK_CONTACTS[0]
-  })
+  const [contacts, setContacts] = React.useState<UserProfile[]>(MOCK_CONTACTS)
+  const [activeContactId, setActiveContactId] = React.useState<string>(defaultContactId)
+
+  const activeContact = React.useMemo(() => {
+    return contacts.find((c) => c.id === activeContactId) ?? contacts[0]
+  }, [contacts, activeContactId])
+
+  const setActiveContact = React.useCallback((contact: UserProfile) => {
+    setActiveContactId(contact.id)
+  }, [])
 
   const [allMessages, setAllMessages] = React.useState<Record<string, ChatMessage[]>>(MOCK_MESSAGES)
+  const [blockedContactIds, setBlockedContactIds] = React.useState<Set<string>>(new Set())
+
+  const isMuted = Boolean(activeContact?.isMuted)
+  const isBlocked = blockedContactIds.has(activeContact?.id)
+
+  const toggleMute = () => {
+    setContacts((prev) =>
+      prev.map((c) =>
+        c.id === activeContact.id ? { ...c, isMuted: !c.isMuted } : c
+      )
+    )
+  }
+
+  const toggleBlock = () => {
+    setBlockedContactIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(activeContact.id)) {
+        next.delete(activeContact.id)
+      } else {
+        next.add(activeContact.id)
+      }
+      return next
+    })
+  }
+
+  const clearMessages = () => {
+    setAllMessages((prev) => ({
+      ...prev,
+      [activeContact.id]: [],
+    }))
+    // Also clear preview in sidebar
+    setContacts((prev) =>
+      prev.map((c) =>
+        c.id === activeContact.id
+          ? {
+              ...c,
+              lastMessage: {
+                text: "No messages yet",
+                time: "Just now",
+                status: undefined,
+                isSentByMe: false,
+              },
+              unreadCount: 0,
+            }
+          : c
+      )
+    )
+  }
 
   const messages = allMessages[activeContact.id] ?? []
 
-  const sendMessage = (text: string, replyTo?: MessageReply | null) => {
+  const sendMessage = (text: string, replyTo?: MessageReply | null, attachment?: MessageAttachment) => {
+    const previewText = text || (attachment ? `[${attachment.type}]` : "")
+    const contentType = attachment?.type ?? "text"
+
     const newMessage: ChatMessage = {
       id: `msg_${Date.now()}`,
       chatId: activeContact.id,
@@ -59,12 +125,75 @@ export function ChatProvider({
       isSentByMe: true,
       status: "delivered",
       ...(replyTo ? { replyTo } : {}),
+      ...(attachment ? { attachment } : {}),
     }
 
     setAllMessages((prev) => ({
       ...prev,
       [activeContact.id]: [...(prev[activeContact.id] ?? []), newMessage],
     }))
+
+    // Sync sidebar last message preview & timestamp
+    setContacts((prev) =>
+      prev.map((c) =>
+        c.id === activeContact.id
+          ? {
+              ...c,
+              lastMessage: {
+                text: previewText,
+                time: "Just now",
+                status: "delivered",
+                isSentByMe: true,
+                contentType,
+              },
+            }
+          : c
+      )
+    )
+  }
+
+  const votePoll = (messageId: string, optionId: string) => {
+    setAllMessages((prev) => {
+      const chatList = prev[activeContact.id] ?? []
+      return {
+        ...prev,
+        [activeContact.id]: chatList.map((m) => {
+          if (m.id !== messageId || !m.attachment?.poll) return m
+          const poll = m.attachment.poll
+          const allowMultiple = Boolean(poll.allowMultiple)
+
+          const updatedOptions = poll.options.map((opt) => {
+            const hasVoted = opt.votes.includes("curr_user")
+
+            if (opt.id === optionId) {
+              return {
+                ...opt,
+                votes: hasVoted
+                  ? opt.votes.filter((u) => u !== "curr_user")
+                  : [...opt.votes, "curr_user"],
+              }
+            } else if (!allowMultiple && hasVoted) {
+              return {
+                ...opt,
+                votes: opt.votes.filter((u) => u !== "curr_user"),
+              }
+            }
+            return opt
+          })
+
+          return {
+            ...m,
+            attachment: {
+              ...m.attachment,
+              poll: {
+                ...poll,
+                options: updatedOptions,
+              },
+            },
+          }
+        }),
+      }
+    })
   }
 
   const toggleReaction = (messageId: string, emoji: string) => {
@@ -194,13 +323,21 @@ export function ChatProvider({
         setChatDetailsOpen,
         activeContact,
         setActiveContact,
+        contacts,
+        setContacts,
         messages,
         sendMessage,
         toggleReaction,
+        votePoll,
         forwardMessage,
         toggleStar,
         togglePin,
         deleteMessage,
+        clearMessages,
+        isMuted,
+        toggleMute,
+        isBlocked,
+        toggleBlock,
       }}
     >
       <div className={cn(className, "w-full flex")}>{children}</div>

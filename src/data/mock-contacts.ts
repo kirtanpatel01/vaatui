@@ -14,6 +14,8 @@ export type MessageContentType =
   | "audio"
   | "file"
   | "location"
+  | "contact"
+  | "poll"
 
 export interface ChatMessagePreview {
   text: string

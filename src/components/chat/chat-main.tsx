@@ -5,6 +5,7 @@ import MessageFeed from "./main/message-feed"
 import ChatInputBar from "./main/chat-input-bar"
 import ForwardMessageDialog from "./main/forward-message-dialog"
 import PinnedMessageBar from "./main/pinned-message-bar"
+import SavedMessagesSheet from "./main/saved-messages-sheet"
 import { type ChatMessage } from "@/data/mock-messages"
 import { toast } from "@/components/ui/toast"
 import { cn } from "cn"
@@ -20,6 +21,7 @@ export function ChatMain({ className, showScrollbar = false }: ChatMainProps) {
     messages,
     sendMessage,
     toggleReaction,
+    votePoll,
     forwardMessage,
     toggleStar,
     togglePin,
@@ -29,6 +31,47 @@ export function ChatMain({ className, showScrollbar = false }: ChatMainProps) {
   const [replyingTo, setReplyingTo] = React.useState<ChatMessage | null>(null)
   const [forwardingMessage, setForwardingMessage] = React.useState<ChatMessage | null>(null)
   const [forwardDialogOpen, setForwardDialogOpen] = React.useState(false)
+
+  // Starred & Pinned Messages Modal state
+  const [savedModalType, setSavedModalType] = React.useState<"starred" | "pinned" | null>(null)
+
+  // Search state
+  const [isSearchOpen, setIsSearchOpen] = React.useState(false)
+  const [searchQuery, setSearchQuery] = React.useState("")
+  const [currentMatchIndex, setCurrentMatchIndex] = React.useState(0)
+
+  // Matching messages across conversation
+  const matchingMessages = React.useMemo(() => {
+    const q = searchQuery.trim().toLowerCase()
+    if (!q) return []
+    return messages.filter((m) => m.text?.toLowerCase().includes(q))
+  }, [messages, searchQuery])
+
+  // Reset match index when query changes
+  React.useEffect(() => {
+    setCurrentMatchIndex(0)
+  }, [searchQuery])
+
+  // Scroll to active match when currentMatchIndex or matchingMessages change
+  React.useEffect(() => {
+    if (matchingMessages.length > 0 && currentMatchIndex < matchingMessages.length) {
+      const activeMatch = matchingMessages[currentMatchIndex]
+      const el = document.getElementById(`message-${activeMatch.id}`)
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" })
+      }
+    }
+  }, [matchingMessages, currentMatchIndex])
+
+  const handleNextMatch = () => {
+    if (matchingMessages.length === 0) return
+    setCurrentMatchIndex((prev) => (prev + 1) % matchingMessages.length)
+  }
+
+  const handlePrevMatch = () => {
+    if (matchingMessages.length === 0) return
+    setCurrentMatchIndex((prev) => (prev - 1 + matchingMessages.length) % matchingMessages.length)
+  }
 
   const handleReply = (message: ChatMessage) => {
     setReplyingTo(message)
@@ -84,7 +127,7 @@ export function ChatMain({ className, showScrollbar = false }: ChatMainProps) {
     })
   }
 
-  const handleSendMessage = (text: string) => {
+  const handleSendMessage = (text: string, attachment?: any) => {
     const replyPayload = replyingTo
       ? {
           id: replyingTo.id,
@@ -93,7 +136,7 @@ export function ChatMain({ className, showScrollbar = false }: ChatMainProps) {
         }
       : null
 
-    sendMessage(text, replyPayload)
+    sendMessage(text, replyPayload, attachment)
     setReplyingTo(null)
   }
 
@@ -107,7 +150,21 @@ export function ChatMain({ className, showScrollbar = false }: ChatMainProps) {
       {/* 1. Chat Header */}
       <ChatHeader
         contact={activeContact}
+        messages={messages}
+        searchQuery={searchQuery}
+        onSearchQueryChange={setSearchQuery}
+        isSearchOpen={isSearchOpen}
+        onToggleSearch={(open) => {
+          setIsSearchOpen(open)
+          if (!open) setSearchQuery("")
+        }}
+        searchMatchCount={matchingMessages.length}
+        searchMatchIndex={currentMatchIndex}
+        onNextMatch={handleNextMatch}
+        onPrevMatch={handlePrevMatch}
         onToggleDetails={() => setChatDetailsOpen((prev) => !prev)}
+        onOpenStarredModal={() => setSavedModalType("starred")}
+        onOpenPinnedModal={() => setSavedModalType("pinned")}
       />
 
       {/* Pinned Messages Header Strip */}
@@ -122,12 +179,15 @@ export function ChatMain({ className, showScrollbar = false }: ChatMainProps) {
         contact={activeContact}
         messages={messages}
         showScrollbar={showScrollbar}
+        searchQuery={searchQuery}
+        activeSearchMessageId={matchingMessages[currentMatchIndex]?.id}
         onReply={handleReply}
         onForward={handleForward}
         onStar={handleStar}
         onPin={handlePin}
         onDeleteMessage={handleDelete}
         onReact={toggleReaction}
+        onVotePoll={votePoll}
       />
 
       {/* 3. Input Bar */}
@@ -151,6 +211,46 @@ export function ChatMain({ className, showScrollbar = false }: ChatMainProps) {
         open={forwardDialogOpen}
         onOpenChange={setForwardDialogOpen}
         onForwardConfirm={handleForwardConfirm}
+      />
+
+      {/* Starred / Pinned Messages Browser Sheet */}
+      <SavedMessagesSheet
+        type={savedModalType ?? "starred"}
+        open={savedModalType !== null}
+        onOpenChange={(open) => {
+          if (!open) setSavedModalType(null)
+        }}
+        messages={
+          savedModalType === "starred"
+            ? messages.filter((m) => m.isStarred)
+            : messages.filter((m) => m.isPinned)
+        }
+        onJumpToMessage={handleJumpToMessage}
+        onToggleStatus={(id) => {
+          if (savedModalType === "starred") {
+            toggleStar(id)
+          } else {
+            togglePin(id)
+          }
+        }}
+        onBulkUnset={(ids) => {
+          ids.forEach((id) => {
+            if (savedModalType === "starred") {
+              toggleStar(id)
+            } else {
+              togglePin(id)
+            }
+          })
+        }}
+        onBulkDelete={(ids) => {
+          ids.forEach((id) => deleteMessage(id))
+        }}
+        onBulkForward={(msgs) => {
+          if (msgs.length > 0) {
+            setForwardingMessage(msgs[0])
+            setForwardDialogOpen(true)
+          }
+        }}
       />
     </main>
   )

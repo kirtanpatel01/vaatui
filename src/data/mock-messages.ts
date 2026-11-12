@@ -7,6 +7,24 @@ export interface MessageReaction {
   hasReacted?: boolean
 }
 
+export interface PollOption {
+  id: string
+  text: string
+  votes: string[] // user names or user IDs
+}
+
+export interface PollData {
+  question: string
+  options: PollOption[]
+  allowMultiple?: boolean
+}
+
+export interface SharedContactData {
+  name: string
+  phone?: string
+  avatar?: string
+}
+
 export interface MessageAttachment {
   type: MessageContentType
   url?: string
@@ -15,6 +33,8 @@ export interface MessageAttachment {
   thumbnailUrl?: string
   duration?: string
   waveform?: number[]
+  poll?: PollData
+  contact?: SharedContactData
 }
 
 export interface MessageReply {

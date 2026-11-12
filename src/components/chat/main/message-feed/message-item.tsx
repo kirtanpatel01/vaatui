@@ -3,6 +3,9 @@ import { type ChatMessage } from "@/data/mock-messages"
 import { type UserProfile } from "@/data/mock-contacts"
 import { VoiceNoteBubble } from "./voice-note-bubble"
 import { PhotoAttachmentBubble } from "./photo-attachment-bubble"
+import { FileAttachmentBubble } from "./file-attachment-bubble"
+import { PollBubble } from "./poll-bubble"
+import { ContactBubble } from "./contact-bubble"
 import { MessageReplyPreview } from "./message-reply-preview"
 import { MessageReactions } from "./message-reactions"
 import { MessageActionButtons } from "./message-actions-popover"
@@ -14,6 +17,8 @@ import { cn } from "cn"
 export interface MessageItemProps {
   message: ChatMessage
   contact?: UserProfile
+  searchQuery?: string
+  isSearchActiveMatch?: boolean
   onReply?: (message: ChatMessage) => void
   onCopy?: (text: string) => void
   onForward?: (message: ChatMessage) => void
@@ -21,11 +26,45 @@ export interface MessageItemProps {
   onPin?: (message: ChatMessage) => void
   onDeleteMessage?: (messageId: string) => void
   onReact?: (messageId: string, emoji: string) => void
+  onVotePoll?: (messageId: string, optionId: string) => void
+}
+
+function renderHighlightedText(
+  text: string,
+  query: string,
+  isSentByMe: boolean,
+  isCurrentMatch: boolean
+) {
+  if (!query.trim()) return text
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  const regex = new RegExp(`(${escaped})`, "gi")
+  const parts = text.split(regex)
+
+  // Style classes based on whether this is the active focused match, and bubble tone (sent by me vs received)
+  const highlightClass = isCurrentMatch
+    ? isSentByMe
+      ? "bg-amber-400 text-black font-semibold rounded-xs px-1 shadow-xs ring-1 ring-amber-300"
+      : "bg-amber-500 text-white dark:bg-amber-400 dark:text-black font-semibold rounded-xs px-1 shadow-xs ring-1 ring-amber-400"
+    : isSentByMe
+      ? "bg-neutral-700/90 text-neutral-100 rounded-xs px-0.5 font-medium underline decoration-amber-400 decoration-2 underline-offset-2"
+      : "bg-amber-200/90 text-amber-950 dark:bg-amber-500/30 dark:text-amber-200 rounded-xs px-0.5 font-medium"
+
+  return parts.map((part, i) =>
+    regex.test(part) ? (
+      <mark key={i} className={cn("transition-colors duration-150 inline-block leading-tight", highlightClass)}>
+        {part}
+      </mark>
+    ) : (
+      part
+    )
+  )
 }
 
 export function MessageItem({
   message,
   contact,
+  searchQuery = "",
+  isSearchActiveMatch = false,
   onReply,
   onCopy,
   onForward,
@@ -33,6 +72,7 @@ export function MessageItem({
   onPin,
   onDeleteMessage,
   onReact,
+  onVotePoll,
 }: MessageItemProps) {
   const isMe = message.isSentByMe
   const isGroup = contact?.type === "group"
@@ -172,13 +212,16 @@ export function MessageItem({
               {isMe && <DeliveryStatusIcon status={message.status} className="size-3" />}
             </div>
           </div>
-        ) : message.attachment?.type === "photo" ? (
+        ) : message.attachment?.type === "photo" || message.attachment?.type === "video" ? (
           <div className="relative">
             <PhotoAttachmentBubble
               thumbnailUrl={message.attachment.thumbnailUrl}
               fileName={message.attachment.fileName}
               fileSize={message.attachment.fileSize}
               timestamp={message.timestamp}
+              caption={message.text}
+              status={message.status}
+              isSentByMe={isMe}
             />
             <MessageReactions
               reactions={message.reactions}
@@ -191,6 +234,7 @@ export function MessageItem({
           <div
             className={cn(
               "relative rounded-2xl px-3.5 py-2 text-sm transition-all duration-200 select-text leading-relaxed",
+              isSearchActiveMatch && "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-md",
               isMe
                 ? "bg-neutral-900 text-neutral-50 border border-neutral-800 shadow-sm dark:bg-neutral-900 dark:border-neutral-800 rounded-tr-xs"
                 : "bg-card text-card-foreground border border-border/80 shadow-xs hover:border-border dark:bg-card/90 rounded-tl-xs"
@@ -206,11 +250,46 @@ export function MessageItem({
               </div>
             )}
 
+            {/* Special Attachment Bubbles: Poll, Contact, File */}
+            {message.attachment?.type === "poll" && message.attachment.poll && (
+              <div className="mb-1.5">
+                <PollBubble
+                  poll={message.attachment.poll}
+                  isSentByMe={isMe}
+                  onVote={(optId) => onVotePoll?.(message.id, optId)}
+                />
+              </div>
+            )}
+
+            {message.attachment?.type === "contact" && message.attachment.contact && (
+              <div className="mb-1.5">
+                <ContactBubble
+                  contact={message.attachment.contact}
+                  isSentByMe={isMe}
+                />
+              </div>
+            )}
+
+            {message.attachment?.type === "file" && (
+              <div className="mb-1.5">
+                <FileAttachmentBubble
+                  fileName={message.attachment.fileName}
+                  fileSize={message.attachment.fileSize}
+                  url={message.attachment.url}
+                  isSentByMe={isMe}
+                />
+              </div>
+            )}
+
             {/* Bubble Content & Inline Footer */}
             <div className="flex flex-wrap items-end gap-x-2 gap-y-0.5">
-              <p className="whitespace-pre-wrap break-words leading-relaxed select-text">
-                {message.text}
-              </p>
+              {message.text && (
+                <p className="whitespace-pre-wrap break-words leading-relaxed select-text">
+                  {searchQuery.trim()
+                    ? renderHighlightedText(message.text, searchQuery, isMe, isSearchActiveMatch)
+                    : message.text}
+                </p>
+              )}
 
               {/* Integrated Inline Timestamp & Status Indicator */}
               <div

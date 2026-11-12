@@ -13,6 +13,8 @@ export interface MessageFeedProps
   showScrollbar?: boolean
   dateSeparatorVariant?: MessageDateSeparatorVariant
   stickyDateSeparator?: boolean
+  searchQuery?: string
+  activeSearchMessageId?: string
   onReply?: (message: ChatMessage) => void
   onCopy?: (text: string) => void
   onForward?: (message: ChatMessage) => void
@@ -20,6 +22,7 @@ export interface MessageFeedProps
   onPin?: (message: ChatMessage) => void
   onDeleteMessage?: (messageId: string) => void
   onReact?: (messageId: string, emoji: string) => void
+  onVotePoll?: (messageId: string, optionId: string) => void
 }
 
 export function MessageFeed({
@@ -29,6 +32,8 @@ export function MessageFeed({
   showScrollbar = false,
   dateSeparatorVariant = "sticky",
   stickyDateSeparator = false,
+  searchQuery = "",
+  activeSearchMessageId,
   onReply,
   onCopy,
   onForward,
@@ -36,14 +41,28 @@ export function MessageFeed({
   onPin,
   onDeleteMessage,
   onReact,
+  onVotePoll,
   ...props
 }: MessageFeedProps) {
   const bottomRef = React.useRef<HTMLDivElement>(null)
+  const prevMessagesLengthRef = React.useRef<number>(messages.length)
+  const prevChatIdRef = React.useRef<string | undefined>(contact?.id)
 
-  // Scroll to bottom when message list changes
+  // Only auto-scroll to bottom when:
+  // 1. Switched to a new conversation (contact id changed)
+  // 2. A brand-new message was appended (messages count increased)
+  // Does NOT scroll when starring, pinning, reacting, or searching.
   React.useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages])
+    const isNewContact = prevChatIdRef.current !== contact?.id
+    const hasNewMessageAppended = messages.length > prevMessagesLengthRef.current
+
+    if ((isNewContact || hasNewMessageAppended) && !searchQuery.trim()) {
+      bottomRef.current?.scrollIntoView({ behavior: isNewContact ? "auto" : "smooth" })
+    }
+
+    prevMessagesLengthRef.current = messages.length
+    prevChatIdRef.current = contact?.id
+  }, [messages.length, contact?.id, searchQuery])
 
   // Group messages by date
   const groupedMessages = React.useMemo(() => {
@@ -76,6 +95,8 @@ export function MessageFeed({
               key={message.id}
               message={message}
               contact={contact}
+              searchQuery={searchQuery}
+              isSearchActiveMatch={activeSearchMessageId === message.id}
               onReply={onReply}
               onCopy={onCopy}
               onForward={onForward}
@@ -83,6 +104,7 @@ export function MessageFeed({
               onPin={onPin}
               onDeleteMessage={onDeleteMessage}
               onReact={onReact}
+              onVotePoll={onVotePoll}
             />
           ))}
         </div>
