@@ -3,7 +3,7 @@ import { type ChatMessage } from "@/data/mock-messages"
 import { type UserProfile } from "@/data/mock-contacts"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { MessageItem } from "./message-item"
-import { MessageDateSeparator } from "./message-date-separator"
+import { MessageDateSeparator, type MessageDateSeparatorVariant } from "./message-date-separator"
 import { cn } from "cn"
 
 export interface MessageFeedProps
@@ -11,12 +11,15 @@ export interface MessageFeedProps
   messages?: ChatMessage[]
   contact?: UserProfile
   showScrollbar?: boolean
+  dateSeparatorVariant?: MessageDateSeparatorVariant
+  stickyDateSeparator?: boolean
   onReply?: (message: ChatMessage) => void
   onCopy?: (text: string) => void
   onForward?: (message: ChatMessage) => void
   onStar?: (message: ChatMessage) => void
   onPin?: (message: ChatMessage) => void
   onDeleteMessage?: (messageId: string) => void
+  onReact?: (messageId: string, emoji: string) => void
 }
 
 export function MessageFeed({
@@ -24,12 +27,15 @@ export function MessageFeed({
   contact,
   className,
   showScrollbar = false,
+  dateSeparatorVariant = "sticky",
+  stickyDateSeparator = false,
   onReply,
   onCopy,
   onForward,
   onStar,
   onPin,
   onDeleteMessage,
+  onReact,
   ...props
 }: MessageFeedProps) {
   const bottomRef = React.useRef<HTMLDivElement>(null)
@@ -58,7 +64,11 @@ export function MessageFeed({
       {groupedMessages.map((group, groupIdx) => (
         <div key={`${group.date}-${groupIdx}`} className="flex flex-col gap-3">
           {/* Date Separator Pill */}
-          <MessageDateSeparator date={group.date} />
+          <MessageDateSeparator
+            date={group.date}
+            variant={dateSeparatorVariant}
+            sticky={stickyDateSeparator}
+          />
 
           {/* Messages */}
           {group.items.map((message) => (
@@ -72,6 +82,7 @@ export function MessageFeed({
               onStar={onStar}
               onPin={onPin}
               onDeleteMessage={onDeleteMessage}
+              onReact={onReact}
             />
           ))}
         </div>

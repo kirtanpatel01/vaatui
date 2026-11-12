@@ -1,4 +1,6 @@
 import * as React from "react"
+import data from "@emoji-mart/data"
+import Picker from "@emoji-mart/react"
 import { Button } from "@/components/ui/button"
 import {
   Popover,
@@ -19,7 +21,6 @@ import {
   IconCamera,
   IconUserPlus,
   IconChartBar,
-  IconSearch,
 } from "@tabler/icons-react"
 import { cn } from "cn"
 
@@ -35,22 +36,6 @@ export interface ChatInputBarProps extends React.ComponentProps<"div"> {
   onAttachFile?: () => void
   onRecordVoice?: () => void
 }
-
-const EMOJI_CATEGORIES = [
-  { icon: "😊", label: "Smileys" },
-  { icon: "🕒", label: "Recent" },
-  { icon: "🔥", label: "Trending" },
-  { icon: "⚽", label: "Activities" },
-  { icon: "💎", label: "Objects" },
-  { icon: "💡", label: "Ideas" },
-  { icon: "🚩", label: "Flags" },
-]
-
-const FREQUENT_EMOJIS = ["😂", "❤️", "👍", "🔥", "🎉", "😍", "🥹"]
-const SMILEYS_PEOPLE = [
-  "😀", "😃", "😄", "😁", "😆", "😅", "😂",
-  "🙂", "🙃", "😉", "😊", "😇", "🥰", "😍"
-]
 
 const ATTACHMENT_OPTIONS = [
   { icon: IconPhoto, label: "Photo or Video" },
@@ -74,8 +59,23 @@ export function ChatInputBar({
   const [text, setText] = React.useState("")
   const [emojiOpen, setEmojiOpen] = React.useState(false)
   const [attachmentOpen, setAttachmentOpen] = React.useState(false)
-  const [emojiSearch, setEmojiSearch] = React.useState("")
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
+
+  // Track dark mode for Emoji Mart theme
+  const [isDark, setIsDark] = React.useState(false)
+
+  React.useEffect(() => {
+    const checkDark = () => {
+      setIsDark(document.documentElement.classList.contains("dark"))
+    }
+    checkDark()
+    const observer = new MutationObserver(checkDark)
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    })
+    return () => observer.disconnect()
+  }, [])
 
   // Auto-resize textarea
   React.useEffect(() => {
@@ -102,20 +102,42 @@ export function ChatInputBar({
     }
   }
 
-  const handleAddEmoji = (emoji: string) => {
-    setText((prev) => prev + emoji)
-    textareaRef.current?.focus()
+  // Insert emoji at the exact current cursor position
+  const handleSelectEmoji = (emoji: { native: string }) => {
+    const emojiChar = emoji.native
+    if (!emojiChar) return
+
+    const textarea = textareaRef.current
+    if (!textarea) {
+      setText((prev) => prev + emojiChar)
+      return
+    }
+
+    const start = textarea.selectionStart ?? text.length
+    const end = textarea.selectionEnd ?? text.length
+    const newText = text.substring(0, start) + emojiChar + text.substring(end)
+    setText(newText)
+
+    // Close picker after selection
+    setEmojiOpen(false)
+
+    // Restore focus and place cursor right after inserted emoji
+    requestAnimationFrame(() => {
+      textarea.focus()
+      const newPos = start + emojiChar.length
+      textarea.setSelectionRange(newPos, newPos)
+    })
   }
 
   return (
     <div
       className={cn(
-        "flex flex-col border-t bg-background/90 backdrop-blur-xs p-3 px-4 shrink-0 gap-2",
+        "flex flex-col gap-2 p-3 bg-background/95 backdrop-blur-md border-t border-border/40 w-full",
         className
       )}
       {...props}
     >
-      {/* Replying Preview Banner */}
+      {/* Replying Banner Preview */}
       {replyingTo && (
         <div className="flex items-center justify-between gap-2 rounded-xl bg-secondary/80 border border-border/40 px-3 py-1.5 text-xs">
           <div className="flex-1 min-w-0 border-l-2 border-primary pl-2">
@@ -197,13 +219,16 @@ export function ChatInputBar({
 
           {/* Right inline icons: Emoji, GIF, Mention, Code */}
           <div className="flex items-center gap-1 ml-2 text-muted-foreground shrink-0 select-none">
-            {/* Emoji Popover */}
+            {/* Emoji Mart Picker Popover matching the exact configuration from the screenshot */}
             <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
               <PopoverTrigger
                 render={
                   <button
                     type="button"
-                    className="p-1 hover:text-foreground transition-colors cursor-pointer"
+                    className={cn(
+                      "p-1 hover:text-foreground transition-colors cursor-pointer",
+                      emojiOpen && "text-foreground"
+                    )}
                     aria-label="Emoji picker"
                   />
                 }
@@ -214,72 +239,23 @@ export function ChatInputBar({
               <PopoverContent
                 side="top"
                 align="end"
-                sideOffset={12}
-                className="w-72 p-3 rounded-3xl shadow-2xl border border-border/60 bg-popover/95 backdrop-blur-md"
+                sideOffset={14}
+                className="w-auto p-0 border-0 shadow-2xl bg-transparent overflow-hidden rounded-2xl duration-75 data-[state=open]:duration-75 data-[state=closed]:duration-50"
               >
-                {/* Category Navigation Icons */}
-                <div className="flex items-center justify-between pb-2 border-b border-border/40 text-sm">
-                  {EMOJI_CATEGORIES.map((cat, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      className="size-7 flex items-center justify-center rounded-lg hover:bg-muted transition-colors cursor-pointer"
-                      title={cat.label}
-                    >
-                      {cat.icon}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Emoji Search Input */}
-                <div className="relative mt-2.5 mb-3">
-                  <IconSearch className="absolute left-2.5 top-2.5 size-3.5 text-muted-foreground" />
-                  <input
-                    type="text"
-                    value={emojiSearch}
-                    onChange={(e) => setEmojiSearch(e.target.value)}
-                    placeholder="Search emojis..."
-                    className="w-full rounded-xl bg-secondary/70 border border-border/40 pl-8 pr-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground outline-none"
-                  />
-                </div>
-
-                {/* Frequently Used */}
-                <div className="mb-2">
-                  <p className="text-[11px] font-semibold text-muted-foreground mb-1.5">
-                    Frequently Used
-                  </p>
-                  <div className="flex items-center justify-between">
-                    {FREQUENT_EMOJIS.map((em, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => handleAddEmoji(em)}
-                        className="size-7 flex items-center justify-center text-base hover:scale-120 transition-transform cursor-pointer"
-                      >
-                        {em}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Smileys & People */}
-                <div>
-                  <p className="text-[11px] font-semibold text-muted-foreground mb-1.5">
-                    Smileys & People
-                  </p>
-                  <div className="grid grid-cols-7 gap-1">
-                    {SMILEYS_PEOPLE.map((em, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => handleAddEmoji(em)}
-                        className="size-7 flex items-center justify-center text-base hover:scale-120 transition-transform cursor-pointer"
-                      >
-                        {em}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                <Picker
+                  data={data}
+                  onEmojiSelect={handleSelectEmoji}
+                  set="native"
+                  theme={isDark ? "dark" : "light"}
+                  navPosition="top"
+                  previewPosition="none"
+                  searchPosition="sticky"
+                  skinTonePosition="search"
+                  autoFocus={false}
+                  emojiVersion="15.0"
+                  locale="en"
+                  perLine={9}
+                />
               </PopoverContent>
             </Popover>
 

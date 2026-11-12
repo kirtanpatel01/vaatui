@@ -39,6 +39,7 @@ export interface ChatMessage {
   reactions?: MessageReaction[]
   isStarred?: boolean
   isPinned?: boolean
+  isForwarded?: boolean
 }
 
 export const MOCK_MESSAGES: Record<string, ChatMessage[]> = CONVERSATIONS
