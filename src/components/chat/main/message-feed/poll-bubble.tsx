@@ -94,7 +94,7 @@ export function PollBubble({ poll, isSentByMe, onVote }: PollBubbleProps) {
 
                 <span
                   className={cn(
-                    "text-[11px] font-mono tabular-nums ml-2 shrink-0 font-medium",
+                    "text-[11px] tabular-nums ml-2 shrink-0 font-medium",
                     isSentByMe ? "text-neutral-300" : "text-muted-foreground"
                   )}
                 >

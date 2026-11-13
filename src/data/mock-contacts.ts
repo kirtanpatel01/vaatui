@@ -29,6 +29,13 @@ export interface ChatMessagePreview {
   emoji?: string
 }
 
+export interface GroupMember {
+  id: string
+  name: string
+  role?: "admin" | "member"
+  avatar?: string
+}
+
 export interface UserProfile {
   id: string
   name: string
@@ -42,6 +49,7 @@ export interface UserProfile {
   unreadCount?: number
   hasMention?: boolean
   tabs: string[] // which tab IDs this conversation belongs to (e.g. 'all', 'unread', 'favorites', etc.)
+  members?: GroupMember[] // List of members if group
 }
 
 export const CURRENT_USER: UserProfile = {
@@ -109,6 +117,13 @@ export const MOCK_CONTACTS: UserProfile[] = [
       authorPrefix: "Mohit: ",
     },
     tabs: ["all", "groups", "unread"],
+    members: [
+      { id: "mem_1", name: "Mohit Parmar", role: "admin" },
+      { id: "mem_2", name: "Shreya Solanki", role: "member" },
+      { id: "mem_3", name: "Nishant Patel", role: "member" },
+      { id: "mem_4", name: "Hardik Joshi", role: "member" },
+      { id: "mem_5", name: "Pooja Trivedi", role: "member" },
+    ],
   },
   {
     id: "chat_5",
@@ -122,6 +137,12 @@ export const MOCK_CONTACTS: UserProfile[] = [
       authorPrefix: "Shreya: ",
     },
     tabs: ["all", "groups"],
+    members: [
+      { id: "mem_2", name: "Shreya Solanki", role: "admin" },
+      { id: "mem_1", name: "Mohit Parmar", role: "member" },
+      { id: "mem_4", name: "Hardik Joshi", role: "member" },
+      { id: "mem_6", name: "Aniket Shah", role: "member" },
+    ],
   },
   {
     id: "chat_6",
@@ -133,6 +154,11 @@ export const MOCK_CONTACTS: UserProfile[] = [
       contentType: "photo",
     },
     tabs: ["all", "groups"],
+    members: [
+      { id: "mem_7", name: "Papa", role: "admin" },
+      { id: "mem_8", name: "Mummy", role: "member" },
+      { id: "mem_9", name: "Dharmesh Vaghela", role: "member" },
+    ],
   },
   {
     id: "chat_7",

@@ -42,7 +42,7 @@ export function PhotoAttachmentBubble({
 
         {/* Gradient Overlay & Download Button */}
         <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-2 bg-gradient-to-t from-black/60 via-black/20 to-transparent text-white opacity-90 transition-opacity">
-          <span className="text-[10px] font-mono opacity-80 backdrop-blur-xs px-1.5 py-0.5 rounded-md bg-black/30">
+          <span className="text-[10px] tabular-nums opacity-80 backdrop-blur-xs px-1.5 py-0.5 rounded-md bg-black/30">
             {fileSize}
           </span>
           <button
@@ -63,13 +63,13 @@ export function PhotoAttachmentBubble({
             {caption}
           </p>
           <div className="flex items-center gap-1 shrink-0 text-muted-foreground select-none pb-0.5 self-center">
-            <span className="text-[10px] font-mono leading-none tracking-tight">{timestamp}</span>
+            <span className="text-[10px] tabular-nums leading-none tracking-tight">{timestamp}</span>
             {isSentByMe && <DeliveryStatusIcon status={status} className="size-3" />}
           </div>
         </div>
       ) : (
         <div className="flex items-center justify-end gap-1 px-1 text-muted-foreground select-none">
-          <span className="text-[10px] font-mono leading-none">{timestamp}</span>
+          <span className="text-[10px] tabular-nums leading-none">{timestamp}</span>
           {isSentByMe && <DeliveryStatusIcon status={status} className="size-3" />}
         </div>
       )}

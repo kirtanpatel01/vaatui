@@ -60,6 +60,41 @@ function renderHighlightedText(
   )
 }
 
+function renderMessageContent(
+  text: string,
+  query: string,
+  isSentByMe: boolean,
+  isCurrentMatch: boolean
+) {
+  // If search query active, highlight search query
+  if (query.trim()) {
+    return renderHighlightedText(text, query, isSentByMe, isCurrentMatch)
+  }
+
+  // Parse @mentions (e.g., @Mohit Parmar or @Shreya)
+  const mentionRegex = /(@[A-Za-z0-9_\s]+?)(?=[.,!?]?(\s|$))/g
+  const parts = text.split(mentionRegex)
+
+  return parts.map((part, i) => {
+    if (part.startsWith("@") && part.length > 1) {
+      return (
+        <span
+          key={i}
+          className={cn(
+            "inline-flex items-center font-semibold rounded-md px-1 py-0.2 mx-0.5 transition-colors cursor-pointer select-none",
+            isSentByMe
+              ? "bg-white/20 text-white hover:bg-white/30"
+              : "bg-primary/15 text-primary hover:bg-primary/25"
+          )}
+        >
+          {part}
+        </span>
+      )
+    }
+    return part
+  })
+}
+
 export function MessageItem({
   message,
   contact,
@@ -200,6 +235,8 @@ export function MessageItem({
           <div className="flex flex-col gap-1">
             <VoiceNoteBubble
               duration={message.attachment.duration}
+              url={message.attachment.url}
+              waveform={message.attachment.waveform}
               isSentByMe={isMe}
             />
             <div
@@ -285,9 +322,7 @@ export function MessageItem({
             <div className="flex flex-wrap items-end gap-x-2 gap-y-0.5">
               {message.text && (
                 <p className="whitespace-pre-wrap break-words leading-relaxed select-text">
-                  {searchQuery.trim()
-                    ? renderHighlightedText(message.text, searchQuery, isMe, isSearchActiveMatch)
-                    : message.text}
+                  {renderMessageContent(message.text, searchQuery, isMe, isSearchActiveMatch)}
                 </p>
               )}
 
@@ -304,7 +339,7 @@ export function MessageItem({
                 {message.isPinned && (
                   <IconPin className="size-3 text-primary shrink-0" />
                 )}
-                <span className="text-[10px] font-mono leading-none tracking-tight">
+                <span className="text-[10px] tabular-nums leading-none tracking-tight">
                   {message.timestamp}
                 </span>
                 {isMe && (

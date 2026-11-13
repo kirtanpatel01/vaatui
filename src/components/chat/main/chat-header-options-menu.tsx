@@ -150,7 +150,7 @@ export function ChatHeaderOptionsMenu({
             <IconStar className="size-4 text-amber-500" />
             <span className="flex-1">Starred messages</span>
             {starredCount > 0 && (
-              <span className="text-[11px] tabular-nums font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
+              <span className="text-[11px] tabular-nums text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
                 {starredCount}
               </span>
             )}
@@ -161,7 +161,7 @@ export function ChatHeaderOptionsMenu({
             <IconPin className="size-4 text-primary" />
             <span className="flex-1">Pinned messages</span>
             {pinnedCount > 0 && (
-              <span className="text-[11px] tabular-nums font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
+              <span className="text-[11px] tabular-nums text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
                 {pinnedCount}
               </span>
             )}
