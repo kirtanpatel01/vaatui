@@ -1,4 +1,3 @@
-import * as React from "react"
 import { type PollData } from "@/data/mock-messages"
 import { IconCheck } from "@tabler/icons-react"
 import { cn } from "cn"

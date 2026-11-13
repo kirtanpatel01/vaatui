@@ -1,4 +1,3 @@
-import * as React from "react"
 import { IconDownload } from "@tabler/icons-react"
 import { DeliveryStatusIcon } from "./delivery-status-icon"
 import { type MessageDeliveryStatus } from "@/data/mock-contacts"

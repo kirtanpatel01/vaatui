@@ -5,7 +5,7 @@ import {
 } from "@/components/ui/dialog"
 import { Kbd } from "@/components/ui/kbd"
 import { toast } from "@/components/ui/toast"
-import { MOCK_CONTACTS, type UserProfile } from "@/data/mock-contacts"
+import { MOCK_CONTACTS } from "@/data/mock-contacts"
 import { type ChatMessage } from "@/data/mock-messages"
 import {
   IconSearch,

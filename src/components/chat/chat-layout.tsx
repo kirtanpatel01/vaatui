@@ -37,7 +37,7 @@ function ChatLayout({ className }: ChatLayoutProps) {
             </div>
 
             {chatDetailsOpen && (
-              <div className="min-h-0 w-[280px] shrink-0">
+              <div className="min-h-0 w-[320px] 2xl:w-[350px] shrink-0">
                 <ChatDetails />
               </div>
             )}

@@ -1,4 +1,3 @@
-import * as React from "react"
 import { IconCheck, IconChecks, IconClock, IconAlertCircle } from "@tabler/icons-react"
 import { cn } from "cn"
 

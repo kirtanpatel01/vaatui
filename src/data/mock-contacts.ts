@@ -16,6 +16,7 @@ export type MessageContentType =
   | "location"
   | "contact"
   | "poll"
+  | "link"
 
 export interface ChatMessagePreview {
   text: string
@@ -34,6 +35,8 @@ export interface GroupMember {
   name: string
   role?: "admin" | "member"
   avatar?: string
+  phone?: string
+  isOnline?: boolean
 }
 
 export interface UserProfile {
@@ -50,6 +53,12 @@ export interface UserProfile {
   hasMention?: boolean
   tabs: string[] // which tab IDs this conversation belongs to (e.g. 'all', 'unread', 'favorites', etc.)
   members?: GroupMember[] // List of members if group
+  bio?: string
+  username?: string
+  email?: string
+  description?: string
+  createdAt?: string
+  createdBy?: string
 }
 
 export const CURRENT_USER: UserProfile = {
@@ -71,6 +80,9 @@ export const MOCK_CONTACTS: UserProfile[] = [
     id: "chat_1",
     name: "Mohit Parmar",
     type: "direct",
+    phone: "+91 98250 12345",
+    username: "@mohit_p",
+    bio: "Frontend engineer & UI enthusiast. Coffee lover ☕",
     isPinned: true,
     lastMessage: {
       text: "bhai kalno su scene che ?",
@@ -84,6 +96,9 @@ export const MOCK_CONTACTS: UserProfile[] = [
     id: "chat_2",
     name: "Shreya Solanki",
     type: "direct",
+    phone: "+91 97234 56789",
+    username: "@shreya_solanki",
+    bio: "Designing interfaces, playing badminton 🏸 and exploring cafes.",
     isOnline: true,
     isPinned: true,
     lastMessage: {
@@ -97,6 +112,9 @@ export const MOCK_CONTACTS: UserProfile[] = [
     id: "chat_3",
     name: "Nishant Patel",
     type: "direct",
+    phone: "+91 98981 23456",
+    username: "@nishant_p",
+    bio: "Full-stack developer | React & Rust 🦀",
     lastMessage: {
       text: "Han maliye pachi",
       time: "3:14 pm",
@@ -109,6 +127,9 @@ export const MOCK_CONTACTS: UserProfile[] = [
     id: "chat_4",
     name: "Design Team",
     type: "group",
+    description: "Official workspace for product design syncs, component specs, Figma prototypes, and design system reviews.",
+    createdAt: "15 Oct 2026",
+    createdBy: "Mohit Parmar",
     unreadCount: 4,
     hasMention: true,
     lastMessage: {
@@ -118,10 +139,10 @@ export const MOCK_CONTACTS: UserProfile[] = [
     },
     tabs: ["all", "groups", "unread"],
     members: [
-      { id: "mem_1", name: "Mohit Parmar", role: "admin" },
-      { id: "mem_2", name: "Shreya Solanki", role: "member" },
+      { id: "mem_1", name: "Mohit Parmar", role: "admin", isOnline: true },
+      { id: "mem_2", name: "Shreya Solanki", role: "member", isOnline: true },
       { id: "mem_3", name: "Nishant Patel", role: "member" },
-      { id: "mem_4", name: "Hardik Joshi", role: "member" },
+      { id: "mem_4", name: "Hardik Joshi", role: "member", isOnline: true },
       { id: "mem_5", name: "Pooja Trivedi", role: "member" },
     ],
   },
@@ -129,6 +150,9 @@ export const MOCK_CONTACTS: UserProfile[] = [
     id: "chat_5",
     name: "College Friends",
     type: "group",
+    description: "Batch of 2024 reunion plans, weekend trips, and daily memes! 🎉",
+    createdAt: "10 Aug 2024",
+    createdBy: "Shreya Solanki",
     isMuted: true,
     unreadCount: 12,
     lastMessage: {
@@ -138,9 +162,9 @@ export const MOCK_CONTACTS: UserProfile[] = [
     },
     tabs: ["all", "groups"],
     members: [
-      { id: "mem_2", name: "Shreya Solanki", role: "admin" },
-      { id: "mem_1", name: "Mohit Parmar", role: "member" },
-      { id: "mem_4", name: "Hardik Joshi", role: "member" },
+      { id: "mem_2", name: "Shreya Solanki", role: "admin", isOnline: true },
+      { id: "mem_1", name: "Mohit Parmar", role: "member", isOnline: true },
+      { id: "mem_4", name: "Hardik Joshi", role: "member", isOnline: true },
       { id: "mem_6", name: "Aniket Shah", role: "member" },
     ],
   },
@@ -148,6 +172,9 @@ export const MOCK_CONTACTS: UserProfile[] = [
     id: "chat_6",
     name: "Family",
     type: "group",
+    description: "Family group for news, photos, and festival celebrations ❤️",
+    createdAt: "01 Jan 2020",
+    createdBy: "Papa",
     lastMessage: {
       text: "Photo",
       time: "Mon",
@@ -164,6 +191,9 @@ export const MOCK_CONTACTS: UserProfile[] = [
     id: "chat_7",
     name: "Announcements",
     type: "announcement",
+    description: "Official product release notes, design updates, and company announcements. Broadcast only channel.",
+    createdAt: "01 Jan 2026",
+    createdBy: "VaatUI Team",
     lastMessage: {
       text: "New component release is live!",
       time: "Mon",
@@ -175,6 +205,9 @@ export const MOCK_CONTACTS: UserProfile[] = [
     id: "chat_8",
     name: "Hardik Joshi",
     type: "direct",
+    phone: "+91 99090 98765",
+    username: "@hardik_j",
+    bio: "Building cool tech @ DAIICT | AI/ML & Web3 enthusiast",
     isOnline: true,
     unreadCount: 2,
     lastMessage: {
@@ -187,6 +220,9 @@ export const MOCK_CONTACTS: UserProfile[] = [
     id: "chat_9",
     name: "Pooja Trivedi",
     type: "direct",
+    phone: "+91 98790 11223",
+    username: "@pooja_t",
+    bio: "QA Lead & Automation Specialist | Reading books 📚",
     lastMessage: {
       text: "Aa file check kari leje ek vaar",
       time: "12:20 pm",

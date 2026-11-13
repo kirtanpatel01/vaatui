@@ -4,13 +4,14 @@ import { type UserProfile } from "@/data/mock-contacts"
 import { VoiceNoteBubble } from "./voice-note-bubble"
 import { PhotoAttachmentBubble } from "./photo-attachment-bubble"
 import { FileAttachmentBubble } from "./file-attachment-bubble"
+import { LinkAttachmentBubble } from "./link-attachment-bubble"
 import { PollBubble } from "./poll-bubble"
 import { ContactBubble } from "./contact-bubble"
 import { MessageReplyPreview } from "./message-reply-preview"
 import { MessageReactions } from "./message-reactions"
 import { MessageActionButtons } from "./message-actions-popover"
 import { DeliveryStatusIcon } from "./delivery-status-icon"
-import { IconArrowForwardUp, IconStar, IconPin } from "@tabler/icons-react"
+import { IconArrowForwardUp, IconStar, IconPin, IconExternalLink } from "@tabler/icons-react"
 import { toast } from "@/components/ui/toast"
 import { cn } from "cn"
 
@@ -71,11 +72,35 @@ function renderMessageContent(
     return renderHighlightedText(text, query, isSentByMe, isCurrentMatch)
   }
 
-  // Parse @mentions (e.g., @Mohit Parmar or @Shreya)
-  const mentionRegex = /(@[A-Za-z0-9_\s]+?)(?=[.,!?]?(\s|$))/g
-  const parts = text.split(mentionRegex)
+  // Tokenize URLs and @mentions
+  const tokenRegex = /(https?:\/\/[^\s<>"'()]+|www\.[^\s<>"'()]+|@[A-Za-z0-9_\s]+?(?=[.,!?]?(\s|$)))/gi
+  const parts = text.split(tokenRegex).filter(Boolean)
 
   return parts.map((part, i) => {
+    // 1. Link / URL
+    if (/^(https?:\/\/|www\.)/i.test(part)) {
+      const href = part.startsWith("http") ? part : `https://${part}`
+      return (
+        <a
+          key={i}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className={cn(
+            "font-medium underline underline-offset-2 break-all transition-opacity hover:opacity-80 inline-flex items-center gap-0.5 cursor-pointer",
+            isSentByMe
+              ? "text-blue-300 decoration-blue-300/60 hover:text-white"
+              : "text-primary decoration-primary/60 hover:text-primary/80"
+          )}
+        >
+          <span>{part}</span>
+          <IconExternalLink className="size-3 inline-block shrink-0 opacity-80" />
+        </a>
+      )
+    }
+
+    // 2. Mention (@Name)
     if (part.startsWith("@") && part.length > 1) {
       return (
         <span
@@ -91,6 +116,8 @@ function renderMessageContent(
         </span>
       )
     }
+
+    // 3. Plain text
     return part
   })
 }
@@ -312,6 +339,16 @@ export function MessageItem({
                 <FileAttachmentBubble
                   fileName={message.attachment.fileName}
                   fileSize={message.attachment.fileSize}
+                  url={message.attachment.url}
+                  isSentByMe={isMe}
+                />
+              </div>
+            )}
+
+            {message.attachment?.type === "link" && (
+              <div className="mb-1.5">
+                <LinkAttachmentBubble
+                  link={message.attachment.link}
                   url={message.attachment.url}
                   isSentByMe={isMe}
                 />

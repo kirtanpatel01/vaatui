@@ -172,6 +172,42 @@ export const chat5Messages: ChatMessage[] = [
     isSentByMe: false,
     reactions: [{ emoji: "🎉", count: 5 }],
   },
+  {
+    id: "cf_link1",
+    chatId: "chat_5",
+    senderId: "u_shreya",
+    senderName: "Shreya Solanki",
+    text: "Car playlist ready kari lidhi che Spotify par 🚗 🎵",
+    timestamp: "11:35 pm",
+    date: "Yesterday",
+    isSentByMe: false,
+    attachment: {
+      type: "link",
+      link: {
+        url: "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M",
+        title: "Road Trip Acoustic & Hits - Spotify Playlist",
+        description: "Best road trip songs, indie anthems, and chill acoustics for long weekend drives.",
+        domain: "open.spotify.com",
+        image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&auto=format&fit=crop&q=80",
+      },
+    },
+  },
+  {
+    id: "cf_photo1",
+    chatId: "chat_5",
+    senderId: "u_hardik",
+    senderName: "Hardik Joshi",
+    text: "Villa view photo:",
+    timestamp: "11:40 pm",
+    date: "Yesterday",
+    isSentByMe: false,
+    attachment: {
+      type: "photo",
+      thumbnailUrl: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&auto=format&fit=crop&q=80",
+      fileName: "udaipur_resort_villa.jpg",
+      fileSize: "3.1 MB",
+    },
+  },
 
   // --- Today ---
   {

@@ -5,6 +5,8 @@ export { MessageDateSeparator, type MessageDateSeparatorProps } from "./message-
 export { MessageReactions, type MessageReactionsProps } from "./message-feed/message-reactions"
 export { MessageReplyPreview, type MessageReplyPreviewProps } from "./message-feed/message-reply-preview"
 export { PhotoAttachmentBubble, type PhotoAttachmentBubbleProps } from "./message-feed/photo-attachment-bubble"
+export { FileAttachmentBubble, type FileAttachmentBubbleProps } from "./message-feed/file-attachment-bubble"
+export { LinkAttachmentBubble, type LinkAttachmentBubbleProps } from "./message-feed/link-attachment-bubble"
 export { VoiceNoteBubble, type VoiceNoteBubbleProps } from "./message-feed/voice-note-bubble"
 export { DeliveryStatusIcon, type DeliveryStatusIconProps } from "./message-feed/delivery-status-icon"
 

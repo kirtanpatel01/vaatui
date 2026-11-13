@@ -1,7 +1,7 @@
 import * as React from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { IconSearch, IconX, IconLoader2, IconSparkles } from "@tabler/icons-react"
+import { IconSearch, IconX, IconSparkles } from "@tabler/icons-react"
 import { cn } from "cn"
 
 export interface GifPickerProps {

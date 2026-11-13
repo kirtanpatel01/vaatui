@@ -20,7 +20,6 @@ import {
   IconCamera,
   IconUserPlus,
   IconChartBar,
-  IconPlayerStopFilled,
   IconPlayerPauseFilled,
   IconPlayerPlayFilled,
   IconTrash,

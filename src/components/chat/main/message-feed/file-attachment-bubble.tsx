@@ -1,4 +1,3 @@
-import * as React from "react"
 import { IconFile, IconDownload } from "@tabler/icons-react"
 import { cn } from "cn"
 

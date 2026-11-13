@@ -25,6 +25,14 @@ export interface SharedContactData {
   avatar?: string
 }
 
+export interface LinkPreviewData {
+  url: string
+  title?: string
+  description?: string
+  image?: string
+  domain?: string
+}
+
 export interface MessageAttachment {
   type: MessageContentType
   url?: string
@@ -35,6 +43,7 @@ export interface MessageAttachment {
   waveform?: number[]
   poll?: PollData
   contact?: SharedContactData
+  link?: LinkPreviewData
 }
 
 export interface MessageReply {
@@ -65,3 +74,21 @@ export interface ChatMessage {
 export const MOCK_MESSAGES: Record<string, ChatMessage[]> = CONVERSATIONS
 
 export * from "./conversations"
+
+export const URL_REGEX = /(https?:\/\/[^\s<>"'()]+|www\.[^\s<>"'()]+)/gi
+
+export function extractUrls(text?: string): string[] {
+  if (!text) return []
+  const matches = text.match(URL_REGEX)
+  return matches ? Array.from(new Set(matches)) : []
+}
+
+export function extractDomain(url: string): string {
+  try {
+    const parsed = new URL(url.startsWith("http") ? url : `https://${url}`)
+    return parsed.hostname.replace(/^www\./, "")
+  } catch {
+    return url.replace(/^(?:https?:\/\/)?(?:www\.)?([^/]+).*/, "$1")
+  }
+}
+

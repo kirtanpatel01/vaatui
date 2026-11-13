@@ -1,16 +1,14 @@
-import * as React from "react"
 import { type SharedContactData } from "@/data/mock-messages"
-import { IconUser, IconMessage, IconPhone } from "@tabler/icons-react"
+import { IconMessage, IconPhone } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
-import { cn } from "cn"
 
 export interface ContactBubbleProps {
   contact: SharedContactData
-  isSentByMe: boolean
+  isSentByMe?: boolean
   onMessageClick?: () => void
 }
 
-export function ContactBubble({ contact, isSentByMe, onMessageClick }: ContactBubbleProps) {
+export function ContactBubble({ contact, onMessageClick }: ContactBubbleProps) {
   return (
     <div className="flex flex-col gap-2.5 min-w-[220px] max-w-[280px]">
       <div className="flex items-center gap-3">

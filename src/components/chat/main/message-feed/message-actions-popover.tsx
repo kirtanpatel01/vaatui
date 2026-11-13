@@ -223,4 +223,5 @@ export function MessageActionButtons({
 }
 
 export { MessageActionButtons as MessageActionsPopover }
+export type { MessageActionButtonsProps as MessageActionsPopoverProps }
 export default MessageActionButtons

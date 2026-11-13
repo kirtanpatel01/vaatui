@@ -1,4 +1,3 @@
-import * as React from "react"
 import { type MessageReply } from "@/data/mock-messages"
 import { IconArrowBackUp } from "@tabler/icons-react"
 import { cn } from "cn"
