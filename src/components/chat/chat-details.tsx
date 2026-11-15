@@ -1,7 +1,8 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { useChat } from "@/components/chat/chat-provider"
 import { DetailsHeader } from "./details/details-header"
 import { DetailsHero } from "./details/details-hero"
+import { MediaPreviewCard } from "./details/media-preview-card"
 import { ContactInfoCard } from "./details/contact-info-card"
 import { GroupInfoCard } from "./details/group-info-card"
 import { AnnouncementInfoCard } from "./details/announcement-info-card"
@@ -29,7 +30,31 @@ export function ChatDetails({ className }: ChatDetailsProps) {
     clearMessages,
   } = useChat()
 
+  const [view, setView] = useState<"overview" | "media">("overview")
+  const [activeMediaTab, setActiveMediaTab] = useState<"photos" | "files" | "links">("photos")
   const [selectedMedia, setSelectedMedia] = useState<ChatMessage | null>(null)
+
+  // Reset view to overview whenever contact changes
+  useEffect(() => {
+    setView("overview")
+    setActiveMediaTab("photos")
+  }, [activeContact.id])
+
+  // Esc key closes details or goes back from media view
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (selectedMedia) return
+        if (view === "media") {
+          setView("overview")
+        } else {
+          setChatDetailsOpen(false)
+        }
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [view, selectedMedia, setChatDetailsOpen])
 
   // 1. Photos and videos in this chat
   const sharedMedia = useMemo(() => {
@@ -114,58 +139,82 @@ export function ChatDetails({ className }: ChatDetailsProps) {
         className
       )}
     >
-      {/* 1. Header with Close Button */}
+      {/* 1. Header with Close Button and Back Button when in Media view */}
       <DetailsHeader
         type={activeContact.type}
         onClose={() => setChatDetailsOpen(false)}
+        view={view}
+        onBack={() => setView("overview")}
       />
 
-      {/* 2. Scrollable Body */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 [scrollbar-width:thin] divide-y divide-border/60">
-        {/* Hero Section */}
-        <DetailsHero
-          contact={activeContact}
-          isMuted={isMuted}
-          onToggleMute={toggleMute}
-        />
-
-        {/* Dynamic Context Card (Different for Direct, Group, and Channel) */}
-        {activeContact.type === "direct" && (
-          <ContactInfoCard
+      {/* 2. Main Content Area */}
+      {view === "overview" ? (
+        <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 [scrollbar-width:thin] divide-y divide-border/60">
+          {/* Hero Section */}
+          <DetailsHero
             contact={activeContact}
-            mutualGroups={mutualGroups}
-            isBlocked={isBlocked}
-            onToggleBlock={toggleBlock}
-            onClearMessages={clearMessages}
-            onSelectGroup={setActiveContact}
+            isMuted={isMuted}
+            onToggleMute={toggleMute}
           />
-        )}
 
-        {activeContact.type === "group" && (
-          <GroupInfoCard
-            contact={activeContact}
-            contacts={contacts}
-            onSelectContact={setActiveContact}
+          {/* WhatsApp Web Style: Prominent Media & Docs Preview Card */}
+          <MediaPreviewCard
+            mediaMessages={sharedMedia}
+            fileMessages={sharedFiles}
+            links={sharedLinks}
+            onOpenMediaView={(tab) => {
+              if (tab) setActiveMediaTab(tab)
+              setView("media")
+            }}
+            onSelectMedia={setSelectedMedia}
           />
-        )}
 
-        {activeContact.type === "announcement" && (
-          <AnnouncementInfoCard contact={activeContact} />
-        )}
+          {/* Dynamic Context Card (Different for Direct, Group, and Channel) */}
+          {activeContact.type === "direct" && (
+            <ContactInfoCard
+              contact={activeContact}
+              mutualGroups={mutualGroups}
+              isBlocked={isBlocked}
+              onToggleBlock={toggleBlock}
+              onClearMessages={clearMessages}
+              onSelectGroup={setActiveContact}
+            />
+          )}
 
-        {/* Three Content Tabs: Photos/Videos, Files, Links */}
-        <DetailsTabs
-          mediaMessages={sharedMedia}
-          fileMessages={sharedFiles}
-          links={sharedLinks}
-          onSelectMedia={setSelectedMedia}
-        />
-      </div>
+          {activeContact.type === "group" && (
+            <GroupInfoCard
+              contact={activeContact}
+              contacts={contacts}
+              onSelectContact={setActiveContact}
+            />
+          )}
+
+          {activeContact.type === "announcement" && (
+            <AnnouncementInfoCard contact={activeContact} />
+          )}
+        </div>
+      ) : (
+        /* Full-Height Media, Links & Docs View */
+        <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+          <DetailsTabs
+            key={activeMediaTab}
+            mediaMessages={sharedMedia}
+            fileMessages={sharedFiles}
+            links={sharedLinks}
+            onSelectMedia={setSelectedMedia}
+            defaultTab={activeMediaTab}
+            hideSectionHeader
+            className="flex-1"
+          />
+        </div>
+      )}
 
       {/* 3. Media Lightbox Modal */}
       <MediaLightboxModal
         media={selectedMedia}
+        allMedia={sharedMedia}
         onClose={() => setSelectedMedia(null)}
+        onSelectMedia={setSelectedMedia}
       />
     </aside>
   )

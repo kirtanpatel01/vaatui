@@ -4,12 +4,16 @@ import { type ChatMessage } from "@/data/mock-messages"
 import { MediaTabContent } from "./media-tab-content"
 import { FilesTabContent } from "./files-tab-content"
 import { LinksTabContent, type ExtractedLinkItem } from "./links-tab-content"
+import { cn } from "cn"
 
 export interface DetailsTabsProps {
   mediaMessages: ChatMessage[]
   fileMessages: ChatMessage[]
   links: ExtractedLinkItem[]
   onSelectMedia: (msg: ChatMessage) => void
+  defaultTab?: "photos" | "files" | "links"
+  hideSectionHeader?: boolean
+  className?: string
 }
 
 export function DetailsTabs({
@@ -17,18 +21,23 @@ export function DetailsTabs({
   fileMessages,
   links,
   onSelectMedia,
+  defaultTab = "photos",
+  hideSectionHeader = false,
+  className,
 }: DetailsTabsProps) {
   return (
-    <div className="p-3">
-      <span className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground block px-1 mb-2">
-        Shared Media & Docs
-      </span>
+    <div className={cn("p-3 flex flex-col flex-1 min-h-0", className)}>
+      {!hideSectionHeader && (
+        <span className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground block px-1 mb-2">
+          Shared Media & Docs
+        </span>
+      )}
 
-      <Tabs defaultValue="photos" className="w-full">
-        <TabsList className="grid grid-cols-3 h-8 p-0.5 bg-muted/60">
+      <Tabs defaultValue={defaultTab} className="w-full flex-1 flex flex-col min-h-0">
+        <TabsList className="grid grid-cols-3 h-8 p-0.5 bg-muted/60 shrink-0">
           <TabsTrigger
             value="photos"
-            className="text-[11px] py-1 px-1 data-active:shadow-xs flex items-center gap-1"
+            className="text-[11px] py-1 px-1 data-active:shadow-xs flex items-center justify-center gap-1"
             title="Photos and Videos"
           >
             <IconPhoto className="size-3.5 shrink-0" />
@@ -38,7 +47,7 @@ export function DetailsTabs({
 
           <TabsTrigger
             value="files"
-            className="text-[11px] py-1 px-1 data-active:shadow-xs flex items-center gap-1"
+            className="text-[11px] py-1 px-1 data-active:shadow-xs flex items-center justify-center gap-1"
             title="Files"
           >
             <IconFile className="size-3.5 shrink-0" />
@@ -48,7 +57,7 @@ export function DetailsTabs({
 
           <TabsTrigger
             value="links"
-            className="text-[11px] py-1 px-1 data-active:shadow-xs flex items-center gap-1"
+            className="text-[11px] py-1 px-1 data-active:shadow-xs flex items-center justify-center gap-1"
             title="Links"
           >
             <IconLink className="size-3.5 shrink-0" />
@@ -57,20 +66,22 @@ export function DetailsTabs({
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="photos" className="pt-3">
-          <MediaTabContent
-            mediaMessages={mediaMessages}
-            onSelectMedia={onSelectMedia}
-          />
-        </TabsContent>
+        <div className="flex-1 overflow-y-auto min-h-0 pt-3 [scrollbar-width:thin]">
+          <TabsContent value="photos" className="mt-0">
+            <MediaTabContent
+              mediaMessages={mediaMessages}
+              onSelectMedia={onSelectMedia}
+            />
+          </TabsContent>
 
-        <TabsContent value="files" className="pt-3">
-          <FilesTabContent fileMessages={fileMessages} />
-        </TabsContent>
+          <TabsContent value="files" className="mt-0">
+            <FilesTabContent fileMessages={fileMessages} />
+          </TabsContent>
 
-        <TabsContent value="links" className="pt-3">
-          <LinksTabContent links={links} />
-        </TabsContent>
+          <TabsContent value="links" className="mt-0">
+            <LinksTabContent links={links} />
+          </TabsContent>
+        </div>
       </Tabs>
     </div>
   )

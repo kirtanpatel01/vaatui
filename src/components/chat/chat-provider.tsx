@@ -1,7 +1,11 @@
 import * as React from 'react'
 import { cn } from 'cn'
-import { type UserProfile, MOCK_CONTACTS } from '@/data/mock-contacts'
+import { type UserProfile, MOCK_CONTACTS, CURRENT_USER } from '@/data/mock-contacts'
 import { type ChatMessage, type MessageReply, type MessageAttachment, MOCK_MESSAGES } from '@/data/mock-messages'
+
+export interface CurrentUserProfile extends UserProfile {
+  thought?: string
+}
 
 interface ChatContextValue {
   chatDetailsOpen: boolean
@@ -23,6 +27,12 @@ interface ChatContextValue {
   toggleMute: () => void
   isBlocked: boolean
   toggleBlock: () => void
+  currentUser: CurrentUserProfile
+  updateCurrentUser: (updates: Partial<CurrentUserProfile>) => void
+  blockedContactIds: Set<string>
+  unblockContact: (contactId: string) => void
+  enterIsSend: boolean
+  setEnterIsSend: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const ChatContext = React.createContext<ChatContextValue | null>(null)
@@ -54,6 +64,27 @@ export function ChatProvider({
 
   const [allMessages, setAllMessages] = React.useState<Record<string, ChatMessage[]>>(MOCK_MESSAGES)
   const [blockedContactIds, setBlockedContactIds] = React.useState<Set<string>>(new Set())
+  const [enterIsSend, setEnterIsSend] = React.useState(true)
+
+  const [currentUser, setCurrentUser] = React.useState<CurrentUserProfile>({
+    ...CURRENT_USER,
+    username: "@kjpatel",
+    bio: "Designing interfaces, playing badminton 🏸 and exploring cafes.",
+    thought: "Designing interfaces...",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80",
+  })
+
+  const updateCurrentUser = React.useCallback((updates: Partial<CurrentUserProfile>) => {
+    setCurrentUser((prev) => ({ ...prev, ...updates }))
+  }, [])
+
+  const unblockContact = React.useCallback((contactId: string) => {
+    setBlockedContactIds((prev) => {
+      const next = new Set(prev)
+      next.delete(contactId)
+      return next
+    })
+  }, [])
 
   const isMuted = Boolean(activeContact?.isMuted)
   const isBlocked = blockedContactIds.has(activeContact?.id)
@@ -338,6 +369,12 @@ export function ChatProvider({
         toggleMute,
         isBlocked,
         toggleBlock,
+        currentUser,
+        updateCurrentUser,
+        blockedContactIds,
+        unblockContact,
+        enterIsSend,
+        setEnterIsSend,
       }}
     >
       <div className={cn(className, "w-full flex")}>{children}</div>

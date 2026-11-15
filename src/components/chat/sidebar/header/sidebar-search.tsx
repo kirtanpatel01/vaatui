@@ -36,6 +36,7 @@ function SidebarSearch({
           <IconSearch />
         </InputGroupAddon>
         <InputGroupInput
+          id="sidebar-search-input"
           value={value}
           onChange={onChange}
           onKeyDown={handleKeyDown}

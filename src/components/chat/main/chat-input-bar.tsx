@@ -63,7 +63,7 @@ export function ChatInputBar({
   onRecordVoice,
   ...props
 }: ChatInputBarProps) {
-  const { contacts, activeContact } = useChat()
+  const { contacts, activeContact, enterIsSend } = useChat()
   const isGroup = activeContact?.type === "group"
 
   const [text, setText] = React.useState("")
@@ -513,9 +513,16 @@ export function ChatInputBar({
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSend()
+    if (enterIsSend) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault()
+        handleSend()
+      }
+    } else {
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault()
+        handleSend()
+      }
     }
   }
 

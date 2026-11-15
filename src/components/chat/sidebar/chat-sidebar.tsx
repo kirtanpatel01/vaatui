@@ -5,6 +5,7 @@ import SidebarMain from "./sidebar-main"
 import SidebarFooter from "./sidebar-footer"
 import CreateTabSheet from "./header/create-tab-sheet"
 import ArchivedChatsSheet from "./archived-chats-sheet"
+import UserSettingsSheet from "./settings/user-settings-sheet"
 import { useChat } from "@/components/chat/chat-provider"
 import { type FilterTabItem, DEFAULT_FILTER_TABS } from "./header/filter-tabs"
 import { type UserProfile } from "@/data/mock-contacts"
@@ -25,6 +26,24 @@ function ChatSidebar({
   const [activeTab, setActiveTab] = React.useState<string>("all")
   const [isSheetOpen, setIsSheetOpen] = React.useState(false)
   const [isArchivedOpen, setIsArchivedOpen] = React.useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
+
+  // Press "/" to focus search input
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const activeEl = document.activeElement as HTMLElement | null
+      const isInput =
+        activeEl?.tagName === "INPUT" ||
+        activeEl?.tagName === "TEXTAREA" ||
+        activeEl?.isContentEditable
+      if (e.key === "/" && !isInput) {
+        e.preventDefault()
+        document.getElementById("sidebar-search-input")?.focus()
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [])
 
   const handleCreateTab = (name: string, selectedContactIds: string[]) => {
     const newId = name.toLowerCase().replace(/\s+/g, "-")
@@ -86,7 +105,7 @@ function ChatSidebar({
         onDeleteChat={handleDeleteChat}
       />
 
-      <SidebarFooter />
+      <SidebarFooter onOpenSettings={() => setIsSettingsOpen(true)} />
 
       <CreateTabSheet
         open={isSheetOpen}
@@ -103,6 +122,11 @@ function ChatSidebar({
         onSelectContact={onSelectContact}
         onUpdateContact={handleUpdateContact}
         onDeleteChat={handleDeleteChat}
+      />
+
+      <UserSettingsSheet
+        open={isSettingsOpen}
+        onOpenChange={setIsSettingsOpen}
       />
     </aside>
   )
