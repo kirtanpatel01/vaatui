@@ -47,12 +47,12 @@ export function MediaTabContent({
 
             {/* Video overlay indicator */}
             {isVideo && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/30 text-white">
-                <div className="flex size-6 items-center justify-center rounded-full bg-black/60 backdrop-blur-xs">
+              <div className="absolute inset-0 flex items-center justify-center bg-background/30 text-foreground">
+                <div className="flex size-6 items-center justify-center rounded-full bg-background/80 text-foreground backdrop-blur-xs">
                   <IconPlayerPlayFilled className="size-3 ml-0.5" />
                 </div>
                 {msg.attachment?.duration && (
-                  <span className="absolute bottom-1 right-1 px-1 py-0.2 rounded-xs bg-black/70 text-[9px] tabular-nums font-medium text-white">
+                  <span className="absolute bottom-1 right-1 px-1 py-0.2 rounded-xs bg-background/90 text-[9px] tabular-nums font-medium text-foreground">
                     {msg.attachment.duration}
                   </span>
                 )}
@@ -60,8 +60,8 @@ export function MediaTabContent({
             )}
 
             {/* Hover Overlay */}
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/thumb:opacity-100 transition-opacity flex items-end p-1 text-white">
-              <span className="text-[9px] truncate drop-shadow-xs">
+            <div className="absolute inset-0 bg-background/60 opacity-0 group-hover/thumb:opacity-100 transition-opacity flex items-end p-1 text-foreground">
+              <span className="text-[9px] truncate drop-shadow-xs font-medium">
                 {msg.attachment?.fileSize || msg.timestamp}
               </span>
             </div>

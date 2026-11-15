@@ -106,9 +106,9 @@ export function CameraModal({ open, onOpenChange, onCapture }: CameraModalProps)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="p-0 overflow-hidden sm:max-w-md gap-0 rounded-3xl border border-border/80 bg-background shadow-2xl">
+      <DialogContent className="p-0 overflow-hidden sm:max-w-md gap-0">
         {/* Header */}
-        <DialogHeader className="p-4 border-b bg-muted/30">
+        <DialogHeader className="p-4 border-b">
           <div className="flex items-center gap-2.5">
             <div className="flex size-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <IconCamera className="size-4" />
@@ -118,10 +118,10 @@ export function CameraModal({ open, onOpenChange, onCapture }: CameraModalProps)
         </DialogHeader>
 
         {/* Viewfinder Area */}
-        <div className="relative bg-black aspect-4/3 flex items-center justify-center overflow-hidden">
+        <div className="relative bg-muted aspect-4/3 flex items-center justify-center overflow-hidden">
           {cameraError ? (
             <div className="flex flex-col items-center gap-2 p-6 text-center text-xs text-muted-foreground max-w-xs">
-              <IconAlertCircle className="size-8 text-amber-500" />
+              <IconAlertCircle className="size-8 text-destructive" />
               <p>{cameraError}</p>
             </div>
           ) : capturedImage ? (
@@ -158,7 +158,7 @@ export function CameraModal({ open, onOpenChange, onCapture }: CameraModalProps)
               <Button
                 size="sm"
                 onClick={handleSend}
-                className="gap-1.5 cursor-pointer bg-primary text-primary-foreground"
+                className="gap-1.5 cursor-pointer"
               >
                 <IconCheck className="size-4" />
                 <span>Use Photo</span>
@@ -170,10 +170,10 @@ export function CameraModal({ open, onOpenChange, onCapture }: CameraModalProps)
                 type="button"
                 disabled={Boolean(cameraError)}
                 onClick={handleTakePhoto}
-                className="size-14 rounded-full border-4 border-white/80 bg-red-500 hover:bg-red-600 transition-all shadow-lg active:scale-95 disabled:opacity-50 cursor-pointer flex items-center justify-center"
+                className="size-14 rounded-full border-4 border-foreground/80 bg-destructive hover:bg-destructive/90 transition-all shadow-lg active:scale-95 disabled:opacity-50 cursor-pointer flex items-center justify-center"
                 aria-label="Take picture"
               >
-                <div className="size-5 rounded-full bg-white/40" />
+                <div className="size-5 rounded-full bg-destructive-foreground/40" />
               </button>
             </div>
           )}

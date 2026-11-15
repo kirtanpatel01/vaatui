@@ -52,8 +52,8 @@ export function LinkAttachmentBubble({
       className={cn(
         "group/link block rounded-xl border overflow-hidden transition-all duration-150 cursor-pointer max-w-[320px] select-none text-left shadow-2xs hover:shadow-xs",
         isSentByMe
-          ? "bg-neutral-800/80 border-neutral-700/80 hover:bg-neutral-800"
-          : "bg-muted/50 border-border/70 hover:bg-muted/80",
+          ? "bg-chat-bubble-sent-foreground/10 border-chat-bubble-sent-foreground/20 hover:bg-chat-bubble-sent-foreground/15 text-chat-bubble-sent-foreground"
+          : "bg-muted/50 border-border/70 hover:bg-muted/80 text-foreground",
         className
       )}
     >
@@ -65,7 +65,7 @@ export function LinkAttachmentBubble({
             className="size-full object-cover transition-transform duration-300 group-hover/link:scale-103"
             loading="lazy"
           />
-          <div className="absolute top-2 right-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur-xs">
+          <div className="absolute top-2 right-2 flex items-center gap-1 rounded-full bg-background/80 px-2 py-0.5 text-[10px] font-medium text-foreground backdrop-blur-xs">
             <IconLink className="size-3" />
             <span className="truncate max-w-[120px]">{domain}</span>
           </div>
@@ -77,7 +77,7 @@ export function LinkAttachmentBubble({
           <span
             className={cn(
               "text-[11px] font-semibold tracking-wide uppercase truncate",
-              isSentByMe ? "text-neutral-300" : "text-primary"
+              isSentByMe ? "text-chat-bubble-sent-foreground/90 font-semibold" : "text-primary"
             )}
           >
             {domain}
@@ -89,13 +89,13 @@ export function LinkAttachmentBubble({
               className={cn(
                 "p-1 rounded-md transition-colors",
                 isSentByMe
-                  ? "text-neutral-400 hover:text-white hover:bg-white/10"
+                  ? "text-chat-bubble-sent-foreground/75 hover:text-chat-bubble-sent-foreground hover:bg-chat-bubble-sent-foreground/15"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
               )}
               title="Copy link"
             >
               {copied ? (
-                <IconCheck className="size-3.5 text-emerald-500" />
+                <IconCheck className="size-3.5 text-online" />
               ) : (
                 <IconCopy className="size-3.5" />
               )}
@@ -106,7 +106,7 @@ export function LinkAttachmentBubble({
               className={cn(
                 "p-1 rounded-md transition-colors",
                 isSentByMe
-                  ? "text-neutral-400 hover:text-white hover:bg-white/10"
+                  ? "text-chat-bubble-sent-foreground/75 hover:text-chat-bubble-sent-foreground hover:bg-chat-bubble-sent-foreground/15"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
               )}
               title="Open in new tab"
@@ -120,7 +120,7 @@ export function LinkAttachmentBubble({
           <h4
             className={cn(
               "text-xs font-semibold line-clamp-1 leading-snug group-hover/link:underline",
-              isSentByMe ? "text-white" : "text-foreground"
+              isSentByMe ? "text-chat-bubble-sent-foreground" : "text-foreground"
             )}
           >
             {link.title}
@@ -131,7 +131,7 @@ export function LinkAttachmentBubble({
           <p
             className={cn(
               "text-[11px] line-clamp-2 leading-relaxed mt-0.5",
-              isSentByMe ? "text-neutral-300" : "text-muted-foreground"
+              isSentByMe ? "text-chat-bubble-sent-foreground/80" : "text-muted-foreground"
             )}
           >
             {link.description}
@@ -141,7 +141,7 @@ export function LinkAttachmentBubble({
         <span
           className={cn(
             "text-[10px] truncate block mt-1 opacity-70",
-            isSentByMe ? "text-neutral-400" : "text-muted-foreground"
+            isSentByMe ? "text-chat-bubble-sent-foreground/70" : "text-muted-foreground"
           )}
         >
           {targetUrl}

@@ -70,7 +70,7 @@ export function DetailsHero({
 
         {isDirect && contact.isOnline && (
           <span
-            className="absolute bottom-1 right-1 size-3.5 rounded-full bg-emerald-500 ring-2 ring-background"
+            className="absolute bottom-1 right-1 size-3.5 rounded-full bg-online ring-2 ring-background"
             title="Online"
           />
         )}
@@ -83,7 +83,7 @@ export function DetailsHero({
       <p className="text-xs text-muted-foreground mt-0.5 truncate max-w-[95%]">
         {isDirect ? (
           contact.isOnline ? (
-            <span className="text-emerald-600 dark:text-emerald-400 font-medium">Online</span>
+            <span className="text-online font-medium">Online</span>
           ) : (
             contact.phone || "Last seen recently"
           )
@@ -104,7 +104,7 @@ export function DetailsHero({
               variant="outline"
               size="sm"
               onClick={handleCall}
-              className="flex-1 h-8 text-xs gap-1.5 rounded-lg border-border/80 cursor-pointer shadow-2xs hover:bg-muted"
+              className="flex-1"
               title="Audio call"
             >
               <IconPhone className="size-3.5 text-muted-foreground" />
@@ -114,7 +114,7 @@ export function DetailsHero({
               variant="outline"
               size="sm"
               onClick={handleVideoCall}
-              className="flex-1 h-8 text-xs gap-1.5 rounded-lg border-border/80 cursor-pointer shadow-2xs hover:bg-muted"
+              className="flex-1"
               title="Video call"
             >
               <IconVideo className="size-3.5 text-muted-foreground" />
@@ -125,8 +125,7 @@ export function DetailsHero({
               size="icon-sm"
               onClick={onToggleMute}
               className={cn(
-                "size-8 rounded-lg border-border/80 cursor-pointer shadow-2xs",
-                isMuted ? "text-amber-500 bg-amber-500/10 border-amber-500/30" : "text-muted-foreground"
+                isMuted ? "text-starred bg-starred/10 border-starred/30" : "text-muted-foreground"
               )}
               title={isMuted ? "Unmute notifications" : "Mute notifications"}
             >
@@ -139,7 +138,7 @@ export function DetailsHero({
               variant="outline"
               size="sm"
               onClick={handleAddMember}
-              className="flex-1 h-8 text-xs gap-1.5 rounded-lg border-border/80 cursor-pointer shadow-2xs hover:bg-muted"
+              className="flex-1"
             >
               <IconUserPlus className="size-3.5 text-muted-foreground" />
               <span>Add Member</span>
@@ -149,8 +148,7 @@ export function DetailsHero({
               size="icon-sm"
               onClick={onToggleMute}
               className={cn(
-                "size-8 rounded-lg border-border/80 cursor-pointer shadow-2xs",
-                isMuted ? "text-amber-500 bg-amber-500/10 border-amber-500/30" : "text-muted-foreground"
+                isMuted ? "text-starred bg-starred/10 border-starred/30" : "text-muted-foreground"
               )}
               title={isMuted ? "Unmute notifications" : "Mute notifications"}
             >
@@ -163,8 +161,8 @@ export function DetailsHero({
             size="sm"
             onClick={onToggleMute}
             className={cn(
-              "w-full h-8 text-xs gap-1.5 rounded-lg border-border/80 cursor-pointer shadow-2xs",
-              isMuted && "text-amber-500 bg-amber-500/10 border-amber-500/30"
+              "w-full",
+              isMuted && "text-starred bg-starred/10 border-starred/30"
             )}
           >
             {isMuted ? <IconBellOff className="size-3.5" /> : <IconBell className="size-3.5" />}

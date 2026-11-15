@@ -43,12 +43,10 @@ function renderHighlightedText(
 
   // Style classes based on whether this is the active focused match, and bubble tone (sent by me vs received)
   const highlightClass = isCurrentMatch
-    ? isSentByMe
-      ? "bg-amber-400 text-black font-semibold rounded-xs px-1 shadow-xs ring-1 ring-amber-300"
-      : "bg-amber-500 text-white dark:bg-amber-400 dark:text-black font-semibold rounded-xs px-1 shadow-xs ring-1 ring-amber-400"
+    ? "bg-starred text-foreground font-semibold rounded-xs px-1 shadow-xs ring-1 ring-starred"
     : isSentByMe
-      ? "bg-neutral-700/90 text-neutral-100 rounded-xs px-0.5 font-medium underline decoration-amber-400 decoration-2 underline-offset-2"
-      : "bg-amber-200/90 text-amber-950 dark:bg-amber-500/30 dark:text-amber-200 rounded-xs px-0.5 font-medium"
+      ? "bg-chat-bubble-sent-foreground/20 text-chat-bubble-sent-foreground rounded-xs px-0.5 font-medium underline decoration-starred decoration-2 underline-offset-2"
+      : "bg-starred/25 text-foreground rounded-xs px-0.5 font-medium"
 
   return parts.map((part, i) =>
     regex.test(part) ? (
@@ -90,7 +88,7 @@ function renderMessageContent(
           className={cn(
             "font-medium underline underline-offset-2 break-all transition-opacity hover:opacity-80 inline-flex items-center gap-0.5 cursor-pointer",
             isSentByMe
-              ? "text-blue-300 decoration-blue-300/60 hover:text-white"
+              ? "text-chat-bubble-sent-foreground underline decoration-chat-bubble-sent-foreground/60 hover:text-chat-bubble-sent-foreground/80"
               : "text-primary decoration-primary/60 hover:text-primary/80"
           )}
         >
@@ -108,7 +106,7 @@ function renderMessageContent(
           className={cn(
             "inline-flex items-center font-semibold rounded-md px-1 py-0.2 mx-0.5 transition-colors cursor-pointer select-none",
             isSentByMe
-              ? "bg-white/20 text-white hover:bg-white/30"
+              ? "bg-chat-bubble-sent-foreground/20 text-chat-bubble-sent-foreground hover:bg-chat-bubble-sent-foreground/30"
               : "bg-primary/15 text-primary hover:bg-primary/25"
           )}
         >
@@ -249,7 +247,7 @@ export function MessageItem({
           <div
             className={cn(
               "flex items-center gap-1 text-[11px] font-medium italic select-none mb-1 px-1",
-              isMe ? "text-neutral-400 justify-end" : "text-muted-foreground justify-start"
+              isMe ? "text-chat-bubble-sent-foreground/75 justify-end" : "text-muted-foreground justify-start"
             )}
           >
             <IconArrowForwardUp className="size-3.5" />
@@ -300,8 +298,8 @@ export function MessageItem({
               "relative rounded-2xl px-3.5 py-2 text-sm transition-all duration-200 select-text leading-relaxed",
               isSearchActiveMatch && "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-md",
               isMe
-                ? "bg-neutral-900 text-neutral-50 border border-neutral-800 shadow-sm dark:bg-neutral-900 dark:border-neutral-800 rounded-tr-xs"
-                : "bg-card text-card-foreground border border-border/80 shadow-xs hover:border-border dark:bg-card/90 rounded-tl-xs"
+                ? "bg-chat-bubble-sent text-chat-bubble-sent-foreground border border-border/80 shadow-sm rounded-tr-xs"
+                : "bg-chat-bubble-received text-chat-bubble-received-foreground border border-border/60 shadow-xs hover:border-border rounded-tl-xs"
             )}
           >
             {/* Quoted Reply Preview */}
@@ -367,11 +365,11 @@ export function MessageItem({
               <div
                 className={cn(
                   "ml-auto inline-flex items-center gap-1 shrink-0 select-none pb-0.5",
-                  isMe ? "text-neutral-400" : "text-muted-foreground"
+                  isMe ? "text-chat-bubble-sent-foreground/75" : "text-muted-foreground"
                 )}
               >
                 {message.isStarred && (
-                  <IconStar className="size-3 text-amber-500 fill-amber-500 shrink-0" />
+                  <IconStar className="size-3 text-starred fill-starred shrink-0" />
                 )}
                 {message.isPinned && (
                   <IconPin className="size-3 text-primary shrink-0" />

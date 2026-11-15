@@ -95,9 +95,9 @@ export function CreateTabSheet({
 
         <Button
           type="button"
-          variant="ghost"
+          variant="secondary"
           size="icon-sm"
-          className="bg-secondary shrink-0"
+          className="shrink-0"
           onClick={() => onOpenChange(false)}
           aria-label="Close"
         >

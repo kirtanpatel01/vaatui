@@ -40,14 +40,14 @@ export function PhotoAttachmentBubble({
         )}
 
         {/* Gradient Overlay & Download Button */}
-        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-2 bg-gradient-to-t from-black/60 via-black/20 to-transparent text-white opacity-90 transition-opacity">
-          <span className="text-[10px] tabular-nums opacity-80 backdrop-blur-xs px-1.5 py-0.5 rounded-md bg-black/30">
+        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-2 bg-gradient-to-t from-background/90 via-background/40 to-transparent text-foreground opacity-90 transition-opacity">
+          <span className="text-[10px] tabular-nums font-medium opacity-90 backdrop-blur-xs px-1.5 py-0.5 rounded-md bg-background/60">
             {fileSize}
           </span>
           <button
             type="button"
             onClick={onDownload}
-            className="flex size-6.5 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-md hover:bg-white/35 transition-colors cursor-pointer"
+            className="flex size-6.5 items-center justify-center rounded-full bg-background/80 text-foreground backdrop-blur-md hover:bg-background border border-border/40 transition-colors cursor-pointer"
             aria-label="Download image"
           >
             <IconDownload className="size-3.5" />

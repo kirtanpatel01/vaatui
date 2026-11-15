@@ -635,12 +635,12 @@ export function ChatInputBar({
           <div className="flex items-center gap-2 shrink-0">
             <span className="relative flex size-3">
               {!isPaused && (
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75"></span>
               )}
               <span
                 className={cn(
                   "relative inline-flex rounded-full size-3",
-                  isPaused ? "bg-amber-500" : "bg-red-500"
+                  isPaused ? "bg-starred" : "bg-destructive"
                 )}
               ></span>
             </span>
@@ -650,7 +650,7 @@ export function ChatInputBar({
               {recordingSeconds % 60}
             </span>
             {isPaused && (
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-amber-500/15 px-1.5 py-0.5 rounded-sm">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-starred bg-starred/15 px-1.5 py-0.5 rounded-sm">
                 Paused
               </span>
             )}
@@ -684,7 +684,7 @@ export function ChatInputBar({
             title={isPaused ? "Resume recording" : "Pause recording"}
           >
             {isPaused ? (
-              <IconPlayerPlayFilled className="size-4 text-emerald-600 dark:text-emerald-400" />
+              <IconPlayerPlayFilled className="size-4 text-online" />
             ) : (
               <IconPlayerPauseFilled className="size-4 text-destructive" />
             )}
@@ -705,9 +705,10 @@ export function ChatInputBar({
           {/* Send / Stop recording button */}
           <Button
             type="button"
+            variant="destructive"
             size="icon"
             onClick={stopVoiceRecording}
-            className="size-9 rounded-full bg-destructive text-white hover:bg-destructive/90 shadow-xs cursor-pointer shrink-0"
+            className="shrink-0"
             title="Send voice note"
           >
             <IconSend className="size-4" />
@@ -722,9 +723,9 @@ export function ChatInputBar({
               render={
                 <Button
                   type="button"
-                  variant="ghost"
+                  variant="secondary"
                   size="icon"
-                  className="size-9 shrink-0 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                  className="shrink-0"
                   aria-label="More attachments"
                 />
               }
@@ -736,7 +737,7 @@ export function ChatInputBar({
               side="top"
               align="start"
               sideOffset={12}
-              className="w-52 p-1.5 rounded-2xl shadow-xl border border-border/60 bg-popover/95 backdrop-blur-md"
+              className="w-52 p-1.5"
             >
               <div className="flex flex-col gap-0.5 text-xs font-medium">
                 {ATTACHMENT_OPTIONS.map((item) => {
@@ -870,7 +871,7 @@ export function ChatInputBar({
             variant="ghost"
             size="icon"
             onClick={startVoiceRecording}
-            className="size-9 shrink-0 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
+            className="shrink-0 text-muted-foreground hover:text-foreground"
             aria-label="Record voice note"
             title="Record voice note"
           >
@@ -882,7 +883,7 @@ export function ChatInputBar({
             type="button"
             size="icon"
             onClick={handleSend}
-            className="size-9 shrink-0 rounded-full bg-neutral-900 text-white dark:bg-white dark:text-black hover:opacity-90 shadow-xs cursor-pointer"
+            className="shrink-0"
             aria-label="Send message"
           >
             <IconSend className="size-4" />

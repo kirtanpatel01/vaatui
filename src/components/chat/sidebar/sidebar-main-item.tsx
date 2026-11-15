@@ -78,7 +78,7 @@ function DeliveryStatusIcon({ status }: { status?: MessageDeliveryStatus }) {
     case "delivered":
       return <IconChecks className="size-3.5 shrink-0 text-muted-foreground stroke-[2]" />
     case "read":
-      return <IconChecks className="size-3.5 shrink-0 text-sky-500 stroke-[2.2]" />
+      return <IconChecks className="size-3.5 shrink-0 text-read stroke-[2.2]" />
     case "failed":
       return <IconAlertCircle className="size-3.5 shrink-0 text-destructive stroke-[2.2]" />
     default:
@@ -252,7 +252,7 @@ export function SidebarMainItem({
           {contact.isOnline && (
             <span
               aria-label="Online"
-              className="absolute -top-0.5 -right-0.5 size-2.5 rounded-full bg-emerald-500 ring-2 ring-background"
+              className="absolute -top-0.5 -right-0.5 size-2.5 rounded-full bg-online ring-2 ring-background"
             />
           )}
         </div>
@@ -287,12 +287,12 @@ export function SidebarMainItem({
 
               {/* Inbound: Typing animation or Draft */}
               {lastMessage.isTyping ? (
-                <span className="text-emerald-600 dark:text-emerald-400 font-medium truncate flex items-center gap-1">
-                  <span className="inline-block size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-online font-medium truncate flex items-center gap-1">
+                  <span className="inline-block size-1.5 rounded-full bg-online animate-pulse" />
                   Typing...
                 </span>
               ) : lastMessage.isDraft ? (
-                <span className="text-amber-600 dark:text-amber-500 font-medium truncate flex items-center gap-1">
+                <span className="text-starred font-medium truncate flex items-center gap-1">
                   <IconEdit className="size-3 shrink-0" />
                   Draft: <span className="text-muted-foreground font-normal">{lastMessage.text}</span>
                 </span>
@@ -361,7 +361,7 @@ export function SidebarMainItem({
         align="start"
         side="bottom"
         sideOffset={6}
-        className="w-56 p-1.5 gap-1 rounded-2xl shadow-xl border border-border/60 bg-popover/95 backdrop-blur-md"
+        className="w-56 p-1.5 gap-1"
       >
         <div className="px-2.5 py-1.5 text-xs font-semibold text-muted-foreground border-b border-border/40 truncate">
           {contact.name}

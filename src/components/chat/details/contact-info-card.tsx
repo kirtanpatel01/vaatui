@@ -64,7 +64,7 @@ export function ContactInfoCard({
         </p>
       </div>
 
-      <Separator className="opacity-60" />
+      <Separator />
 
       {/* Phone & Username with One-Click Copy */}
       <div className="space-y-2.5">
@@ -87,7 +87,7 @@ export function ContactInfoCard({
               title="Copy phone"
             >
               {copiedKey === "phone" ? (
-                <IconCheck className="size-3.5 text-emerald-500" />
+                <IconCheck className="size-3.5 text-online" />
               ) : (
                 <IconCopy className="size-3.5" />
               )}
@@ -110,7 +110,7 @@ export function ContactInfoCard({
               title="Copy username"
             >
               {copiedKey === "username" ? (
-                <IconCheck className="size-3.5 text-emerald-500" />
+                <IconCheck className="size-3.5 text-online" />
               ) : (
                 <IconCopy className="size-3.5" />
               )}
@@ -122,7 +122,7 @@ export function ContactInfoCard({
       {/* Groups in Common */}
       {mutualGroups.length > 0 && (
         <>
-          <Separator className="opacity-60" />
+          <Separator />
           <div>
             <div className="flex items-center justify-between mb-2">
               <span className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground">
@@ -162,7 +162,7 @@ export function ContactInfoCard({
       )}
 
       {/* Privacy & Danger Actions */}
-      <Separator className="opacity-60" />
+      <Separator />
       <div className="space-y-1">
         <button
           type="button"
@@ -170,8 +170,8 @@ export function ContactInfoCard({
           className={cn(
             "w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer",
             isBlocked
-              ? "text-emerald-600 hover:bg-emerald-500/10"
-              : "text-red-500 hover:bg-red-500/10"
+              ? "text-primary hover:bg-primary/10"
+              : "text-destructive hover:bg-destructive/10"
           )}
         >
           {isBlocked ? <IconUserCheck className="size-4" /> : <IconUserX className="size-4" />}
@@ -181,7 +181,7 @@ export function ContactInfoCard({
         <button
           type="button"
           onClick={handleClearChat}
-          className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
+          className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
         >
           <IconTrash className="size-4" />
           <span>Clear Chat History</span>

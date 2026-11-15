@@ -53,7 +53,7 @@ export function GroupInfoCard({
         )}
       </div>
 
-      <Separator className="opacity-60" />
+      <Separator />
 
       {/* Group Members List */}
       <div>
@@ -61,7 +61,7 @@ export function GroupInfoCard({
           <span className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground">
             Members ({contact.members?.length || 0})
           </span>
-          <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+          <span className="text-[10px] text-online font-medium">
             {contact.members?.filter((m) => m.isOnline).length || 1} online
           </span>
         </div>
@@ -107,7 +107,7 @@ export function GroupInfoCard({
                   <div className="relative flex size-6.5 shrink-0 items-center justify-center rounded-full bg-muted text-[10px] font-semibold">
                     {member.name.charAt(0)}
                     {member.isOnline && (
-                      <span className="absolute bottom-0 right-0 size-2 rounded-full bg-emerald-500 ring-1 ring-background" />
+                      <span className="absolute bottom-0 right-0 size-2 rounded-full bg-online ring-1 ring-background" />
                     )}
                   </div>
                   <div className="min-w-0">
@@ -129,11 +129,11 @@ export function GroupInfoCard({
       </div>
 
       {/* Group Exit Action */}
-      <Separator className="opacity-60" />
+      <Separator />
       <button
         type="button"
         onClick={handleLeaveGroup}
-        className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
+        className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
       >
         <IconLogout className="size-4" />
         <span>Exit Group</span>

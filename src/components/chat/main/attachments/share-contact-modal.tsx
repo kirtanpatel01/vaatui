@@ -44,9 +44,9 @@ export function ShareContactModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="p-0 overflow-hidden sm:max-w-sm gap-0 rounded-3xl border border-border/80 bg-background shadow-2xl flex flex-col max-h-[75vh]">
+      <DialogContent className="p-0 overflow-hidden sm:max-w-sm gap-0 flex flex-col max-h-[75vh]">
         {/* Header */}
-        <DialogHeader className="p-4 border-b bg-muted/30">
+        <DialogHeader className="p-4 border-b">
           <div className="flex items-center gap-2.5">
             <div className="flex size-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <IconUserPlus className="size-4" />

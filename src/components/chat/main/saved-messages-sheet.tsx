@@ -153,15 +153,15 @@ export function SavedMessagesSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-md p-0 flex flex-col h-full bg-background border-l border-border/80"
+        className="w-full sm:max-w-md p-0 flex flex-col h-full"
       >
         {/* Header */}
-        <SheetHeader className="p-4 border-b bg-muted/30 shrink-0">
+        <SheetHeader className="p-4 border-b shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               {isStarred ? (
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500">
-                  <IconStar className="size-4.5 fill-amber-500" />
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-starred/10 text-starred">
+                  <IconStar className="size-4.5 fill-starred" />
                 </div>
               ) : (
                 <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">

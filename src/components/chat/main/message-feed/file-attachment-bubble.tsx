@@ -28,15 +28,15 @@ export function FileAttachmentBubble({
       className={cn(
         "flex items-center gap-3 p-2.5 rounded-xl border transition-colors cursor-pointer select-none min-w-[220px] max-w-[280px]",
         isSentByMe
-          ? "bg-neutral-800/90 border-neutral-700/80 hover:bg-neutral-800 text-white"
-          : "bg-card border-border/70 hover:bg-muted/60 text-card-foreground"
+          ? "bg-chat-bubble-sent-foreground/10 border-chat-bubble-sent-foreground/20 hover:bg-chat-bubble-sent-foreground/15 text-chat-bubble-sent-foreground"
+          : "bg-muted/50 border-border/70 hover:bg-muted text-card-foreground"
       )}
     >
       <div
         className={cn(
           "flex size-10 shrink-0 flex-col items-center justify-center rounded-lg font-bold text-[10px] tracking-tight",
           isSentByMe
-            ? "bg-white/10 text-white"
+            ? "bg-chat-bubble-sent-foreground/15 text-chat-bubble-sent-foreground"
             : "bg-primary/10 text-primary"
         )}
       >
@@ -48,7 +48,7 @@ export function FileAttachmentBubble({
         <p
           className={cn(
             "text-xs font-semibold truncate leading-tight",
-            isSentByMe ? "text-white" : "text-foreground"
+            isSentByMe ? "text-chat-bubble-sent-foreground" : "text-foreground"
           )}
         >
           {fileName}
@@ -56,7 +56,7 @@ export function FileAttachmentBubble({
         <p
           className={cn(
             "text-[11px] mt-0.5",
-            isSentByMe ? "text-neutral-300" : "text-muted-foreground"
+            isSentByMe ? "text-chat-bubble-sent-foreground/75" : "text-muted-foreground"
           )}
         >
           {fileSize}
@@ -67,7 +67,7 @@ export function FileAttachmentBubble({
         className={cn(
           "flex size-7 shrink-0 items-center justify-center rounded-full transition-colors",
           isSentByMe
-            ? "bg-white/15 text-white hover:bg-white/25"
+            ? "bg-chat-bubble-sent-foreground/20 text-chat-bubble-sent-foreground hover:bg-chat-bubble-sent-foreground/30"
             : "bg-muted text-muted-foreground hover:text-foreground"
         )}
       >

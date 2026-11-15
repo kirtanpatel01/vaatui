@@ -21,7 +21,7 @@ export function MessageReplyPreview({
       className={cn(
         "group/reply relative flex items-start gap-2 rounded-xl px-2.5 py-1.5 text-xs transition-all cursor-pointer select-none border",
         isSentByMe
-          ? "bg-white/5 border-white/10 hover:bg-white/10 text-neutral-200"
+          ? "bg-chat-bubble-sent-foreground/10 border-chat-bubble-sent-foreground/15 hover:bg-chat-bubble-sent-foreground/20 text-chat-bubble-sent-foreground"
           : "bg-muted/60 border-border/70 hover:bg-muted text-foreground",
         className
       )}
@@ -30,7 +30,7 @@ export function MessageReplyPreview({
       <div
         className={cn(
           "w-0.5 self-stretch rounded-full shrink-0",
-          isSentByMe ? "bg-white/40" : "bg-primary/70"
+          isSentByMe ? "bg-chat-bubble-sent-foreground/60" : "bg-primary/70"
         )}
       />
 
@@ -39,13 +39,13 @@ export function MessageReplyPreview({
           <IconArrowBackUp
             className={cn(
               "size-3 shrink-0",
-              isSentByMe ? "text-neutral-400" : "text-primary"
+              isSentByMe ? "text-chat-bubble-sent-foreground/75" : "text-primary"
             )}
           />
           <span
             className={cn(
               "text-[11px] font-semibold tracking-tight truncate",
-              isSentByMe ? "text-neutral-200" : "text-primary"
+              isSentByMe ? "text-chat-bubble-sent-foreground font-semibold" : "text-primary"
             )}
           >
             {replyTo.senderName}
@@ -54,7 +54,7 @@ export function MessageReplyPreview({
         <p
           className={cn(
             "text-[11px] truncate mt-0.5 line-clamp-1",
-            isSentByMe ? "text-neutral-400" : "text-muted-foreground"
+            isSentByMe ? "text-chat-bubble-sent-foreground/70" : "text-muted-foreground"
           )}
         >
           {replyTo.text}

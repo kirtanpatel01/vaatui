@@ -78,8 +78,8 @@ export function MediaPreviewCard({
 
                   {/* Video Play Overlay */}
                   {isVideo && !isLastWithOverflow && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/25 text-white">
-                      <div className="flex size-5 items-center justify-center rounded-full bg-black/60 backdrop-blur-xs">
+                    <div className="absolute inset-0 flex items-center justify-center bg-background/30 text-foreground">
+                      <div className="flex size-5 items-center justify-center rounded-full bg-background/80 text-foreground backdrop-blur-xs">
                         <IconPlayerPlayFilled className="size-2.5 ml-0.5" />
                       </div>
                     </div>
@@ -87,7 +87,7 @@ export function MediaPreviewCard({
 
                   {/* "+N More" Overlay on 3rd Thumbnail */}
                   {isLastWithOverflow && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-2xs text-white font-semibold text-xs transition-colors hover:bg-black/50">
+                    <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-2xs text-foreground font-semibold text-xs transition-colors hover:bg-background/70">
                       +{remainingCount}
                     </div>
                   )}

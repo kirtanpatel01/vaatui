@@ -337,7 +337,7 @@ export function MediaLightboxModal({
             aria-label={isStarred ? "Unstar message" : "Star message"}
           >
             {isStarred ? (
-              <IconStarFilled className="size-4.5 text-amber-500" />
+              <IconStarFilled className="size-4.5 text-starred" />
             ) : (
               <IconStar className="size-4.5" />
             )}
@@ -496,8 +496,8 @@ export function MediaLightboxModal({
                   )}
 
                   {itemIsVideo && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                      <IconPlayerPlayFilled className="size-2 text-white" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-background/40">
+                      <IconPlayerPlayFilled className="size-2 text-foreground" />
                     </div>
                   )}
                 </button>

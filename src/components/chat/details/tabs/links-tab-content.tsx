@@ -28,7 +28,7 @@ export interface LinksTabContentProps {
 function renderDomainIcon(domain: string) {
   const d = domain.toLowerCase()
   if (d.includes("github")) return <IconBrandGithub className="size-4 text-foreground" />
-  if (d.includes("figma")) return <IconBrandFigma className="size-4 text-purple-400" />
+  if (d.includes("figma")) return <IconBrandFigma className="size-4 text-primary" />
   return <IconWorld className="size-4 text-muted-foreground" />
 }
 
@@ -91,7 +91,7 @@ export function LinksTabContent({ links }: LinksTabContentProps) {
                   title="Copy URL"
                 >
                   {copiedKey === linkItem.id ? (
-                    <IconCheck className="size-3 text-emerald-500" />
+                    <IconCheck className="size-3 text-online" />
                   ) : (
                     <IconCopy className="size-3" />
                   )}

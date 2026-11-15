@@ -134,7 +134,7 @@ export function ChatHeaderOptionsMenu({
           <DropdownMenuItem onClick={handleMuteToggle} className="cursor-pointer">
             {isMuted ? (
               <>
-                <IconBell className="size-4 text-emerald-500" />
+                <IconBell className="size-4 text-online" />
                 <span>Unmute notifications</span>
               </>
             ) : (
@@ -147,7 +147,7 @@ export function ChatHeaderOptionsMenu({
 
           {/* Starred messages */}
           <DropdownMenuItem onClick={onOpenStarredModal} className="cursor-pointer">
-            <IconStar className="size-4 text-amber-500" />
+            <IconStar className="size-4 text-starred" />
             <span className="flex-1">Starred messages</span>
             {starredCount > 0 && (
               <span className="text-[11px] tabular-nums text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">

@@ -113,7 +113,7 @@ export function ForwardMessageDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         showCloseButton={false}
-        className="max-w-lg p-0 gap-0 overflow-hidden rounded-2xl border border-border/80 bg-popover/95 shadow-2xl backdrop-blur-xl"
+        className="max-w-lg p-0 gap-0 overflow-hidden"
       >
         {/* Spotlight Top Bar: Search Input */}
         <div className="flex items-center gap-3 px-4 py-3 border-b border-border/60">

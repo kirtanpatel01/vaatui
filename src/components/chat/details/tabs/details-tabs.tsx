@@ -34,10 +34,10 @@ export function DetailsTabs({
       )}
 
       <Tabs defaultValue={defaultTab} className="w-full flex-1 flex flex-col min-h-0">
-        <TabsList className="grid grid-cols-3 h-8 p-0.5 bg-muted/60 shrink-0">
+        <TabsList className="grid grid-cols-3 shrink-0">
           <TabsTrigger
             value="photos"
-            className="text-[11px] py-1 px-1 data-active:shadow-xs flex items-center justify-center gap-1"
+            className="flex items-center justify-center gap-1"
             title="Photos and Videos"
           >
             <IconPhoto className="size-3.5 shrink-0" />
@@ -47,7 +47,7 @@ export function DetailsTabs({
 
           <TabsTrigger
             value="files"
-            className="text-[11px] py-1 px-1 data-active:shadow-xs flex items-center justify-center gap-1"
+            className="flex items-center justify-center gap-1"
             title="Files"
           >
             <IconFile className="size-3.5 shrink-0" />
@@ -57,7 +57,7 @@ export function DetailsTabs({
 
           <TabsTrigger
             value="links"
-            className="text-[11px] py-1 px-1 data-active:shadow-xs flex items-center justify-center gap-1"
+            className="flex items-center justify-center gap-1"
             title="Links"
           >
             <IconLink className="size-3.5 shrink-0" />

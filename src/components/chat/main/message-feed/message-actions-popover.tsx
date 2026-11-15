@@ -138,7 +138,7 @@ export function MessageActionButtons({
           side="top"
           align={isSentByMe ? "end" : "start"}
           sideOffset={6}
-          className="w-40 rounded-xl border border-border/80 bg-popover/95 p-1 shadow-xl backdrop-blur-md select-none flex flex-col gap-0.5"
+          className="w-44 p-1.5 select-none flex flex-col gap-0.5"
         >
           <button
             type="button"
@@ -146,9 +146,9 @@ export function MessageActionButtons({
               setMoreOpen(false)
               onReply?.()
             }}
-            className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-popover-foreground hover:bg-muted transition-colors cursor-pointer"
+            className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs text-popover-foreground hover:bg-muted transition-colors cursor-pointer"
           >
-            <IconArrowBackUp className="size-3.5 text-muted-foreground" />
+            <IconArrowBackUp className="size-4 text-muted-foreground" />
             <span>Reply</span>
           </button>
 
@@ -160,9 +160,9 @@ export function MessageActionButtons({
                 setMoreOpen(false)
                 onCopy()
               }}
-              className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-popover-foreground hover:bg-muted transition-colors cursor-pointer"
+              className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs text-popover-foreground hover:bg-muted transition-colors cursor-pointer"
             >
-              <IconCopy className="size-3.5 text-muted-foreground" />
+              <IconCopy className="size-4 text-muted-foreground" />
               <span>{contentType === "photo" ? "Copy image" : "Copy text"}</span>
             </button>
           )}
@@ -173,9 +173,9 @@ export function MessageActionButtons({
               setMoreOpen(false)
               onForward?.()
             }}
-            className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-popover-foreground hover:bg-muted transition-colors cursor-pointer"
+            className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs text-popover-foreground hover:bg-muted transition-colors cursor-pointer"
           >
-            <IconArrowForwardUp className="size-3.5 text-muted-foreground" />
+            <IconArrowForwardUp className="size-4 text-muted-foreground" />
             <span>Forward</span>
           </button>
 
@@ -185,9 +185,9 @@ export function MessageActionButtons({
               setMoreOpen(false)
               onStar?.()
             }}
-            className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-popover-foreground hover:bg-muted transition-colors cursor-pointer"
+            className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs text-popover-foreground hover:bg-muted transition-colors cursor-pointer"
           >
-            <IconStar className={cn("size-3.5", isStarred ? "text-amber-500 fill-amber-500" : "text-muted-foreground")} />
+            <IconStar className={cn("size-4", isStarred ? "text-starred fill-starred" : "text-muted-foreground")} />
             <span>{isStarred ? "Unstar" : "Star"}</span>
           </button>
 
@@ -197,13 +197,13 @@ export function MessageActionButtons({
               setMoreOpen(false)
               onPin?.()
             }}
-            className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-popover-foreground hover:bg-muted transition-colors cursor-pointer"
+            className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs text-popover-foreground hover:bg-muted transition-colors cursor-pointer"
           >
-            <IconPin className={cn("size-3.5", isPinned ? "text-primary fill-primary" : "text-muted-foreground")} />
+            <IconPin className={cn("size-4", isPinned ? "text-primary fill-primary" : "text-muted-foreground")} />
             <span>{isPinned ? "Unpin" : "Pin"}</span>
           </button>
 
-          <div className="h-px bg-border/40 my-0.5" />
+          <div className="h-px bg-border/40 my-1 -mx-0.5" />
 
           <button
             type="button"
@@ -211,9 +211,9 @@ export function MessageActionButtons({
               setMoreOpen(false)
               onDelete?.()
             }}
-            className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
+            className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
           >
-            <IconTrash className="size-3.5" />
+            <IconTrash className="size-4" />
             <span>Delete</span>
           </button>
         </PopoverContent>

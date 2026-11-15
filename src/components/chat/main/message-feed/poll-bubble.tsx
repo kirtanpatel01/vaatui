@@ -17,7 +17,7 @@ export function PollBubble({ poll, isSentByMe, onVote }: PollBubbleProps) {
         <h3
           className={cn(
             "text-sm font-semibold leading-snug",
-            isSentByMe ? "text-white" : "text-foreground"
+            isSentByMe ? "text-chat-bubble-sent-foreground" : "text-foreground"
           )}
         >
           {poll.question}
@@ -27,7 +27,7 @@ export function PollBubble({ poll, isSentByMe, onVote }: PollBubbleProps) {
       <p
         className={cn(
           "text-[11px]",
-          isSentByMe ? "text-neutral-400" : "text-muted-foreground"
+          isSentByMe ? "text-chat-bubble-sent-foreground/75" : "text-muted-foreground"
         )}
       >
         {poll.allowMultiple ? "Select one or more" : "Select one"} • {totalVotes} {totalVotes === 1 ? "vote" : "votes"}
@@ -49,10 +49,10 @@ export function PollBubble({ poll, isSentByMe, onVote }: PollBubbleProps) {
                 "relative flex w-full flex-col overflow-hidden rounded-xl border p-2.5 text-left transition-all cursor-pointer group",
                 hasVoted
                   ? isSentByMe
-                    ? "border-primary bg-primary/25 shadow-xs"
+                    ? "border-chat-bubble-sent-foreground/40 bg-chat-bubble-sent-foreground/25 shadow-xs"
                     : "border-primary/80 bg-primary/10 shadow-xs"
                   : isSentByMe
-                    ? "border-neutral-700/80 bg-neutral-800/80 hover:bg-neutral-800 hover:border-neutral-600"
+                    ? "border-chat-bubble-sent-foreground/20 bg-chat-bubble-sent-foreground/10 hover:bg-chat-bubble-sent-foreground/15 hover:border-chat-bubble-sent-foreground/30"
                     : "border-border/70 bg-muted/40 hover:bg-muted/70 hover:border-border"
               )}
             >
@@ -61,8 +61,8 @@ export function PollBubble({ poll, isSentByMe, onVote }: PollBubbleProps) {
                 className={cn(
                   "absolute inset-y-0 left-0 transition-all duration-300 pointer-events-none",
                   hasVoted
-                    ? isSentByMe ? "bg-primary/35" : "bg-primary/20"
-                    : isSentByMe ? "bg-white/10" : "bg-muted-foreground/10"
+                    ? isSentByMe ? "bg-chat-bubble-sent-foreground/30" : "bg-primary/20"
+                    : isSentByMe ? "bg-chat-bubble-sent-foreground/15" : "bg-muted-foreground/10"
                 )}
                 style={{ width: `${percentage}%` }}
               />
@@ -75,7 +75,7 @@ export function PollBubble({ poll, isSentByMe, onVote }: PollBubbleProps) {
                       hasVoted
                         ? "border-primary bg-primary text-primary-foreground"
                         : isSentByMe
-                          ? "border-neutral-500 group-hover:border-white"
+                          ? "border-chat-bubble-sent-foreground/40 group-hover:border-chat-bubble-sent-foreground"
                           : "border-muted-foreground/40 group-hover:border-foreground"
                     )}
                   >
@@ -84,7 +84,7 @@ export function PollBubble({ poll, isSentByMe, onVote }: PollBubbleProps) {
                   <span
                     className={cn(
                       "truncate",
-                      isSentByMe ? "text-white" : "text-foreground"
+                      isSentByMe ? "text-chat-bubble-sent-foreground" : "text-foreground"
                     )}
                   >
                     {option.text}
@@ -94,7 +94,7 @@ export function PollBubble({ poll, isSentByMe, onVote }: PollBubbleProps) {
                 <span
                   className={cn(
                     "text-[11px] tabular-nums ml-2 shrink-0 font-medium",
-                    isSentByMe ? "text-neutral-300" : "text-muted-foreground"
+                    isSentByMe ? "text-chat-bubble-sent-foreground/80" : "text-muted-foreground"
                   )}
                 >
                   {percentage}%

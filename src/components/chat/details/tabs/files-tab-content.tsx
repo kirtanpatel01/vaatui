@@ -16,14 +16,14 @@ function renderFileIcon(fileName?: string) {
   const ext = fileName?.split(".").pop()?.toLowerCase() || ""
   if (ext === "pdf") {
     return (
-      <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-red-500/10 text-red-500 font-bold text-[10px]">
+      <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-destructive/10 text-destructive font-bold text-[10px]">
         <IconFileTypePdf className="size-5" />
       </div>
     )
   }
   if (ext === "zip" || ext === "fig" || ext === "tar") {
     return (
-      <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500 font-bold text-[10px]">
+      <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-starred/10 text-starred font-bold text-[10px]">
         <IconArchive className="size-5" />
       </div>
     )

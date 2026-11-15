@@ -210,8 +210,8 @@ export function VoiceNoteBubble({
       className={cn(
         "flex items-center gap-3 rounded-2xl px-3.5 py-2.5 min-w-[230px] sm:min-w-[270px] select-none shadow-xs transition-colors",
         isSentByMe
-          ? "bg-neutral-900 text-white dark:bg-neutral-800"
-          : "bg-muted/70 text-foreground"
+          ? "bg-chat-bubble-sent text-chat-bubble-sent-foreground border border-border/80"
+          : "bg-chat-bubble-received text-chat-bubble-received-foreground border border-border/60"
       )}
     >
       {/* Play / Pause Button */}
@@ -221,7 +221,7 @@ export function VoiceNoteBubble({
         className={cn(
           "flex size-8 shrink-0 items-center justify-center rounded-full transition-transform active:scale-95 cursor-pointer shadow-xs",
           isSentByMe
-            ? "bg-white text-black hover:bg-neutral-200"
+            ? "bg-chat-bubble-sent-foreground text-chat-bubble-sent hover:opacity-90"
             : "bg-foreground text-background hover:opacity-90"
         )}
         aria-label={isPlaying ? "Pause audio" : "Play audio"}
@@ -249,10 +249,10 @@ export function VoiceNoteBubble({
                 "w-0.75 rounded-full transition-all duration-75",
                 isPlayed
                   ? isSentByMe
-                    ? "bg-white"
+                    ? "bg-chat-bubble-sent-foreground"
                     : "bg-primary"
                   : isSentByMe
-                    ? "bg-neutral-500/70 group-hover/wave:bg-neutral-400"
+                    ? "bg-chat-bubble-sent-foreground/35 group-hover/wave:bg-chat-bubble-sent-foreground/60"
                     : "bg-muted-foreground/35 group-hover/wave:bg-muted-foreground/60"
               )}
             />
@@ -272,7 +272,7 @@ export function VoiceNoteBubble({
         className={cn(
           "rounded-md px-1.5 py-0.5 text-[10px] font-semibold tabular-nums shrink-0 cursor-pointer transition-all hover:scale-105 active:scale-95",
           isSentByMe
-            ? "bg-white/15 text-white hover:bg-white/25"
+            ? "bg-chat-bubble-sent-foreground/15 text-chat-bubble-sent-foreground hover:bg-chat-bubble-sent-foreground/25"
             : "bg-background/80 text-foreground border border-border/60 hover:bg-background"
         )}
         title="Toggle playback speed"

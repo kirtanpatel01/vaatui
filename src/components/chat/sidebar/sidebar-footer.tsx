@@ -42,7 +42,7 @@ export function SidebarFooter({ className, onOpenSettings }: SidebarFooterProps)
                 .join("")}
             </span>
           )}
-          <span className="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full bg-emerald-500 ring-2 ring-background" />
+          <span className="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full bg-online ring-2 ring-background" />
         </div>
 
         {/* User Info */}

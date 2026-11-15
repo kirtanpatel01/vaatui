@@ -410,7 +410,7 @@ export function GifPicker({ open, onOpenChange, onSelectGif, children }: GifPick
         side="top"
         align="end"
         sideOffset={10}
-        className="w-[320px] sm:w-[360px] p-0 rounded-2xl shadow-2xl border border-border/80 bg-background/95 backdrop-blur-md overflow-hidden flex flex-col max-h-[420px]"
+        className="w-[320px] sm:w-[360px] p-0 overflow-hidden flex flex-col max-h-[420px]"
       >
         {/* Search header */}
         <div className="p-3 border-b space-y-2 bg-muted/20">
@@ -482,8 +482,8 @@ export function GifPicker({ open, onOpenChange, onSelectGif, children }: GifPick
                     loading="lazy"
                     className="size-full object-cover transition-transform duration-200 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-1.5 text-left">
-                    <span className="text-[10px] text-white truncate font-medium">
+                  <div className="absolute inset-0 bg-background/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-1.5 text-left">
+                    <span className="text-[10px] text-foreground truncate font-medium">
                       {gif.title}
                     </span>
                   </div>

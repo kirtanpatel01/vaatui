@@ -28,7 +28,7 @@ function ChatLayout({ className }: ChatLayoutProps) {
           <ChatSidebar onSelectContact={setActiveContact} />
         </ResizablePanel>
 
-        <ResizableHandle className="relative z-10 -mx-1 w-2 cursor-col-resize bg-transparent after:hidden hover:bg-transparent focus-visible:ring-0 focus-visible:outline-hidden" />
+        <ResizableHandle />
 
         <ResizablePanel defaultSize="80%" className="min-h-0 min-w-0">
           <div className="flex h-full min-h-0 w-full min-w-0 gap-3 pl-3">

@@ -211,7 +211,7 @@ export function UserSettingsSheet({ open, onOpenChange }: UserSettingsSheetProps
                 ) : (
                   <span>{currentUser.name.charAt(0)}</span>
                 )}
-                <span className="absolute bottom-1 right-1 size-3 rounded-full bg-emerald-500 ring-2 ring-card" />
+                <span className="absolute bottom-1 right-1 size-3 rounded-full bg-online ring-2 ring-card" />
               </div>
 
               <h4
@@ -268,14 +268,14 @@ export function UserSettingsSheet({ open, onOpenChange }: UserSettingsSheetProps
               <button
                 type="button"
                 onClick={() => setShowLogoutAlert(true)}
-                className="w-full flex items-center gap-3 p-3 text-left hover:bg-red-500/10 transition-colors text-red-500 cursor-pointer group"
+                className="w-full flex items-center gap-3 p-3 text-left hover:bg-destructive/10 transition-colors text-destructive cursor-pointer group"
               >
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-red-500/10 text-red-500">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
                   <IconLogout className="size-4" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <span className="text-xs font-medium block">Log out</span>
-                  <span className="text-[10px] text-red-500/70 block">
+                  <span className="text-[10px] text-destructive/70 block">
                     Sign out of this session
                   </span>
                 </div>
@@ -297,8 +297,8 @@ export function UserSettingsSheet({ open, onOpenChange }: UserSettingsSheetProps
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
+              variant="destructive"
               onClick={handleLogout}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Log out
             </AlertDialogAction>

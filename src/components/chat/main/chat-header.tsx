@@ -140,15 +140,15 @@ export function ChatHeader({
           </div>
           <div className="flex items-center gap-1.5 mt-0.5">
             {contact.isOnline && (
-              <span className="size-2 rounded-full bg-emerald-500 inline-block shrink-0" />
+              <span className="size-2 rounded-full bg-online inline-block shrink-0" />
             )}
             <p className="text-xs text-muted-foreground truncate leading-none">
               {contact.lastMessage.isTyping ? (
-                <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                <span className="text-online font-medium">
                   Typing...
                 </span>
               ) : contact.isOnline ? (
-                <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                <span className="text-online font-medium">
                   Online
                 </span>
               ) : (
