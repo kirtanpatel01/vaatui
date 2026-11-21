@@ -2,19 +2,19 @@ import { cn } from "cn"
 import ChatSidebar from "./sidebar/chat-sidebar"
 import ChatMain from "./chat-main"
 import ChatDetails from "./chat-details"
-import { useChat } from "./chat-provider"
+import { useChatStore } from "@/stores/chat-store"
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
 
-interface ChatLayoutProps {
+export interface ChatLayoutProps {
   className?: string
 }
 
-function ChatLayout({ className }: ChatLayoutProps) {
-  const { chatDetailsOpen, setActiveContact } = useChat()
+export function ChatLayout({ className }: ChatLayoutProps) {
+  const chatDetailsOpen = useChatStore((s) => s.chatDetailsOpen)
 
   return (
     <div className={cn("flex h-full min-h-0 w-full", className)}>
@@ -25,7 +25,7 @@ function ChatLayout({ className }: ChatLayoutProps) {
           maxSize="35%"
           className="min-h-0 min-w-0"
         >
-          <ChatSidebar onSelectContact={setActiveContact} />
+          <ChatSidebar />
         </ResizablePanel>
 
         <ResizableHandle />

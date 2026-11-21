@@ -16,7 +16,7 @@ import AttachmentMenu from "./attachments/attachment-menu"
 import VoiceRecorder from "./attachments/voice-recorder"
 import PendingAttachmentPreview from "./attachments/pending-attachment-preview"
 import MessageReplyBar from "./message-reply-bar"
-import { useChat } from "@/components/chat/chat-provider"
+import { useChatStore, useActiveContact } from "@/stores/chat-store"
 import { type MessageAttachment } from "@/data/mock-messages"
 import { type UserProfile, type GroupMember } from "@/data/mock-contacts"
 import { cn } from "cn"
@@ -42,7 +42,9 @@ export function ChatInputBar({
   onRecordVoice,
   ...props
 }: ChatInputBarProps) {
-  const { contacts, activeContact, enterIsSend } = useChat()
+  const contacts = useChatStore((s) => s.contacts)
+  const enterIsSend = useChatStore((s) => s.enterIsSend)
+  const activeContact = useActiveContact()
   const isGroup = activeContact?.type === "group"
 
   const [text, setText] = React.useState("")

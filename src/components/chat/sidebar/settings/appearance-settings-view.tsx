@@ -7,7 +7,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "@/components/ui/toast"
-import { useChat } from "@/components/chat/chat-provider"
+import { useChatStore } from "@/stores/chat-store"
 import { useTheme } from "@/components/theme-provider"
 import { cn } from "cn"
 
@@ -16,7 +16,8 @@ export interface AppearanceSettingsViewProps {
 }
 
 export function AppearanceSettingsView({ onBack }: AppearanceSettingsViewProps) {
-  const { enterIsSend, setEnterIsSend } = useChat()
+  const enterIsSend = useChatStore((s) => s.enterIsSend)
+  const setEnterIsSend = useChatStore((s) => s.setEnterIsSend)
   const { theme, setTheme } = useTheme()
 
   const handleThemeChange = (newTheme: "light" | "dark" | "system") => {

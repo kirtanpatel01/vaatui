@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react"
-import { useChat } from "@/components/chat/chat-provider"
+import { useChatStore, useActiveContact, useActiveMessages } from "@/stores/chat-store"
 import { DetailsHeader } from "./details/details-header"
 import { DetailsHero } from "./details/details-hero"
 import { MediaPreviewCard } from "./details/media-preview-card"
@@ -17,18 +17,16 @@ export interface ChatDetailsProps {
 }
 
 export function ChatDetails({ className }: ChatDetailsProps) {
-  const {
-    activeContact,
-    contacts,
-    messages,
-    setActiveContact,
-    setChatDetailsOpen,
-    isMuted,
-    toggleMute,
-    isBlocked,
-    toggleBlock,
-    clearMessages,
-  } = useChat()
+  const activeContact = useActiveContact()
+  const messages = useActiveMessages()
+  const contacts = useChatStore((s) => s.contacts)
+  const setActiveContact = useChatStore((s) => s.setActiveContact)
+  const setChatDetailsOpen = useChatStore((s) => s.setChatDetailsOpen)
+  const toggleMute = useChatStore((s) => s.toggleMute)
+  const toggleBlock = useChatStore((s) => s.toggleBlock)
+  const clearMessages = useChatStore((s) => s.clearMessages)
+  const isBlocked = useChatStore((s) => s.blockedContactIds.has(activeContact.id))
+  const isMuted = Boolean(activeContact.isMuted)
 
   const [view, setView] = useState<"overview" | "media">("overview")
   const [activeMediaTab, setActiveMediaTab] = useState<"photos" | "files" | "links">("photos")
@@ -154,7 +152,7 @@ export function ChatDetails({ className }: ChatDetailsProps) {
           <DetailsHero
             contact={activeContact}
             isMuted={isMuted}
-            onToggleMute={toggleMute}
+            onToggleMute={() => toggleMute(activeContact.id)}
           />
 
           {/* WhatsApp Web Style: Prominent Media & Docs Preview Card */}
@@ -175,8 +173,8 @@ export function ChatDetails({ className }: ChatDetailsProps) {
               contact={activeContact}
               mutualGroups={mutualGroups}
               isBlocked={isBlocked}
-              onToggleBlock={toggleBlock}
-              onClearMessages={clearMessages}
+              onToggleBlock={() => toggleBlock(activeContact.id)}
+              onClearMessages={() => clearMessages(activeContact.id)}
               onSelectGroup={setActiveContact}
             />
           )}

@@ -14,7 +14,7 @@ import {
   IconChevronRight,
   IconPlayerPlayFilled,
 } from "@tabler/icons-react"
-import { useChat } from "@/components/chat/chat-provider"
+import { useChatStore, useActiveContact, useActiveMessages } from "@/stores/chat-store"
 import ForwardMessageDialog from "@/components/chat/main/forward-message-dialog"
 import { toast } from "@/components/ui/toast"
 import { type ChatMessage } from "@/data/mock-messages"
@@ -33,7 +33,10 @@ export function MediaLightboxModal({
   onClose,
   onSelectMedia,
 }: MediaLightboxModalProps) {
-  const { activeContact, messages, toggleStar, forwardMessage } = useChat()
+  const activeContact = useActiveContact()
+  const messages = useActiveMessages()
+  const toggleStar = useChatStore((s) => s.toggleStar)
+  const forwardMessage = useChatStore((s) => s.forwardMessage)
 
   const [zoom, setZoom] = useState(1)
   const [rotation, setRotation] = useState(0)

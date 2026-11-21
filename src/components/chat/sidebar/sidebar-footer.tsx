@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { IconSettings } from "@tabler/icons-react"
-import { useChat } from "@/components/chat/chat-provider"
+import { useChatStore } from "@/stores/chat-store"
 import { cn } from "cn"
 
 export interface SidebarFooterProps {
@@ -9,7 +9,7 @@ export interface SidebarFooterProps {
 }
 
 export function SidebarFooter({ className, onOpenSettings }: SidebarFooterProps) {
-  const { currentUser } = useChat()
+  const currentUser = useChatStore((s) => s.currentUser)
 
   return (
     <div

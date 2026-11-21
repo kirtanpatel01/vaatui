@@ -1,14 +1,16 @@
 import { IconArrowLeft, IconUserCheck, IconShieldCheck, IconLock } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/toast"
-import { useChat } from "@/components/chat/chat-provider"
+import { useChatStore } from "@/stores/chat-store"
 
 export interface PrivacySettingsViewProps {
   onBack: () => void
 }
 
 export function PrivacySettingsView({ onBack }: PrivacySettingsViewProps) {
-  const { contacts, blockedContactIds, unblockContact } = useChat()
+  const contacts = useChatStore((s) => s.contacts)
+  const blockedContactIds = useChatStore((s) => s.blockedContactIds)
+  const unblockContact = useChatStore((s) => s.unblockContact)
 
   const blockedContactsList = contacts.filter((c) => blockedContactIds.has(c.id))
 

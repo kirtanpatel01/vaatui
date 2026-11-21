@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useChat } from "@/components/chat/chat-provider"
+import { useChatStore, useActiveContact, useActiveMessages } from "@/stores/chat-store"
 import ChatHeader from "./main/chat-header"
 import MessageFeed from "./main/message-feed"
 import ChatInputBar from "./main/chat-input-bar"
@@ -16,18 +16,17 @@ export interface ChatMainProps {
 }
 
 export function ChatMain({ className, showScrollbar = false }: ChatMainProps) {
-  const {
-    activeContact,
-    messages,
-    sendMessage,
-    toggleReaction,
-    votePoll,
-    forwardMessage,
-    toggleStar,
-    togglePin,
-    deleteMessage,
-    setChatDetailsOpen,
-  } = useChat()
+  const activeContact = useActiveContact()
+  const messages = useActiveMessages()
+  const sendMessage = useChatStore((s) => s.sendMessage)
+  const toggleReaction = useChatStore((s) => s.toggleReaction)
+  const votePoll = useChatStore((s) => s.votePoll)
+  const forwardMessage = useChatStore((s) => s.forwardMessage)
+  const toggleStar = useChatStore((s) => s.toggleStar)
+  const togglePin = useChatStore((s) => s.togglePin)
+  const deleteMessage = useChatStore((s) => s.deleteMessage)
+  const toggleChatDetails = useChatStore((s) => s.toggleChatDetails)
+
   const [replyingTo, setReplyingTo] = React.useState<ChatMessage | null>(null)
   const [forwardingMessage, setForwardingMessage] = React.useState<ChatMessage | null>(null)
   const [forwardDialogOpen, setForwardDialogOpen] = React.useState(false)
@@ -107,7 +106,6 @@ export function ChatMain({ className, showScrollbar = false }: ChatMainProps) {
     const el = document.getElementById(`message-${messageId}`)
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "center" })
-      // Brief highlight flash effect
       el.classList.add("ring-2", "ring-primary", "rounded-2xl", "transition-all")
       setTimeout(() => {
         el.classList.remove("ring-2", "ring-primary")
@@ -162,7 +160,7 @@ export function ChatMain({ className, showScrollbar = false }: ChatMainProps) {
         searchMatchIndex={currentMatchIndex}
         onNextMatch={handleNextMatch}
         onPrevMatch={handlePrevMatch}
-        onToggleDetails={() => setChatDetailsOpen((prev) => !prev)}
+        onToggleDetails={toggleChatDetails}
         onOpenStarredModal={() => setSavedModalType("starred")}
         onOpenPinnedModal={() => setSavedModalType("pinned")}
       />

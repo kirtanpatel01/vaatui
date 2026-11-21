@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/toast"
-import { useChat } from "@/components/chat/chat-provider"
+import { useChatStore } from "@/stores/chat-store"
 
 export interface ProfileSettingsViewProps {
   onBack: () => void
@@ -19,7 +19,8 @@ const PRESET_THOUGHTS = [
 ]
 
 export function ProfileSettingsView({ onBack }: ProfileSettingsViewProps) {
-  const { currentUser, updateCurrentUser } = useChat()
+  const currentUser = useChatStore((s) => s.currentUser)
+  const updateCurrentUser = useChatStore((s) => s.updateCurrentUser)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [name, setName] = useState(currentUser.name)

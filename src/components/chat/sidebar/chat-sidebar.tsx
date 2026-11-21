@@ -6,22 +6,28 @@ import SidebarFooter from "./sidebar-footer"
 import CreateTabSheet from "./header/create-tab-sheet"
 import ArchivedChatsSheet from "./archived-chats-sheet"
 import UserSettingsSheet from "./settings/user-settings-sheet"
-import { useChat } from "@/components/chat/chat-provider"
+import { useChatStore, useActiveContact } from "@/stores/chat-store"
 import { type FilterTabItem, DEFAULT_FILTER_TABS } from "./header/filter-tabs"
 import { type UserProfile } from "@/data/mock-contacts"
 
-interface ChatSidebarProps {
+export interface ChatSidebarProps {
   className?: string
   showScrollbar?: boolean
   onSelectContact?: (contact: UserProfile) => void
 }
 
-function ChatSidebar({
+export function ChatSidebar({
   className,
   showScrollbar = false,
   onSelectContact,
 }: ChatSidebarProps) {
-  const { contacts, setContacts, activeContact, setActiveContact } = useChat()
+  const contacts = useChatStore((s) => s.contacts)
+  const setContacts = useChatStore((s) => s.setContacts)
+  const updateContact = useChatStore((s) => s.updateContact)
+  const deleteChat = useChatStore((s) => s.deleteChat)
+  const setActiveContact = useChatStore((s) => s.setActiveContact)
+  const activeContact = useActiveContact()
+
   const [tabs, setTabs] = React.useState<FilterTabItem[]>(DEFAULT_FILTER_TABS)
   const [activeTab, setActiveTab] = React.useState<string>("all")
   const [isSheetOpen, setIsSheetOpen] = React.useState(false)
@@ -49,10 +55,8 @@ function ChatSidebar({
     const newId = name.toLowerCase().replace(/\s+/g, "-")
     const newTab: FilterTabItem = { id: newId, label: name }
 
-    // Add new tab to tabs list
     setTabs((prev) => [...prev, newTab])
 
-    // Update selected contacts so they belong to this new tab
     if (selectedContactIds.length > 0) {
       setContacts((prev) =>
         prev.map((c) =>
@@ -63,18 +67,7 @@ function ChatSidebar({
       )
     }
 
-    // Automatically focus the newly created tab
     setActiveTab(newId)
-  }
-
-  const handleUpdateContact = (updated: UserProfile) => {
-    setContacts((prev) =>
-      prev.map((c) => (c.id === updated.id ? updated : c))
-    )
-  }
-
-  const handleDeleteChat = (contactId: string) => {
-    setContacts((prev) => prev.filter((c) => c.id !== contactId))
   }
 
   return (
@@ -101,8 +94,8 @@ function ChatSidebar({
           onSelectContact?.(c)
           setActiveContact(c)
         }}
-        onUpdateContact={handleUpdateContact}
-        onDeleteChat={handleDeleteChat}
+        onUpdateContact={updateContact}
+        onDeleteChat={deleteChat}
       />
 
       <SidebarFooter onOpenSettings={() => setIsSettingsOpen(true)} />
@@ -119,9 +112,12 @@ function ChatSidebar({
         onOpenChange={setIsArchivedOpen}
         contacts={contacts}
         showScrollbar={showScrollbar}
-        onSelectContact={onSelectContact}
-        onUpdateContact={handleUpdateContact}
-        onDeleteChat={handleDeleteChat}
+        onSelectContact={(c) => {
+          onSelectContact?.(c)
+          setActiveContact(c)
+        }}
+        onUpdateContact={updateContact}
+        onDeleteChat={deleteChat}
       />
 
       <UserSettingsSheet

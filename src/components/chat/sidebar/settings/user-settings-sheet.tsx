@@ -22,7 +22,7 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog"
 import { toast } from "@/components/ui/toast"
-import { useChat } from "@/components/chat/chat-provider"
+import { useChatStore } from "@/stores/chat-store"
 import { ProfileSettingsView } from "./profile-settings-view"
 import { AppearanceSettingsView } from "./appearance-settings-view"
 import { PrivacySettingsView } from "./privacy-settings-view"
@@ -48,7 +48,8 @@ interface MenuItem {
 }
 
 export function UserSettingsSheet({ open, onOpenChange }: UserSettingsSheetProps) {
-  const { currentUser, blockedContactIds } = useChat()
+  const currentUser = useChatStore((s) => s.currentUser)
+  const blockedContactIds = useChatStore((s) => s.blockedContactIds)
 
   const [view, setView] = useState<SettingsView>("main")
   const [searchQuery, setSearchQuery] = useState("")

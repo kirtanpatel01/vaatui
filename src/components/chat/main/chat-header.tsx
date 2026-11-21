@@ -6,7 +6,7 @@ import {
 } from "@tabler/icons-react"
 import { type UserProfile } from "@/data/mock-contacts"
 import { type ChatMessage } from "@/data/mock-messages"
-import { useChat } from "@/components/chat/chat-provider"
+import { useChatStore } from "@/stores/chat-store"
 import { ChatHeaderOptionsMenu } from "./chat-header-options-menu"
 import { ChatHeaderSearch } from "./chat-header-search"
 import { ChatAvatar } from "@/components/chat/ui/chat-avatar"
@@ -46,15 +46,13 @@ export function ChatHeader({
   onOpenPinnedModal,
   ...props
 }: ChatHeaderProps) {
-  const {
-    chatDetailsOpen,
-    setChatDetailsOpen,
-    isMuted,
-    toggleMute,
-    isBlocked,
-    toggleBlock,
-    clearMessages,
-  } = useChat()
+  const chatDetailsOpen = useChatStore((s) => s.chatDetailsOpen)
+  const setChatDetailsOpen = useChatStore((s) => s.setChatDetailsOpen)
+  const toggleMute = useChatStore((s) => s.toggleMute)
+  const toggleBlock = useChatStore((s) => s.toggleBlock)
+  const clearMessages = useChatStore((s) => s.clearMessages)
+  const isBlocked = useChatStore((s) => contact ? s.blockedContactIds.has(contact.id) : false)
+  const isMuted = Boolean(contact?.isMuted)
 
   if (!contact) {
     return (
@@ -153,9 +151,9 @@ export function ChatHeader({
           isBlocked={isBlocked}
           starredCount={messages.filter((m) => m.isStarred).length}
           pinnedCount={messages.filter((m) => m.isPinned).length}
-          onToggleMute={toggleMute}
-          onToggleBlock={toggleBlock}
-          onClearMessages={clearMessages}
+          onToggleMute={() => toggleMute(contact.id)}
+          onToggleBlock={() => toggleBlock(contact.id)}
+          onClearMessages={() => clearMessages(contact.id)}
           onOpenStarredModal={() => onOpenStarredModal?.()}
           onOpenPinnedModal={() => onOpenPinnedModal?.()}
         />
