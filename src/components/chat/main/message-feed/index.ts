@@ -1,5 +1,6 @@
 export { MessageFeed, type MessageFeedProps } from "./message-feed"
 export { MessageItem, type MessageItemProps } from "./message-item"
+export { TextBubble, type TextBubbleProps } from "./text-bubble"
 export { MessageActionsPopover, type MessageActionsPopoverProps } from "./message-actions-popover"
 export { MessageDateSeparator, type MessageDateSeparatorProps } from "./message-date-separator"
 export { MessageReactions, type MessageReactionsProps } from "./message-reactions"

@@ -1,34 +1,21 @@
 import * as React from "react"
-import data from "@emoji-mart/data"
-import Picker from "@emoji-mart/react"
 import { Button } from "@/components/ui/button"
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import {
-  IconPlus,
-  IconMoodSmile,
   IconGif,
   IconAt,
   IconMicrophone,
   IconSend,
-  IconX,
-  IconPhoto,
-  IconFile,
-  IconCamera,
-  IconUserPlus,
-  IconChartBar,
-  IconPlayerPauseFilled,
-  IconPlayerPlayFilled,
-  IconTrash,
 } from "@tabler/icons-react"
 import CameraModal from "./attachments/camera-modal"
 import CreatePollModal from "./attachments/create-poll-modal"
 import ShareContactModal from "./attachments/share-contact-modal"
 import GifPicker from "./attachments/gif-picker"
 import MentionAutocomplete from "./attachments/mention-autocomplete"
+import EmojiPicker from "./attachments/emoji-picker"
+import AttachmentMenu from "./attachments/attachment-menu"
+import VoiceRecorder from "./attachments/voice-recorder"
+import PendingAttachmentPreview from "./attachments/pending-attachment-preview"
+import MessageReplyBar from "./message-reply-bar"
 import { useChat } from "@/components/chat/chat-provider"
 import { type MessageAttachment } from "@/data/mock-messages"
 import { type UserProfile, type GroupMember } from "@/data/mock-contacts"
@@ -45,14 +32,6 @@ export interface ChatInputBarProps extends React.ComponentProps<"div"> {
   onSendMessage?: (text: string, attachment?: MessageAttachment) => void
   onRecordVoice?: () => void
 }
-
-const ATTACHMENT_OPTIONS = [
-  { id: "photo", icon: IconPhoto, label: "Photo or Video" },
-  { id: "file", icon: IconFile, label: "File" },
-  { id: "camera", icon: IconCamera, label: "Camera" },
-  { id: "contact", icon: IconUserPlus, label: "Contact" },
-  { id: "poll", icon: IconChartBar, label: "Poll" },
-]
 
 export function ChatInputBar({
   placeholder = "Type a message...",
@@ -100,22 +79,6 @@ export function ChatInputBar({
 
   const photoFileInputRef = React.useRef<HTMLInputElement>(null)
   const docFileInputRef = React.useRef<HTMLInputElement>(null)
-
-  // Track dark mode for Emoji Mart theme
-  const [isDark, setIsDark] = React.useState(false)
-
-  React.useEffect(() => {
-    const checkDark = () => {
-      setIsDark(document.documentElement.classList.contains("dark"))
-    }
-    checkDark()
-    const observer = new MutationObserver(checkDark)
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    })
-    return () => observer.disconnect()
-  }, [])
 
   // Auto-resize textarea
   React.useEffect(() => {
@@ -574,202 +537,53 @@ export function ChatInputBar({
 
       {/* Replying Banner Preview */}
       {replyingTo && (
-        <div className="flex items-center justify-between gap-2 rounded-xl bg-secondary/80 border border-border/40 px-3 py-1.5 text-xs">
-          <div className="flex-1 min-w-0 border-l-2 border-primary pl-2">
-            <span className="font-semibold text-primary block leading-tight">
-              {replyingTo.senderName}
-            </span>
-            <span className="text-muted-foreground truncate block text-[11px]">
-              {replyingTo.text}
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={onCancelReply}
-            className="text-muted-foreground hover:text-foreground p-1 rounded-md cursor-pointer"
-            aria-label="Cancel reply"
-          >
-            <IconX className="size-3.5" />
-          </button>
-        </div>
+        <MessageReplyBar
+          replyingTo={replyingTo}
+          onCancel={onCancelReply}
+        />
       )}
 
       {/* Pending Attachment Compact Chip Preview */}
       {pendingAttachment && (
-        <div className="flex items-center">
-          <div className="inline-flex items-center gap-2.5 rounded-2xl bg-muted/70 border border-border/70 p-1.5 pr-2.5 text-xs shadow-xs max-w-sm animate-in fade-in-0 zoom-in-95 duration-100">
-            {pendingAttachment.thumbnailUrl ? (
-              <img
-                src={pendingAttachment.thumbnailUrl}
-                alt="Upload preview"
-                className="size-9 rounded-xl object-cover ring-1 ring-border/50 shrink-0"
-              />
-            ) : (
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <IconFile className="size-4.5" />
-              </div>
-            )}
-            <div className="min-w-0 pr-1">
-              <p className="font-semibold text-foreground text-xs truncate max-w-[180px] leading-tight">
-                {pendingAttachment.fileName || "Attachment"}
-              </p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">{pendingAttachment.fileSize}</p>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setPendingAttachment(null)}
-              className="text-muted-foreground hover:text-foreground p-1 rounded-full hover:bg-background/80 transition-colors cursor-pointer shrink-0 ml-1"
-              title="Remove attachment"
-            >
-              <IconX className="size-3.5" />
-            </button>
-          </div>
-        </div>
+        <PendingAttachmentPreview
+          attachment={pendingAttachment}
+          onRemove={() => setPendingAttachment(null)}
+        />
       )}
 
       {/* Recording in progress overlay bar */}
       {isRecording ? (
-        <div className="flex items-center gap-3 w-full bg-destructive/10 dark:bg-destructive/20 border border-destructive/30 rounded-2xl px-4 py-2.5 animate-in fade-in-0 duration-150">
-          {/* Pulsing recording indicator */}
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="relative flex size-3">
-              {!isPaused && (
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75"></span>
-              )}
-              <span
-                className={cn(
-                  "relative inline-flex rounded-full size-3",
-                  isPaused ? "bg-starred" : "bg-destructive"
-                )}
-              ></span>
-            </span>
-            <span className="text-xs font-semibold tabular-nums text-destructive min-w-[36px]">
-              {Math.floor(recordingSeconds / 60)}:
-              {recordingSeconds % 60 < 10 ? "0" : ""}
-              {recordingSeconds % 60}
-            </span>
-            {isPaused && (
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-starred bg-starred/15 px-1.5 py-0.5 rounded-sm">
-                Paused
-              </span>
-            )}
-          </div>
-
-          {/* Real-time audio waveform reacting dynamically to user's mic voice */}
-          <div className="flex flex-1 items-center justify-center gap-1 h-6 overflow-hidden px-2">
-            {liveFrequencies.map((pct, i) => (
-              <span
-                key={i}
-                style={{
-                  height: `${isPaused ? 8 : pct}%`,
-                }}
-                className={cn(
-                  "w-1 rounded-full transition-all duration-75",
-                  isPaused
-                    ? "bg-muted-foreground/30"
-                    : "bg-destructive/75 hover:bg-destructive"
-                )}
-              />
-            ))}
-          </div>
-
-          {/* Pause / Resume button */}
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={isPaused ? resumeVoiceRecording : pauseVoiceRecording}
-            className="size-8 rounded-full text-foreground hover:bg-destructive/15 cursor-pointer shrink-0"
-            title={isPaused ? "Resume recording" : "Pause recording"}
-          >
-            {isPaused ? (
-              <IconPlayerPlayFilled className="size-4 text-online" />
-            ) : (
-              <IconPlayerPauseFilled className="size-4 text-destructive" />
-            )}
-          </Button>
-
-          {/* Cancel recording button */}
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={cancelVoiceRecording}
-            className="size-8 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/15 cursor-pointer shrink-0"
-            title="Cancel recording"
-          >
-            <IconTrash className="size-4" />
-          </Button>
-
-          {/* Send / Stop recording button */}
-          <Button
-            type="button"
-            variant="destructive"
-            size="icon"
-            onClick={stopVoiceRecording}
-            className="shrink-0"
-            title="Send voice note"
-          >
-            <IconSend className="size-4" />
-          </Button>
-        </div>
+        <VoiceRecorder
+          isRecording={isRecording}
+          isPaused={isPaused}
+          recordingSeconds={recordingSeconds}
+          liveFrequencies={liveFrequencies}
+          onPause={pauseVoiceRecording}
+          onResume={resumeVoiceRecording}
+          onCancel={cancelVoiceRecording}
+          onSend={stopVoiceRecording}
+        />
       ) : (
         /* Main Bar with Plus icon, Input, and Actions */
         <div className="flex items-center gap-2 w-full">
           {/* Plus (+) Attachments Menu */}
-          <Popover open={attachmentOpen} onOpenChange={setAttachmentOpen}>
-            <PopoverTrigger
-              render={
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="icon"
-                  className="shrink-0"
-                  aria-label="More attachments"
-                />
+          <AttachmentMenu
+            open={attachmentOpen}
+            onOpenChange={setAttachmentOpen}
+            onSelectOption={(optionId) => {
+              if (optionId === "photo") {
+                photoFileInputRef.current?.click()
+              } else if (optionId === "file") {
+                docFileInputRef.current?.click()
+              } else if (optionId === "camera") {
+                setCameraModalOpen(true)
+              } else if (optionId === "contact") {
+                setContactModalOpen(true)
+              } else if (optionId === "poll") {
+                setPollModalOpen(true)
               }
-            >
-              <IconPlus className="size-5" />
-            </PopoverTrigger>
-
-            <PopoverContent
-              side="top"
-              align="start"
-              sideOffset={12}
-              className="w-52 p-1.5"
-            >
-              <div className="flex flex-col gap-0.5 text-xs font-medium">
-                {ATTACHMENT_OPTIONS.map((item) => {
-                  const Icon = item.icon
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => {
-                        setAttachmentOpen(false)
-                        if (item.id === "photo") {
-                          photoFileInputRef.current?.click()
-                        } else if (item.id === "file") {
-                          docFileInputRef.current?.click()
-                        } else if (item.id === "camera") {
-                          setCameraModalOpen(true)
-                        } else if (item.id === "contact") {
-                          setContactModalOpen(true)
-                        } else if (item.id === "poll") {
-                          setPollModalOpen(true)
-                        }
-                      }}
-                      className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-foreground hover:bg-muted transition-colors cursor-pointer select-none"
-                    >
-                      <Icon className="size-4 text-muted-foreground" />
-                      <span>{item.label}</span>
-                    </button>
-                  )
-                })}
-              </div>
-            </PopoverContent>
-          </Popover>
+            }}
+          />
 
           {/* Input Textarea Container */}
           <div className="flex-1 min-w-0 flex items-center rounded-2xl bg-secondary/50 border border-border/40 px-3.5 py-2 focus-within:ring-2 focus-within:ring-ring focus-within:border-transparent transition-all">
@@ -786,44 +600,11 @@ export function ChatInputBar({
             {/* Right inline icons: Emoji, GIF, Mention (group only) */}
             <div className="flex items-center gap-1 ml-2 text-muted-foreground shrink-0 select-none">
               {/* Emoji Mart Picker Popover */}
-              <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
-                <PopoverTrigger
-                  render={
-                    <button
-                      type="button"
-                      className={cn(
-                        "p-1 hover:text-foreground transition-colors cursor-pointer",
-                        emojiOpen && "text-foreground"
-                      )}
-                      aria-label="Emoji picker"
-                    />
-                  }
-                >
-                  <IconMoodSmile className="size-4.5" />
-                </PopoverTrigger>
-
-                <PopoverContent
-                  side="top"
-                  align="end"
-                  sideOffset={14}
-                  className="w-auto p-0 border-0 shadow-2xl bg-transparent overflow-hidden rounded-2xl duration-75 data-[state=open]:duration-75 data-[state=closed]:duration-50"
-                >
-                  <Picker
-                    data={data}
-                    onEmojiSelect={handleSelectEmoji}
-                    set="native"
-                    theme={isDark ? "dark" : "light"}
-                    navPosition="top"
-                    previewPosition="none"
-                    searchPosition="sticky"
-                    skinTonePosition="search"
-                    autoFocus={false}
-                    emojiVersion="15.0"
-                    locale="en"
-                    perLine={9}
-                  />
-                </PopoverContent>
-              </Popover>
+              <EmojiPicker
+                open={emojiOpen}
+                onOpenChange={setEmojiOpen}
+                onSelectEmoji={handleSelectEmoji}
+              />
 
               {/* GIF Picker Popover */}
               <GifPicker

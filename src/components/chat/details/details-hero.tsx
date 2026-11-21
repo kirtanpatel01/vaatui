@@ -4,12 +4,11 @@ import {
   IconBell,
   IconBellOff,
   IconUserPlus,
-  IconUsers,
-  IconSpeakerphone,
 } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/toast"
 import { type UserProfile } from "@/data/mock-contacts"
+import { ChatAvatar } from "@/components/chat/ui/chat-avatar"
 import { cn } from "cn"
 
 export interface DetailsHeroProps {
@@ -53,28 +52,7 @@ export function DetailsHero({
   return (
     <div className="flex flex-col items-center px-4 py-5 text-center bg-gradient-to-b from-muted/30 to-transparent">
       {/* Large Avatar */}
-      <div className="relative mb-3 flex size-20 items-center justify-center rounded-full bg-muted border-2 border-border/80 text-xl font-bold text-foreground shadow-xs">
-        {isGroup ? (
-          <IconUsers className="size-9 text-muted-foreground stroke-[1.5]" />
-        ) : contact.type === "announcement" ? (
-          <IconSpeakerphone className="size-9 text-muted-foreground stroke-[1.5]" />
-        ) : contact.avatar ? (
-          <img
-            src={contact.avatar}
-            alt={contact.name}
-            className="size-full rounded-full object-cover"
-          />
-        ) : (
-          <span>{contact.name.charAt(0)}</span>
-        )}
-
-        {isDirect && contact.isOnline && (
-          <span
-            className="absolute bottom-1 right-1 size-3.5 rounded-full bg-online ring-2 ring-background"
-            title="Online"
-          />
-        )}
-      </div>
+      <ChatAvatar contact={contact} size="xl" showStatus className="mb-3" />
 
       <h2 className="text-base font-semibold text-foreground tracking-tight max-w-[90%] truncate">
         {contact.name}

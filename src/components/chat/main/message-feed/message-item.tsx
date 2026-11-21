@@ -7,11 +7,13 @@ import { FileAttachmentBubble } from "./file-attachment-bubble"
 import { LinkAttachmentBubble } from "./link-attachment-bubble"
 import { PollBubble } from "./poll-bubble"
 import { ContactBubble } from "./contact-bubble"
+import { TextBubble } from "./text-bubble"
 import { MessageReplyPreview } from "./message-reply-preview"
 import { MessageReactions } from "./message-reactions"
 import { MessageActionButtons } from "./message-actions-popover"
 import { DeliveryStatusIcon } from "./delivery-status-icon"
-import { IconArrowForwardUp, IconStar, IconPin, IconExternalLink } from "@tabler/icons-react"
+import { ChatAvatar } from "@/components/chat/ui/chat-avatar"
+import { IconArrowForwardUp, IconStar, IconPin } from "@tabler/icons-react"
 import { toast } from "@/components/ui/toast"
 import { cn } from "cn"
 
@@ -28,96 +30,6 @@ export interface MessageItemProps {
   onDeleteMessage?: (messageId: string) => void
   onReact?: (messageId: string, emoji: string) => void
   onVotePoll?: (messageId: string, optionId: string) => void
-}
-
-function renderHighlightedText(
-  text: string,
-  query: string,
-  isSentByMe: boolean,
-  isCurrentMatch: boolean
-) {
-  if (!query.trim()) return text
-  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-  const regex = new RegExp(`(${escaped})`, "gi")
-  const parts = text.split(regex)
-
-  // Style classes based on whether this is the active focused match, and bubble tone (sent by me vs received)
-  const highlightClass = isCurrentMatch
-    ? "bg-starred text-foreground font-semibold rounded-xs px-1 shadow-xs ring-1 ring-starred"
-    : isSentByMe
-      ? "bg-chat-bubble-sent-foreground/20 text-chat-bubble-sent-foreground rounded-xs px-0.5 font-medium underline decoration-starred decoration-2 underline-offset-2"
-      : "bg-starred/25 text-foreground rounded-xs px-0.5 font-medium"
-
-  return parts.map((part, i) =>
-    regex.test(part) ? (
-      <mark key={i} className={cn("transition-colors duration-150 inline-block leading-tight", highlightClass)}>
-        {part}
-      </mark>
-    ) : (
-      part
-    )
-  )
-}
-
-function renderMessageContent(
-  text: string,
-  query: string,
-  isSentByMe: boolean,
-  isCurrentMatch: boolean
-) {
-  // If search query active, highlight search query
-  if (query.trim()) {
-    return renderHighlightedText(text, query, isSentByMe, isCurrentMatch)
-  }
-
-  // Tokenize URLs and @mentions
-  const tokenRegex = /(https?:\/\/[^\s<>"'()]+|www\.[^\s<>"'()]+|@[A-Za-z0-9_\s]+?(?=[.,!?]?(\s|$)))/gi
-  const parts = text.split(tokenRegex).filter(Boolean)
-
-  return parts.map((part, i) => {
-    // 1. Link / URL
-    if (/^(https?:\/\/|www\.)/i.test(part)) {
-      const href = part.startsWith("http") ? part : `https://${part}`
-      return (
-        <a
-          key={i}
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()}
-          className={cn(
-            "font-medium underline underline-offset-2 break-all transition-opacity hover:opacity-80 inline-flex items-center gap-0.5 cursor-pointer",
-            isSentByMe
-              ? "text-chat-bubble-sent-foreground underline decoration-chat-bubble-sent-foreground/60 hover:text-chat-bubble-sent-foreground/80"
-              : "text-primary decoration-primary/60 hover:text-primary/80"
-          )}
-        >
-          <span>{part}</span>
-          <IconExternalLink className="size-3 inline-block shrink-0 opacity-80" />
-        </a>
-      )
-    }
-
-    // 2. Mention (@Name)
-    if (part.startsWith("@") && part.length > 1) {
-      return (
-        <span
-          key={i}
-          className={cn(
-            "inline-flex items-center font-semibold rounded-md px-1 py-0.2 mx-0.5 transition-colors cursor-pointer select-none",
-            isSentByMe
-              ? "bg-chat-bubble-sent-foreground/20 text-chat-bubble-sent-foreground hover:bg-chat-bubble-sent-foreground/30"
-              : "bg-primary/15 text-primary hover:bg-primary/25"
-          )}
-        >
-          {part}
-        </span>
-      )
-    }
-
-    // 3. Plain text
-    return part
-  })
 }
 
 export function MessageItem({
@@ -200,17 +112,12 @@ export function MessageItem({
     >
       {/* Received Avatar in Group chats */}
       {!isMe && isGroup && (
-        <div className="flex size-7 shrink-0 items-center justify-center self-end rounded-full bg-muted border border-border/60 text-[10px] font-semibold text-foreground shadow-2xs overflow-hidden">
-          {message.senderAvatar ? (
-            <img
-              src={message.senderAvatar}
-              alt={message.senderName}
-              className="size-full object-cover"
-            />
-          ) : (
-            <span>{senderInitials}</span>
-          )}
-        </div>
+        <ChatAvatar
+          size="xs"
+          src={message.senderAvatar}
+          name={message.senderName}
+          className="self-end"
+        />
       )}
 
       {/* External Action Controls (Outside the Bubble) */}
@@ -356,9 +263,12 @@ export function MessageItem({
             {/* Bubble Content & Inline Footer */}
             <div className="flex flex-wrap items-end gap-x-2 gap-y-0.5">
               {message.text && (
-                <p className="whitespace-pre-wrap break-words leading-relaxed select-text">
-                  {renderMessageContent(message.text, searchQuery, isMe, isSearchActiveMatch)}
-                </p>
+                <TextBubble
+                  text={message.text}
+                  searchQuery={searchQuery}
+                  isSearchActiveMatch={isSearchActiveMatch}
+                  isSentByMe={isMe}
+                />
               )}
 
               {/* Integrated Inline Timestamp & Status Indicator */}

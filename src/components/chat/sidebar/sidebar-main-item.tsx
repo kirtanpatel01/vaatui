@@ -1,38 +1,28 @@
 import * as React from "react"
 import {
   type UserProfile,
-  type MessageDeliveryStatus,
   type MessageContentType,
 } from "@/data/mock-contacts"
 import { formatChatTimestamp } from "@/lib/format-date"
 import {
   Popover,
-  PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
 import {
-  IconAlertCircle,
-  IconArchive,
   IconAt,
-  IconBell,
   IconBellOff,
-  IconCheck,
-  IconChecks,
-  IconClock,
   IconEdit,
   IconFileText,
-  IconMail,
-  IconMailOpened,
   IconMicrophone,
   IconPhoto,
   IconPin,
-  IconPinnedOff,
-  IconSpeakerphone,
-  IconTrash,
-  IconUsers,
   IconVideo,
 } from "@tabler/icons-react"
 import { cva, type VariantProps } from "class-variance-authority"
+import { DeliveryStatusIcon } from "@/components/chat/main/message-feed/delivery-status-icon"
+import { ChatAvatar } from "@/components/chat/ui/chat-avatar"
+import { TypingIndicator } from "@/components/chat/ui/typing-indicator"
+import { SidebarItemContextMenu } from "./sidebar-item-context-menu"
 import { cn } from "cn"
 
 export const sidebarMainItemVariants = cva(
@@ -65,25 +55,6 @@ export interface SidebarMainItemProps
   onMenuOpenChange?: (open: boolean) => void
   onUpdateContact?: (updated: UserProfile) => void
   onDeleteChat?: (contactId: string) => void
-}
-
-function DeliveryStatusIcon({ status }: { status?: MessageDeliveryStatus }) {
-  if (!status) return null
-
-  switch (status) {
-    case "sending":
-      return <IconClock className="size-3.5 shrink-0 text-muted-foreground stroke-[2]" />
-    case "sent":
-      return <IconCheck className="size-3.5 shrink-0 text-muted-foreground stroke-[2]" />
-    case "delivered":
-      return <IconChecks className="size-3.5 shrink-0 text-muted-foreground stroke-[2]" />
-    case "read":
-      return <IconChecks className="size-3.5 shrink-0 text-read stroke-[2.2]" />
-    case "failed":
-      return <IconAlertCircle className="size-3.5 shrink-0 text-destructive stroke-[2.2]" />
-    default:
-      return null
-  }
 }
 
 function MediaIcon({ type }: { type?: MessageContentType }) {
@@ -239,23 +210,11 @@ export function SidebarMainItem({
         }
       >
         {/* Avatar Container */}
-        <div className="relative flex size-11 shrink-0 items-center justify-center rounded-full bg-muted/80 text-foreground font-semibold text-sm">
-          {contact.type === "group" ? (
-            <IconUsers className="size-5 text-muted-foreground stroke-[1.75]" />
-          ) : contact.type === "announcement" ? (
-            <IconSpeakerphone className="size-5 text-muted-foreground stroke-[1.75]" />
-          ) : (
-            <span>{contact.name[0]}</span>
-          )}
-
-          {/* Online Indicator Badge */}
-          {contact.isOnline && (
-            <span
-              aria-label="Online"
-              className="absolute -top-0.5 -right-0.5 size-2.5 rounded-full bg-online ring-2 ring-background"
-            />
-          )}
-        </div>
+        <ChatAvatar
+          contact={contact}
+          size={size === "compact" ? "sm" : "default"}
+          showStatus
+        />
 
         {/* Main Details */}
         <div className="flex-1 min-w-0">
@@ -287,10 +246,7 @@ export function SidebarMainItem({
 
               {/* Inbound: Typing animation or Draft */}
               {lastMessage.isTyping ? (
-                <span className="text-online font-medium truncate flex items-center gap-1">
-                  <span className="inline-block size-1.5 rounded-full bg-online animate-pulse" />
-                  Typing...
-                </span>
+                <TypingIndicator variant="full" />
               ) : lastMessage.isDraft ? (
                 <span className="text-starred font-medium truncate flex items-center gap-1">
                   <IconEdit className="size-3 shrink-0" />
@@ -357,98 +313,14 @@ export function SidebarMainItem({
       </PopoverTrigger>
 
       {/* Popover Menu with Quick Actions */}
-      <PopoverContent
-        align="start"
-        side="bottom"
-        sideOffset={6}
-        className="w-56 p-1.5 gap-1"
-      >
-        <div className="px-2.5 py-1.5 text-xs font-semibold text-muted-foreground border-b border-border/40 truncate">
-          {contact.name}
-        </div>
-
-        <div className="flex flex-col gap-0.5 text-xs font-medium pt-1">
-          {/* Pin / Unpin */}
-          <button
-            type="button"
-            onClick={handleTogglePin}
-            className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-foreground hover:bg-muted transition-colors cursor-pointer select-none"
-          >
-            {contact.isPinned ? (
-              <>
-                <IconPinnedOff className="size-4 text-muted-foreground" />
-                <span>Unpin chat</span>
-              </>
-            ) : (
-              <>
-                <IconPin className="size-4 text-muted-foreground rotate-45" />
-                <span>Pin chat</span>
-              </>
-            )}
-          </button>
-
-          {/* Mute / Unmute */}
-          <button
-            type="button"
-            onClick={handleToggleMute}
-            className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-foreground hover:bg-muted transition-colors cursor-pointer select-none"
-          >
-            {contact.isMuted ? (
-              <>
-                <IconBell className="size-4 text-muted-foreground" />
-                <span>Unmute notifications</span>
-              </>
-            ) : (
-              <>
-                <IconBellOff className="size-4 text-muted-foreground" />
-                <span>Mute notifications</span>
-              </>
-            )}
-          </button>
-
-          {/* Mark as read / Mark as unread */}
-          <button
-            type="button"
-            onClick={handleToggleUnread}
-            className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-foreground hover:bg-muted transition-colors cursor-pointer select-none"
-          >
-            {isUnread ? (
-              <>
-                <IconMailOpened className="size-4 text-muted-foreground" />
-                <span>Mark as read</span>
-              </>
-            ) : (
-              <>
-                <IconMail className="size-4 text-muted-foreground" />
-                <span>Mark as unread</span>
-              </>
-            )}
-          </button>
-
-          {/* Archive / Unarchive */}
-          <button
-            type="button"
-            onClick={handleToggleArchive}
-            className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-foreground hover:bg-muted transition-colors cursor-pointer select-none"
-          >
-            <IconArchive className="size-4 text-muted-foreground" />
-            <span>{isArchived ? "Unarchive chat" : "Archive chat"}</span>
-          </button>
-
-          {/* Divider */}
-          <div className="my-1 h-px bg-border/50" />
-
-          {/* Delete chat */}
-          <button
-            type="button"
-            onClick={handleDelete}
-            className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-destructive hover:bg-destructive/10 transition-colors cursor-pointer select-none"
-          >
-            <IconTrash className="size-4 text-destructive" />
-            <span>Delete chat</span>
-          </button>
-        </div>
-      </PopoverContent>
+      <SidebarItemContextMenu
+        contact={contact}
+        onTogglePin={handleTogglePin}
+        onToggleMute={handleToggleMute}
+        onToggleUnread={handleToggleUnread}
+        onToggleArchive={handleToggleArchive}
+        onDelete={handleDelete}
+      />
     </Popover>
   )
 }
