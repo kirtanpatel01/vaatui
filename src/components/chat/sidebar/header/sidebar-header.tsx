@@ -48,4 +48,5 @@ function SidebarHeader({
   )
 }
 
+export { SidebarHeader }
 export default SidebarHeader

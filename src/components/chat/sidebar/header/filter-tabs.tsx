@@ -287,4 +287,5 @@ function FilterTabs({
   )
 }
 
+export { FilterTabs }
 export default FilterTabs

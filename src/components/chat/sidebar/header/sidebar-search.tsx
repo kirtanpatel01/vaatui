@@ -53,4 +53,5 @@ function SidebarSearch({
   )
 }
 
+export { SidebarSearch }
 export default SidebarSearch

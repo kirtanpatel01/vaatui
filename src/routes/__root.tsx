@@ -5,6 +5,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { Toaster } from "@/components/ui/toast"
 import { ThemeProvider } from "@/components/theme-provider"
+import SiteHeader from "@/components/site-header"
 
 import appCss from "../styles.css?url"
 
@@ -30,7 +31,7 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "TanStack Start Starter",
+        title: "VaatUI — Modern Chat UI Library",
       },
     ],
     links: [
@@ -41,9 +42,9 @@ export const Route = createRootRoute({
     ],
   }),
   notFoundComponent: () => (
-    <main className="container mx-auto p-4 pt-16">
-      <h1>404</h1>
-      <p>The requested page could not be found.</p>
+    <main className="container mx-auto p-4 pt-16 text-center">
+      <h1 className="text-4xl font-bold">404</h1>
+      <p className="text-muted-foreground mt-2">The requested page could not be found.</p>
     </main>
   ),
   shellComponent: RootDocument,
@@ -58,7 +59,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <ThemeProvider defaultTheme="system" storageKey="theme">
           <QueryClientProvider client={queryClient}>
-            {children}
+            <div className="flex min-h-screen flex-col bg-background text-foreground">
+              <SiteHeader />
+              <div className="flex-1 min-h-0 flex flex-col">
+                {children}
+              </div>
+            </div>
           </QueryClientProvider>
           <Toaster />
           <TanStackDevtools
