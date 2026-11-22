@@ -31,7 +31,7 @@ function ComponentDetailPage() {
           nativeButton={false}
           render={<Link to="/components" />}
         >
-          <IconArrowLeft className="size-4 mr-2" />
+          <IconArrowLeft data-icon="inline-start" />
           Back to Components
         </Button>
       </main>

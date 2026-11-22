@@ -30,11 +30,10 @@ function HomePage() {
             size="lg"
             nativeButton={false}
             render={<Link to="/preview" />}
-            className="h-12 px-6 font-semibold gap-2 shadow-sm cursor-pointer"
           >
-            <IconEye className="size-5" />
-            <span>Explore Preview</span>
-            <IconArrowRight className="size-4" />
+            <IconEye data-icon="inline-start" />
+            Explore Preview
+            <IconArrowRight data-icon="inline-end" />
           </Button>
 
           <Button
@@ -42,10 +41,9 @@ function HomePage() {
             size="lg"
             nativeButton={false}
             render={<Link to="/components" />}
-            className="h-12 px-6 font-semibold gap-2 cursor-pointer"
           >
-            <IconComponents className="size-5" />
-            <span>Browse Components</span>
+            <IconComponents data-icon="inline-start" />
+            Browse Components
           </Button>
 
           <Button
@@ -59,10 +57,9 @@ function HomePage() {
                 rel="noopener noreferrer"
               />
             }
-            className="h-12 px-5 font-semibold gap-2 text-muted-foreground hover:text-foreground cursor-pointer"
           >
-            <IconBrandGithub className="size-5" />
-            <span>GitHub</span>
+            <IconBrandGithub data-icon="inline-start" />
+            GitHub
           </Button>
         </div>
       </div>

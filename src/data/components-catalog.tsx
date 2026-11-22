@@ -79,7 +79,7 @@ function ModalPreviewTrigger({
   const [open, setOpen] = React.useState(false)
   return (
     <div className="flex flex-col items-center gap-3">
-      <Button type="button" onClick={() => setOpen(true)} className="cursor-pointer">
+      <Button type="button" onClick={() => setOpen(true)}>
         {label}
       </Button>
       {children(open, setOpen)}
@@ -303,7 +303,7 @@ export const COMPONENTS_CATALOG: ComponentEntry[] = [
       return (
         <div className="flex flex-col items-center gap-3">
           <GifPicker open={open} onOpenChange={setOpen} onSelectGif={() => setOpen(false)}>
-            <Button type="button" onClick={() => setOpen(true)} className="cursor-pointer">
+            <Button type="button" onClick={() => setOpen(true)}>
               Open GIF Picker
             </Button>
           </GifPicker>

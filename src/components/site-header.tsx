@@ -2,7 +2,8 @@ import * as React from "react"
 import { Link, useRouterState } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
 import { useTheme } from "@/components/theme-provider"
-import { IconBrandGithub, IconMoon, IconSun, IconMessageDots } from "@tabler/icons-react"
+import { Logo } from "@/components/logo"
+import { IconBrandGithub, IconMoon, IconSun } from "@tabler/icons-react"
 import { cn } from "cn"
 
 export function SiteHeader() {
@@ -20,11 +21,9 @@ export function SiteHeader() {
       <div className="flex items-center gap-6">
         <Link
           to="/"
-          className="flex items-center gap-2 font-bold text-foreground hover:opacity-90 transition-opacity"
+          className="flex items-center gap-2.5 font-bold text-foreground hover:opacity-90 transition-opacity"
         >
-          <div className="flex size-7 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-xs">
-            <IconMessageDots className="size-4.5 stroke-[2]" />
-          </div>
+          <Logo size={28} className="text-foreground" />
           <span className="text-base tracking-tight font-semibold">VaatUI</span>
         </Link>
 
@@ -62,13 +61,8 @@ export function SiteHeader() {
           size="icon-sm"
           onClick={toggleTheme}
           aria-label="Toggle theme"
-          className="text-muted-foreground hover:text-foreground cursor-pointer"
         >
-          {theme === "dark" ? (
-            <IconSun className="size-4.5" />
-          ) : (
-            <IconMoon className="size-4.5" />
-          )}
+          {theme === "dark" ? <IconSun /> : <IconMoon />}
         </Button>
 
         <Button
@@ -82,10 +76,9 @@ export function SiteHeader() {
               rel="noopener noreferrer"
             />
           }
-          className="text-muted-foreground hover:text-foreground cursor-pointer"
           aria-label="GitHub Repository"
         >
-          <IconBrandGithub className="size-4.5" />
+          <IconBrandGithub />
         </Button>
       </div>
     </header>
