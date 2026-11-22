@@ -26,11 +26,13 @@ function ComponentDetailPage() {
         <p className="text-muted-foreground mb-6">
           Could not find component "{componentId}".
         </p>
-        <Button asChild variant="outline">
-          <Link to="/components">
-            <IconArrowLeft className="size-4 mr-2" />
-            Back to Components
-          </Link>
+        <Button
+          variant="outline"
+          nativeButton={false}
+          render={<Link to="/components" />}
+        >
+          <IconArrowLeft className="size-4 mr-2" />
+          Back to Components
         </Button>
       </main>
     )

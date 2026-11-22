@@ -72,20 +72,20 @@ export function SiteHeader() {
         </Button>
 
         <Button
-          type="button"
           variant="ghost"
           size="icon-sm"
-          asChild
+          nativeButton={false}
+          render={
+            <a
+              href="https://github.com/kirtanpatel01/vaatui"
+              target="_blank"
+              rel="noopener noreferrer"
+            />
+          }
           className="text-muted-foreground hover:text-foreground cursor-pointer"
           aria-label="GitHub Repository"
         >
-          <a
-            href="https://github.com/kirtanpatel01/vaatui"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <IconBrandGithub className="size-4.5" />
-          </a>
+          <IconBrandGithub className="size-4.5" />
         </Button>
       </div>
     </header>

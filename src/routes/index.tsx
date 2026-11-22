@@ -26,30 +26,43 @@ function HomePage() {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center">
-          <Button asChild size="lg" className="h-12 px-6 font-semibold gap-2 shadow-sm cursor-pointer">
-            <Link to="/preview">
-              <IconEye className="size-5" />
-              <span>Explore Preview</span>
-              <IconArrowRight className="size-4" />
-            </Link>
+          <Button
+            size="lg"
+            nativeButton={false}
+            render={<Link to="/preview" />}
+            className="h-12 px-6 font-semibold gap-2 shadow-sm cursor-pointer"
+          >
+            <IconEye className="size-5" />
+            <span>Explore Preview</span>
+            <IconArrowRight className="size-4" />
           </Button>
 
-          <Button asChild variant="outline" size="lg" className="h-12 px-6 font-semibold gap-2 cursor-pointer">
-            <Link to="/components">
-              <IconComponents className="size-5" />
-              <span>Browse Components</span>
-            </Link>
+          <Button
+            variant="outline"
+            size="lg"
+            nativeButton={false}
+            render={<Link to="/components" />}
+            className="h-12 px-6 font-semibold gap-2 cursor-pointer"
+          >
+            <IconComponents className="size-5" />
+            <span>Browse Components</span>
           </Button>
 
-          <Button asChild variant="ghost" size="lg" className="h-12 px-5 font-semibold gap-2 text-muted-foreground hover:text-foreground cursor-pointer">
-            <a
-              href="https://github.com/kirtanpatel01/vaatui"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <IconBrandGithub className="size-5" />
-              <span>GitHub</span>
-            </a>
+          <Button
+            variant="ghost"
+            size="lg"
+            nativeButton={false}
+            render={
+              <a
+                href="https://github.com/kirtanpatel01/vaatui"
+                target="_blank"
+                rel="noopener noreferrer"
+              />
+            }
+            className="h-12 px-5 font-semibold gap-2 text-muted-foreground hover:text-foreground cursor-pointer"
+          >
+            <IconBrandGithub className="size-5" />
+            <span>GitHub</span>
           </Button>
         </div>
       </div>
