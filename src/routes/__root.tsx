@@ -36,6 +36,17 @@ export const Route = createRootRoute({
     ],
     links: [
       {
+        rel: "preload",
+        href: "/fonts/satoshi-variable.woff2",
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "stylesheet",
+        href: "/fonts.css",
+      },
+      {
         rel: "stylesheet",
         href: appCss,
       },
