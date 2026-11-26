@@ -2,7 +2,7 @@ import * as React from "react"
 import { type UserProfile } from "@/data/mock-contacts"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import SidebarMainItem from "./sidebar-main-item"
-import { IconArchive, IconChevronRight } from "@tabler/icons-react"
+import { ArchivedChatsTrigger } from "./archived-chats-sheet"
 import { cn } from "cn"
 
 interface SidebarMainProps {
@@ -111,7 +111,7 @@ function SidebarMain({
       {showScrollbar ? (
         <ScrollArea className="flex-1 min-h-0">
           <div className="px-2 py-1 space-y-0.5 divide-y divide-border/20">
-            {renderArchivedRow()}
+            <ArchivedChatsTrigger count={archivedCount} onClick={onOpenArchived} />
 
             {filteredContacts.length === 0 ? (
               <div className="flex h-32 items-center justify-center text-xs text-muted-foreground text-center px-4">
@@ -143,7 +143,7 @@ function SidebarMain({
             className="flex-1 min-h-0 overflow-y-auto no-scrollbar scroll-smooth"
           >
             <div className="px-2 py-1 space-y-0.5 divide-y divide-border/20">
-              {renderArchivedRow()}
+              <ArchivedChatsTrigger count={archivedCount} onClick={onOpenArchived} />
 
               {filteredContacts.length === 0 ? (
                 <div className="flex h-32 items-center justify-center text-xs text-muted-foreground text-center px-4">

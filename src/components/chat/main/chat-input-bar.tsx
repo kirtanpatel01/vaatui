@@ -47,7 +47,15 @@ export function ChatInputBar({
   const activeContact = useActiveContact()
   const isGroup = activeContact?.type === "group"
 
-  const [text, setText] = React.useState("")
+  const [text, setText] = React.useState(
+    activeContact?.lastMessage?.isDraft ? activeContact.lastMessage.text : ""
+  )
+
+  React.useEffect(() => {
+    setText(
+      activeContact?.lastMessage?.isDraft ? activeContact.lastMessage.text : ""
+    )
+  }, [activeContact?.id])
   const [emojiOpen, setEmojiOpen] = React.useState(false)
   const [gifOpen, setGifOpen] = React.useState(false)
   const [mentionOpen, setMentionOpen] = React.useState(false)

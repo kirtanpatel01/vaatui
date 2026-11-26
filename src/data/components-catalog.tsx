@@ -9,6 +9,7 @@ import { ChatSidebar } from "@/components/chat/sidebar/chat-sidebar"
 import { ChatMain } from "@/components/chat/chat-main"
 import { ChatDetails } from "@/components/chat/chat-details"
 import { ChatHeader } from "@/components/chat/main/chat-header"
+import { ChatHeaderOptionsMenu } from "@/components/chat/main/chat-header-options-menu"
 import { ChatHeaderSearch } from "@/components/chat/main/chat-header-search"
 import { ChatInputBar } from "@/components/chat/main/chat-input-bar"
 import { MessageReplyBar } from "@/components/chat/main/message-reply-bar"
@@ -43,6 +44,7 @@ import { GifPicker } from "@/components/chat/main/attachments/gif-picker"
 
 // Sidebar & Primitives
 import { SidebarHeader } from "@/components/chat/sidebar/header/sidebar-header"
+import { QuickCompose } from "@/components/chat/sidebar/header/quick-compose"
 import { SidebarSearch } from "@/components/chat/sidebar/header/sidebar-search"
 import { FilterTabs } from "@/components/chat/sidebar/header/filter-tabs"
 import { DEFAULT_FILTER_TABS } from "@/components/chat/sidebar/header/filter-tabs"
@@ -339,14 +341,12 @@ export const COMPONENTS_CATALOG: ComponentEntry[] = [
         <VoiceNoteBubble
           duration="0:42"
           waveform={[25, 40, 75, 90, 60, 45, 80, 65, 40, 70, 95, 55, 35, 85, 40, 60, 75, 90, 50, 30]}
-          timestamp="11:25 am"
           isSentByMe={false}
           status="read"
         />
         <VoiceNoteBubble
           duration="1:15"
           waveform={[30, 55, 80, 95, 70, 50, 85, 60, 45, 75, 90, 60, 40, 90, 50, 70, 85, 95, 60, 40]}
-          timestamp="11:28 am"
           isSentByMe={true}
           status="read"
         />
@@ -453,19 +453,45 @@ export const COMPONENTS_CATALOG: ComponentEntry[] = [
     name: "Message Reactions",
     category: "Message Feed",
     description: "Interactive emoji reaction badges with count and active user reaction highlight.",
-    render: () => (
-      <div className="flex items-center gap-2">
-        <MessageReactions
-          reactions={[
-            { emoji: "❤️", count: 4, hasReacted: true },
-            { emoji: "🔥", count: 2, hasReacted: false },
-            { emoji: "👍", count: 1, hasReacted: false },
-          ]}
-          isSentByMe={false}
-          onReactionClick={() => {}}
-        />
-      </div>
-    ),
+    render: () => {
+      const MessageReactionsDemo = () => {
+        const [reactions, setReactions] = React.useState([
+          { emoji: "❤️", count: 4, hasReacted: true },
+          { emoji: "🔥", count: 2, hasReacted: false },
+          { emoji: "👍", count: 1, hasReacted: false },
+        ])
+        const toggle = (emoji: string) => {
+          setReactions((prev) => {
+            const exists = prev.find((r) => r.emoji === emoji)
+            if (exists) {
+              if (exists.hasReacted) {
+                return exists.count <= 1
+                  ? prev.filter((r) => r.emoji !== emoji)
+                  : prev.map((r) =>
+                      r.emoji === emoji ? { ...r, count: r.count - 1, hasReacted: false } : r
+                    )
+              }
+              return prev.map((r) =>
+                r.emoji === emoji ? { ...r, count: r.count + 1, hasReacted: true } : r
+              )
+            }
+            return [...prev, { emoji, count: 1, hasReacted: true }]
+          })
+        }
+        return (
+          <div className="relative flex items-center justify-center p-8">
+            <MessageReactions
+              reactions={reactions}
+              isSentByMe={false}
+              contact={MOCK_CONTACTS[1]}
+              className="static"
+              onReactionClick={toggle}
+            />
+          </div>
+        )
+      }
+      return <MessageReactionsDemo />
+    },
   },
   {
     id: "message-reply-preview",
@@ -670,15 +696,17 @@ export const COMPONENTS_CATALOG: ComponentEntry[] = [
     category: "Sidebar & Navigation",
     description: "Slide-out sheet listing archived conversations with quick restore and delete actions.",
     render: () => (
-      <ModalPreviewTrigger label="Open Archived Chats Sheet">
-        {(open, setOpen) => (
-          <ArchivedChatsSheet
-            open={open}
-            onOpenChange={setOpen}
-            contacts={MOCK_CONTACTS}
-          />
-        )}
-      </ModalPreviewTrigger>
+      <div className="relative w-full max-w-[420px] h-[580px] rounded-xl border border-border/60 overflow-hidden bg-background flex items-center justify-center">
+        <ModalPreviewTrigger label="Open Archived Chats Sheet">
+          {(open, setOpen) => (
+            <ArchivedChatsSheet
+              open={open}
+              onOpenChange={setOpen}
+              contacts={MOCK_CONTACTS}
+            />
+          )}
+        </ModalPreviewTrigger>
+      </div>
     ),
   },
 
@@ -699,13 +727,87 @@ export const COMPONENTS_CATALOG: ComponentEntry[] = [
     name: "Chat Header Search",
     category: "Header & Details",
     description: "Animated expanding search bar with match counter (`x/y`) and previous/next navigation.",
+    render: () => {
+      const ChatHeaderSearchDemo = () => {
+        const [isOpen, setIsOpen] = React.useState(true)
+        const [query, setQuery] = React.useState("he")
+        const [matchIndex, setMatchIndex] = React.useState(0)
+        const contact = MOCK_CONTACTS[0]
+        const messages = mockMessages
+        const matchingIds = React.useMemo(() => {
+          const q = query.trim().toLowerCase()
+          if (!q) return []
+          return messages
+            .filter((m) => m.text?.toLowerCase().includes(q))
+            .map((m) => m.id)
+        }, [query, messages])
+        const safeIndex = matchingIds.length > 0 ? matchIndex % matchingIds.length : 0
+
+        return (
+          <div className="flex flex-col w-full max-w-2xl h-[480px] rounded-xl border border-border/60 bg-background overflow-hidden">
+            <div className="flex items-center justify-between gap-3 border-b border-border/40 px-4 py-2.5 shrink-0">
+              <div className="flex items-center gap-3 min-w-0">
+                <ChatAvatar contact={contact} size="sm" />
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold leading-tight truncate">{contact.name}</p>
+                  <p className="text-xs text-muted-foreground truncate">Last seen recently</p>
+                </div>
+              </div>
+              <ChatHeaderSearch
+                isSearchOpen={isOpen}
+                onToggleSearch={setIsOpen}
+                searchQuery={query}
+                onSearchQueryChange={(q) => {
+                  setQuery(q)
+                  setMatchIndex(0)
+                }}
+                searchMatchCount={matchingIds.length}
+                searchMatchIndex={safeIndex}
+                onNextMatch={() =>
+                  setMatchIndex((i) =>
+                    matchingIds.length ? (i + 1) % matchingIds.length : 0
+                  )
+                }
+                onPrevMatch={() =>
+                  setMatchIndex((i) =>
+                    matchingIds.length
+                      ? (i - 1 + matchingIds.length) % matchingIds.length
+                      : 0
+                  )
+                }
+              />
+            </div>
+            <MessageFeed
+              contact={contact}
+              messages={messages}
+              searchQuery={query}
+              activeSearchMessageId={matchingIds[safeIndex]}
+            />
+          </div>
+        )
+      }
+      return <ChatHeaderSearchDemo />
+    },
+  },
+  {
+    id: "chat-header-options-menu",
+    name: "Chat Header Options Menu",
+    category: "Header & Details",
+    description: "Dropdown menu for muting notifications, viewing starred/pinned messages, exporting, clearing, or blocking.",
     render: () => (
       <div className="flex items-center justify-center p-4">
-        <ChatHeaderSearch
-          isSearchOpen={true}
-          searchQuery="wireframe"
-          searchMatchCount={3}
-          searchMatchIndex={0}
+        <ChatHeaderOptionsMenu
+          contact={MOCK_CONTACTS[0]}
+          messages={mockMessages}
+          isMuted={false}
+          isBlocked={false}
+          starredCount={2}
+          pinnedCount={1}
+          onToggleMute={() => {}}
+          onToggleBlock={() => {}}
+          onClearMessages={() => {}}
+          onOpenStarredModal={() => {}}
+          onOpenPinnedModal={() => {}}
         />
       </div>
     ),
@@ -862,6 +964,13 @@ export const COMPONENTS_CATALOG: ComponentEntry[] = [
         )}
       </ModalPreviewTrigger>
     ),
+  },
+  {
+    id: "quick-compose",
+    name: "Quick Compose",
+    category: "Sidebar & Navigation",
+    description: "Circular plus icon button that opens a contact search and new chat dialog.",
+    render: () => <QuickCompose />,
   },
 ]
 

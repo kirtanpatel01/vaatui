@@ -28,7 +28,7 @@ export function ChatLayout({ className }: ChatLayoutProps) {
           <ChatSidebar />
         </ResizablePanel>
 
-        <ResizableHandle />
+        <ResizableHandle className="bg-transparent" />
 
         <ResizablePanel defaultSize="80%" className="min-h-0 min-w-0">
           <div className="flex h-full min-h-0 w-full min-w-0 gap-3 pl-3">

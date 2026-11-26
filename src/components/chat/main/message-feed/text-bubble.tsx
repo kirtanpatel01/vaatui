@@ -22,14 +22,14 @@ function renderHighlightedText(
   const parts = text.split(regex)
 
   const highlightClass = isCurrentMatch
-    ? "bg-starred text-foreground font-semibold rounded-xs px-1 shadow-xs ring-1 ring-starred"
+    ? "bg-transparent text-starred font-bold underline decoration-starred decoration-2 underline-offset-2"
     : isSentByMe
-      ? "bg-chat-bubble-sent-foreground/20 text-chat-bubble-sent-foreground rounded-xs px-0.5 font-medium underline decoration-starred decoration-2 underline-offset-2"
-      : "bg-starred/25 text-foreground rounded-xs px-0.5 font-medium"
+      ? "bg-transparent text-starred/80 font-semibold"
+      : "bg-transparent text-starred/90 font-semibold"
 
   return parts.map((part, i) =>
     regex.test(part) ? (
-      <mark key={i} className={cn("transition-colors duration-150 inline-block leading-tight", highlightClass)}>
+      <mark key={i} className={cn("transition-colors duration-150", highlightClass)}>
         {part}
       </mark>
     ) : (

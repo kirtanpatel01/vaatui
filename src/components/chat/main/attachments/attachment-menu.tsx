@@ -9,24 +9,24 @@ import {
   IconPlus,
   IconPhoto,
   IconFile,
-  IconCamera,
-  IconUserPlus,
-  IconChartBar,
 } from "@tabler/icons-react"
+import { CameraModalMenuItem } from "./camera-modal"
+import { CreatePollModalMenuItem } from "./create-poll-modal"
+import { ShareContactModalMenuItem } from "./share-contact-modal"
 import { cn } from "cn"
 
 export interface AttachmentOption {
   id: string
   label: string
-  icon: React.ComponentType<{ className?: string }>
+  icon?: React.ComponentType<{ className?: string }>
 }
 
 export const DEFAULT_ATTACHMENT_OPTIONS: AttachmentOption[] = [
   { id: "photo", icon: IconPhoto, label: "Photo or Video" },
   { id: "file", icon: IconFile, label: "File" },
-  { id: "camera", icon: IconCamera, label: "Camera" },
-  { id: "contact", icon: IconUserPlus, label: "Contact" },
-  { id: "poll", icon: IconChartBar, label: "Poll" },
+  { id: "camera", label: "Camera" },
+  { id: "contact", label: "Contact" },
+  { id: "poll", label: "Poll" },
 ]
 
 export interface AttachmentMenuProps {
@@ -74,18 +74,40 @@ export function AttachmentMenu({
       >
         <div className="flex flex-col gap-0.5 text-xs font-medium">
           {options.map((item) => {
+            const handleClick = () => {
+              onOpenChange(false)
+              onSelectOption(item.id)
+            }
+            if (item.id === "camera") {
+              return (
+                <CameraModalMenuItem key={item.id} onClick={handleClick}>
+                  {item.label}
+                </CameraModalMenuItem>
+              )
+            }
+            if (item.id === "contact") {
+              return (
+                <ShareContactModalMenuItem key={item.id} onClick={handleClick}>
+                  {item.label}
+                </ShareContactModalMenuItem>
+              )
+            }
+            if (item.id === "poll") {
+              return (
+                <CreatePollModalMenuItem key={item.id} onClick={handleClick}>
+                  {item.label}
+                </CreatePollModalMenuItem>
+              )
+            }
             const Icon = item.icon
             return (
               <button
                 key={item.id}
                 type="button"
-                onClick={() => {
-                  onOpenChange(false)
-                  onSelectOption(item.id)
-                }}
+                onClick={handleClick}
                 className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-foreground hover:bg-muted transition-colors cursor-pointer select-none"
               >
-                <Icon className="size-4 text-muted-foreground" />
+                {Icon && <Icon className="size-4 text-muted-foreground" />}
                 <span>{item.label}</span>
               </button>
             )

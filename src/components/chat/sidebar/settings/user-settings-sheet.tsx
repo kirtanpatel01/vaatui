@@ -1,3 +1,4 @@
+import * as React from "react"
 import { useState, useEffect, useMemo } from "react"
 import {
   IconX,
@@ -27,6 +28,23 @@ import { ProfileSettingsView } from "./profile-settings-view"
 import { AppearanceSettingsView } from "./appearance-settings-view"
 import { PrivacySettingsView } from "./privacy-settings-view"
 import { cn } from "cn"
+
+export const UserSettingsTrigger = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<typeof Button>
+>(({ className, ...props }, ref) => (
+  <Button
+    ref={ref}
+    type="button"
+    variant="ghost"
+    size="icon"
+    className={cn("shrink-0 text-muted-foreground hover:text-foreground", className)}
+    title="Settings"
+    aria-label="Settings"
+    {...props}
+  />
+))
+UserSettingsTrigger.displayName = "UserSettingsTrigger"
 
 export interface UserSettingsSheetProps {
   open: boolean

@@ -37,6 +37,10 @@ import {
 import { type UserProfile } from "@/data/mock-contacts"
 import { type ChatMessage } from "@/data/mock-messages"
 import { exportChatAsText, exportChatAsJson, exportChatAsMarkdown } from "./chat-export-utils"
+import {
+  StarredMessagesMenuItem,
+  PinnedMessagesMenuItem,
+} from "./saved-messages-sheet"
 import { toast } from "@/components/ui/toast"
 
 export interface ChatHeaderOptionsMenuProps {
@@ -146,26 +150,10 @@ export function ChatHeaderOptionsMenu({
           </DropdownMenuItem>
 
           {/* Starred messages */}
-          <DropdownMenuItem onClick={onOpenStarredModal} className="cursor-pointer">
-            <IconStar className="size-4 text-starred" />
-            <span className="flex-1">Starred messages</span>
-            {starredCount > 0 && (
-              <span className="text-[11px] tabular-nums text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
-                {starredCount}
-              </span>
-            )}
-          </DropdownMenuItem>
+          <StarredMessagesMenuItem onClick={onOpenStarredModal} count={starredCount} />
 
           {/* Pinned messages */}
-          <DropdownMenuItem onClick={onOpenPinnedModal} className="cursor-pointer">
-            <IconPin className="size-4 text-primary" />
-            <span className="flex-1">Pinned messages</span>
-            {pinnedCount > 0 && (
-              <span className="text-[11px] tabular-nums text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
-                {pinnedCount}
-              </span>
-            )}
-          </DropdownMenuItem>
+          <PinnedMessagesMenuItem onClick={onOpenPinnedModal} count={pinnedCount} />
 
           <DropdownMenuSeparator />
 

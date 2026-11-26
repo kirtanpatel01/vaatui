@@ -46,6 +46,16 @@ export function MessageItem({
   onReact,
   onVotePoll,
 }: MessageItemProps) {
+  if ((message as ChatMessage & { isSystem?: boolean }).isSystem) {
+    return (
+      <div className="flex justify-center my-2">
+        <span className="rounded-full bg-muted/80 px-3 py-1 text-[11px] font-medium text-muted-foreground select-none">
+          {message.text}
+        </span>
+      </div>
+    )
+  }
+
   const isMe = message.isSentByMe
   const isGroup = contact?.type === "group"
 
@@ -195,6 +205,7 @@ export function MessageItem({
             <MessageReactions
               reactions={message.reactions}
               isSentByMe={isMe}
+              contact={contact}
               onReactionClick={(emoji) => onReact?.(message.id, emoji)}
             />
           </div>
@@ -300,6 +311,7 @@ export function MessageItem({
             <MessageReactions
               reactions={message.reactions}
               isSentByMe={isMe}
+              contact={contact}
               onReactionClick={(emoji) => onReact?.(message.id, emoji)}
             />
           </div>

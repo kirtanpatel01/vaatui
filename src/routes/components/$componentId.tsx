@@ -72,7 +72,7 @@ function ComponentDetailPage() {
       </div>
 
       {/* 3. Centered Component Preview Workspace */}
-      <div className="flex-1 w-full rounded-2xl border border-border/80 bg-muted/20 flex items-center justify-center p-6 sm:p-12 min-h-[460px] shadow-2xs overflow-hidden">
+      <div className="flex-1 w-full flex items-center justify-center p-6 sm:p-12 min-h-[460px] overflow-hidden">
         {component.render()}
       </div>
       </Container>

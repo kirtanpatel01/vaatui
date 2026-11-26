@@ -25,11 +25,13 @@ export function ChatSidebar({
   const setContacts = useChatStore((s) => s.setContacts)
   const updateContact = useChatStore((s) => s.updateContact)
   const deleteChat = useChatStore((s) => s.deleteChat)
+  const startNewChat = useChatStore((s) => s.startNewChat)
   const setActiveContact = useChatStore((s) => s.setActiveContact)
   const activeContact = useActiveContact()
 
   const [tabs, setTabs] = React.useState<FilterTabItem[]>(DEFAULT_FILTER_TABS)
   const [activeTab, setActiveTab] = React.useState<string>("all")
+  const [searchQuery, setSearchQuery] = React.useState("")
   const [isSheetOpen, setIsSheetOpen] = React.useState(false)
   const [isArchivedOpen, setIsArchivedOpen] = React.useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
@@ -70,6 +72,17 @@ export function ChatSidebar({
     setActiveTab(newId)
   }
 
+  const filteredContacts = React.useMemo(() => {
+    const q = searchQuery.trim().toLowerCase()
+    if (!q) return contacts
+    return contacts.filter(
+      (c) =>
+        c.name.toLowerCase().includes(q) ||
+        c.phone?.toLowerCase().includes(q) ||
+        c.lastMessage?.text?.toLowerCase().includes(q)
+    )
+  }, [contacts, searchQuery])
+
   return (
     <aside
       className={cn(
@@ -78,14 +91,18 @@ export function ChatSidebar({
       )}
     >
       <SidebarHeader
+        searchValue={searchQuery}
+        onSearchChange={(e) => setSearchQuery(e.target.value)}
+        onSearch={setSearchQuery}
         tabs={tabs}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onAddTab={() => setIsSheetOpen(true)}
+        onSelectContact={startNewChat}
       />
 
       <SidebarMain
-        contacts={contacts}
+        contacts={filteredContacts}
         activeTab={activeTab}
         activeChatId={activeContact?.id}
         showScrollbar={showScrollbar}

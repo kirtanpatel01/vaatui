@@ -7,6 +7,11 @@ export { ArchivedChatsSheet, type ArchivedChatsSheetProps } from "./archived-cha
 export { SidebarHeader, type SidebarHeaderProps } from "./header/sidebar-header"
 export { SidebarSearch, type SidebarSearchProps } from "./header/sidebar-search"
 export { FilterTabs, type FilterTabsProps } from "./header/filter-tabs"
-export { NewChat, type NewChatProps } from "./header/new-chat"
-export { CreateTabSheet, type CreateTabSheetProps } from "./header/create-tab-sheet"
+export { QuickCompose, type QuickComposeProps } from "./header/quick-compose"
+export {
+  CreateTabSheet,
+  CreateTabButton,
+  CreateTabDropdownItem,
+  type CreateTabSheetProps,
+} from "./header/create-tab-sheet"
 export { UserSettingsSheet, type UserSettingsSheetProps } from "./settings/user-settings-sheet"

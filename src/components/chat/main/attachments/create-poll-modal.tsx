@@ -7,6 +7,44 @@ import {
 } from "@/components/ui/dialog"
 import { IconChartBar, IconPlus, IconTrash } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
+import { cn } from "cn"
+
+export const CreatePollModalTrigger = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<typeof Button>
+>(({ className, ...props }, ref) => (
+  <Button
+    ref={ref}
+    type="button"
+    variant="secondary"
+    size="icon"
+    className={cn("shrink-0", className)}
+    aria-label="Create poll"
+    {...props}
+  >
+    <IconChartBar className="size-4" />
+  </Button>
+))
+CreatePollModalTrigger.displayName = "CreatePollModalTrigger"
+
+export const CreatePollModalMenuItem = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ className, children, ...props }, ref) => (
+  <button
+    ref={ref}
+    type="button"
+    className={cn(
+      "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-foreground hover:bg-muted transition-colors cursor-pointer select-none",
+      className
+    )}
+    {...props}
+  >
+    <IconChartBar className="size-4 text-muted-foreground" />
+    <span>{children ?? "Poll"}</span>
+  </button>
+))
+CreatePollModalMenuItem.displayName = "CreatePollModalMenuItem"
 
 export interface CreatePollModalProps {
   open: boolean

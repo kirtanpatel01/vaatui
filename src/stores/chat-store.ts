@@ -31,6 +31,7 @@ export interface ChatActions {
   // Contacts
   setContacts: (contacts: UserProfile[] | ((prev: UserProfile[]) => UserProfile[])) => void
   updateContact: (updated: UserProfile) => void
+  startNewChat: (contact: { name: string; phone: string }) => void
   deleteChat: (contactId: string) => void
   toggleMute: (contactId?: string) => void
   toggleBlock: (contactId?: string) => void
@@ -82,14 +83,20 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     })),
 
   setActiveContactId: (id) =>
-    set({
+    set((state) => ({
       activeContactId: id,
-    }),
+      contacts: state.contacts.map((c) =>
+        c.id === id ? { ...c, unreadCount: 0, hasMention: false } : c
+      ),
+    })),
 
   setActiveContact: (contact) =>
-    set({
+    set((state) => ({
       activeContactId: contact.id,
-    }),
+      contacts: state.contacts.map((c) =>
+        c.id === contact.id ? { ...c, unreadCount: 0, hasMention: false } : c
+      ),
+    })),
 
   setContacts: (updater) =>
     set((state) => ({
@@ -100,6 +107,42 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     set((state) => ({
       contacts: state.contacts.map((c) => (c.id === updated.id ? updated : c)),
     })),
+
+  startNewChat: (contact) =>
+    set((state) => {
+      const existing = state.contacts.find(
+        (c) =>
+          c.name.toLowerCase() === contact.name.toLowerCase() ||
+          (c.phone && c.phone === contact.phone)
+      )
+      if (existing) {
+        return { activeContactId: existing.id }
+      }
+
+      const newId = `chat_${Date.now()}`
+      const newContact: UserProfile = {
+        id: newId,
+        type: "direct",
+        name: contact.name,
+        phone: contact.phone,
+        isOnline: true,
+        tabs: ["all"],
+        lastMessage: {
+          text: "No messages yet",
+          time: "Just now",
+          contentType: "text",
+        },
+      }
+
+      return {
+        contacts: [newContact, ...state.contacts],
+        allMessages: {
+          ...state.allMessages,
+          [newId]: [],
+        },
+        activeContactId: newId,
+      }
+    }),
 
   deleteChat: (contactId) =>
     set((state) => {
@@ -130,19 +173,55 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     set((state) => {
       const contactId = targetId ?? state.activeContactId
       const next = new Set(state.blockedContactIds)
-      if (next.has(contactId)) {
+      const wasBlocked = next.has(contactId)
+      if (wasBlocked) {
         next.delete(contactId)
       } else {
         next.add(contactId)
       }
-      return { blockedContactIds: next }
+      const systemMsg: ChatMessage = {
+        id: `sys_${Date.now()}`,
+        chatId: contactId,
+        senderId: "system",
+        senderName: "System",
+        text: wasBlocked ? "You unblocked this contact" : "You blocked this contact",
+        timestamp: "Just now",
+        isSentByMe: false,
+        isSystem: true,
+      } as ChatMessage & { isSystem?: boolean }
+      const existing = state.allMessages[contactId] ?? []
+      return {
+        blockedContactIds: next,
+        allMessages: {
+          ...state.allMessages,
+          [contactId]: [...existing, systemMsg],
+        },
+      }
     }),
 
   unblockContact: (contactId) =>
     set((state) => {
       const next = new Set(state.blockedContactIds)
+      if (!next.has(contactId)) return { blockedContactIds: next }
       next.delete(contactId)
-      return { blockedContactIds: next }
+      const systemMsg: ChatMessage = {
+        id: `sys_${Date.now()}`,
+        chatId: contactId,
+        senderId: "system",
+        senderName: "System",
+        text: "You unblocked this contact",
+        timestamp: "Just now",
+        isSentByMe: false,
+        isSystem: true,
+      } as ChatMessage & { isSystem?: boolean }
+      const existing = state.allMessages[contactId] ?? []
+      return {
+        blockedContactIds: next,
+        allMessages: {
+          ...state.allMessages,
+          [contactId]: [...existing, systemMsg],
+        },
+      }
     }),
 
   sendMessage: (text, replyTo, attachment) =>

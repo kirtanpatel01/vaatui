@@ -20,6 +20,26 @@ import {
 } from "@tabler/icons-react"
 import { cn } from "cn"
 
+export const ForwardMessageAction = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ className, ...props }, ref) => (
+  <button
+    ref={ref}
+    type="button"
+    className={cn(
+      "flex size-7 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground transition-all cursor-pointer",
+      className
+    )}
+    title="Forward"
+    aria-label="Forward message"
+    {...props}
+  >
+    <IconArrowForwardUp className="size-4" />
+  </button>
+))
+ForwardMessageAction.displayName = "ForwardMessageAction"
+
 export interface ForwardMessageDialogProps {
   message: ChatMessage | null
   open: boolean

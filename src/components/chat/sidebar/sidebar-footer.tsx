@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button"
-import { IconSettings } from "@tabler/icons-react"
 import { useChatStore } from "@/stores/chat-store"
 import { cn } from "cn"
 
@@ -56,19 +54,6 @@ export function SidebarFooter({ className, onOpenSettings }: SidebarFooterProps)
         </div>
       </button>
 
-      {/* Action Buttons */}
-      <div className="flex items-center gap-0.5 shrink-0">
-        <Button
-          variant="ghost"
-          size="icon-xs"
-          onClick={onOpenSettings}
-          className="text-muted-foreground hover:text-foreground cursor-pointer rounded-lg"
-          aria-label="Settings"
-          title="Settings"
-        >
-          <IconSettings className="size-4" />
-        </Button>
-      </div>
     </div>
   )
 }

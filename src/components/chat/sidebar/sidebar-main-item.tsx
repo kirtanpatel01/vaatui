@@ -140,8 +140,8 @@ export function SidebarMainItem({
   }
 
   // Action handlers
-  const handleTogglePin = (e: React.MouseEvent) => {
-    e.stopPropagation()
+  const handleTogglePin = (e?: React.MouseEvent) => {
+    e?.stopPropagation()
     setMenuOpen(false)
     onUpdateContact?.({
       ...contact,
@@ -149,8 +149,8 @@ export function SidebarMainItem({
     })
   }
 
-  const handleToggleMute = (e: React.MouseEvent) => {
-    e.stopPropagation()
+  const handleToggleMute = (e?: React.MouseEvent) => {
+    e?.stopPropagation()
     setMenuOpen(false)
     onUpdateContact?.({
       ...contact,
@@ -158,8 +158,8 @@ export function SidebarMainItem({
     })
   }
 
-  const handleToggleUnread = (e: React.MouseEvent) => {
-    e.stopPropagation()
+  const handleToggleUnread = (e?: React.MouseEvent) => {
+    e?.stopPropagation()
     setMenuOpen(false)
     const isCurrentlyUnread = Boolean(contact.unreadCount && contact.unreadCount > 0)
     onUpdateContact?.({
@@ -168,8 +168,8 @@ export function SidebarMainItem({
     })
   }
 
-  const handleToggleArchive = (e: React.MouseEvent) => {
-    e.stopPropagation()
+  const handleToggleArchive = (e?: React.MouseEvent) => {
+    e?.stopPropagation()
     setMenuOpen(false)
     const isArchived = contact.tabs.includes("archived")
     const newTabs = isArchived
@@ -181,8 +181,8 @@ export function SidebarMainItem({
     })
   }
 
-  const handleDelete = (e: React.MouseEvent) => {
-    e.stopPropagation()
+  const handleDelete = (e?: React.MouseEvent) => {
+    e?.stopPropagation()
     setMenuOpen(false)
     onDeleteChat?.(contact.id)
   }
@@ -237,77 +237,8 @@ export function SidebarMainItem({
 
           {/* Row 2: Message preview + Badges / Pin / Mute */}
           <div className="flex items-center justify-between gap-1.5 mt-1">
-            {/* Left: Delivery tick / Media Icon / Message text */}
-            <div className="flex items-center gap-1 min-w-0 text-xs">
-              {/* Outbound delivery status (sent, delivered, read, sending, failed) */}
-              {lastMessage.isSentByMe && (
-                <DeliveryStatusIcon status={lastMessage.status ?? "sent"} />
-              )}
-
-              {/* Inbound: Typing animation or Draft */}
-              {lastMessage.isTyping ? (
-                <TypingIndicator variant="full" />
-              ) : lastMessage.isDraft ? (
-                <span className="text-starred font-medium truncate flex items-center gap-1">
-                  <IconEdit className="size-3 shrink-0" />
-                  Draft: <span className="text-muted-foreground font-normal">{lastMessage.text}</span>
-                </span>
-              ) : (
-                <span className="text-muted-foreground truncate flex items-center gap-1">
-                  {/* Media Icon if photo/video/audio/file */}
-                  <MediaIcon type={lastMessage.contentType} />
-
-                  {/* Emoji prefix if any */}
-                  {lastMessage.emoji ? `${lastMessage.emoji} ` : ""}
-
-                  {/* Author prefix for group chats */}
-                  {lastMessage.authorPrefix ? (
-                    <span className="font-normal text-muted-foreground">
-                      {lastMessage.authorPrefix}
-                    </span>
-                  ) : null}
-
-                  <span className="truncate">{lastMessage.text}</span>
-                </span>
-              )}
-            </div>
-
-            {/* Right: Badges, Muted Icon, Pin Icon */}
-            <div className="flex items-center gap-1 shrink-0">
-              {/* Mention badge '@' */}
-              {contact.hasMention && (
-                <span
-                  title="Mentioned"
-                  className="flex size-4 items-center justify-center rounded-full bg-primary/20 text-primary text-[10px] font-bold"
-                >
-                  <IconAt className="size-2.5 stroke-[3]" />
-                </span>
-              )}
-
-              {/* Muted Bell Icon */}
-              {contact.isMuted && (
-                <IconBellOff className="size-3.5 text-muted-foreground/70" />
-              )}
-
-              {/* Pin Icon */}
-              {contact.isPinned && (
-                <IconPin className="size-3.5 text-muted-foreground/80 rotate-45" />
-              )}
-
-              {/* Unread Message Count Badge */}
-              {contact.unreadCount && contact.unreadCount > 0 ? (
-                <span
-                  className={cn(
-                    "flex h-4 min-w-4 px-1 items-center justify-center rounded-full text-[10px] font-bold leading-none select-none",
-                    contact.isMuted
-                      ? "bg-muted-foreground/30 text-muted-foreground"
-                      : "bg-primary text-primary-foreground"
-                  )}
-                >
-                  {contact.unreadCount > 99 ? "99+" : contact.unreadCount}
-                </span>
-              ) : null}
-            </div>
+            <SidebarItemPreview lastMessage={lastMessage} />
+            <SidebarItemBadges contact={contact} />
           </div>
         </div>
       </PopoverTrigger>
@@ -322,6 +253,78 @@ export function SidebarMainItem({
         onDelete={handleDelete}
       />
     </Popover>
+  )
+}
+
+export function SidebarItemPreview({
+  lastMessage,
+}: {
+  lastMessage: UserProfile["lastMessage"]
+}) {
+  return (
+    <div className="flex items-center gap-1 min-w-0 text-xs">
+      {lastMessage.isSentByMe && (
+        <DeliveryStatusIcon status={lastMessage.status ?? "sent"} />
+      )}
+
+      {lastMessage.isTyping ? (
+        <TypingIndicator variant="full" />
+      ) : lastMessage.isDraft ? (
+        <span className="text-starred font-medium truncate">
+          Draft:{" "}
+          <span className="text-muted-foreground font-normal">
+            {lastMessage.text}
+          </span>
+        </span>
+      ) : (
+        <span className="text-muted-foreground truncate flex items-center gap-1">
+          <MediaIcon type={lastMessage.contentType} />
+          {lastMessage.emoji ? `${lastMessage.emoji} ` : ""}
+          {lastMessage.authorPrefix ? (
+            <span className="font-normal text-muted-foreground">
+              {lastMessage.authorPrefix}
+            </span>
+          ) : null}
+          <span className="truncate">{lastMessage.text}</span>
+        </span>
+      )}
+    </div>
+  )
+}
+
+export function SidebarItemBadges({ contact }: { contact: UserProfile }) {
+  return (
+    <div className="flex items-center gap-1 shrink-0">
+      {contact.hasMention && (
+        <span
+          title="Mentioned"
+          className="flex size-4 items-center justify-center rounded-full bg-primary/20 text-primary text-[10px] font-bold"
+        >
+          <IconAt className="size-2.5 stroke-[3]" />
+        </span>
+      )}
+
+      {contact.isMuted && (
+        <IconBellOff className="size-3.5 text-muted-foreground/70" />
+      )}
+
+      {contact.isPinned && (
+        <IconPin className="size-3.5 text-muted-foreground/80 rotate-45" />
+      )}
+
+      {contact.unreadCount && contact.unreadCount > 0 ? (
+        <span
+          className={cn(
+            "flex h-4 min-w-4 px-1 items-center justify-center rounded-full text-[10px] font-bold leading-none select-none",
+            contact.isMuted
+              ? "bg-muted-foreground/30 text-muted-foreground"
+              : "bg-primary text-primary-foreground"
+          )}
+        >
+          {contact.unreadCount > 99 ? "99+" : contact.unreadCount}
+        </span>
+      ) : null}
+    </div>
   )
 }
 

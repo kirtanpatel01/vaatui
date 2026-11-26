@@ -8,6 +8,44 @@ import {
 import { IconUserPlus, IconSearch, IconCheck } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { type UserProfile } from "@/data/mock-contacts"
+import { cn } from "cn"
+
+export const ShareContactModalTrigger = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<typeof Button>
+>(({ className, ...props }, ref) => (
+  <Button
+    ref={ref}
+    type="button"
+    variant="secondary"
+    size="icon"
+    className={cn("shrink-0", className)}
+    aria-label="Share contact"
+    {...props}
+  >
+    <IconUserPlus className="size-4" />
+  </Button>
+))
+ShareContactModalTrigger.displayName = "ShareContactModalTrigger"
+
+export const ShareContactModalMenuItem = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ className, children, ...props }, ref) => (
+  <button
+    ref={ref}
+    type="button"
+    className={cn(
+      "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-foreground hover:bg-muted transition-colors cursor-pointer select-none",
+      className
+    )}
+    {...props}
+  >
+    <IconUserPlus className="size-4 text-muted-foreground" />
+    <span>{children ?? "Contact"}</span>
+  </button>
+))
+ShareContactModalMenuItem.displayName = "ShareContactModalMenuItem"
 
 export interface ShareContactModalProps {
   contacts: UserProfile[]

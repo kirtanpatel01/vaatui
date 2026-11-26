@@ -6,6 +6,11 @@ import {
   IconChevronUp,
   IconChevronDown,
 } from "@tabler/icons-react"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group"
 import { cn } from "cn"
 
 export interface ChatHeaderSearchProps {
@@ -85,13 +90,13 @@ export function ChatHeaderSearch({
       </button>
 
       {/* Search input field visible only when open */}
-      <div
+      <InputGroup
         className={cn(
-          "flex flex-1 items-center min-w-0 pr-2 transition-opacity duration-150",
+          "flex-1 min-w-0 border-0 bg-transparent shadow-none h-9 pr-1.5 transition-opacity duration-150 has-[[data-slot=input-group-control]:focus-visible]:ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-transparent",
           isSearchOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
       >
-        <input
+        <InputGroupInput
           ref={searchInputRef}
           type="text"
           value={searchQuery}
@@ -99,12 +104,12 @@ export function ChatHeaderSearch({
           onKeyDown={handleKeyDown}
           placeholder="Search messages..."
           tabIndex={isSearchOpen ? 0 : -1}
-          className="w-full min-w-0 bg-transparent text-xs text-foreground placeholder:text-muted-foreground focus:outline-hidden"
+          className="h-9 px-0 text-xs"
         />
 
         {/* Match Counter & Next/Prev when there are results */}
         {searchQuery.trim().length > 0 && (
-          <div className="flex items-center gap-0.5 shrink-0 mx-1 text-[11px] text-muted-foreground font-medium select-none">
+          <InputGroupAddon align="inline-end" className="gap-0.5 pr-0.5 text-[11px] font-medium select-none">
             {searchMatchCount > 0 ? (
               <>
                 <span className="tabular-nums mr-0.5">
@@ -130,7 +135,7 @@ export function ChatHeaderSearch({
             ) : (
               <span className="text-muted-foreground/80">0</span>
             )}
-          </div>
+          </InputGroupAddon>
         )}
 
         {/* Close / Clear Search Button */}
@@ -148,7 +153,7 @@ export function ChatHeaderSearch({
         >
           <IconX className="size-3.5" />
         </button>
-      </div>
+      </InputGroup>
     </motion.div>
   )
 }

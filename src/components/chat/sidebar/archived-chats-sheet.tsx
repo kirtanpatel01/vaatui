@@ -1,10 +1,45 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
-import { IconArchive, IconArrowLeft } from "@tabler/icons-react"
+import { IconArchive, IconArrowLeft, IconChevronRight } from "@tabler/icons-react"
 import { type UserProfile } from "@/data/mock-contacts"
 import SidebarMainItem from "./sidebar-main-item"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "cn"
+
+export interface ArchivedChatsTriggerProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  count: number
+}
+
+export const ArchivedChatsTrigger = React.forwardRef<
+  HTMLButtonElement,
+  ArchivedChatsTriggerProps
+>(({ count, className, ...props }, ref) => {
+  if (count <= 0) return null
+  return (
+    <button
+      ref={ref}
+      type="button"
+      className={cn(
+        "flex w-full items-center justify-between px-2.5 py-1.5 rounded-xl hover:bg-muted/60 transition-colors text-left cursor-pointer group",
+        className
+      )}
+      {...props}
+    >
+      <div className="flex items-center gap-2.5">
+        <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary text-secondary-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+          <IconArchive className="size-3.5" />
+        </div>
+        <span className="text-xs font-medium text-foreground">Archived</span>
+      </div>
+      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+        <span>{count}</span>
+        <IconChevronRight className="size-3.5" />
+      </div>
+    </button>
+  )
+})
+ArchivedChatsTrigger.displayName = "ArchivedChatsTrigger"
 
 interface ArchivedChatsSheetProps {
   open: boolean

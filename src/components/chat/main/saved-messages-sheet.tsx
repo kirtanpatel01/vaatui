@@ -19,8 +19,46 @@ import {
   IconShare,
   IconChecks,
 } from "@tabler/icons-react"
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { toast } from "@/components/ui/toast"
 import { cn } from "cn"
+
+export interface SavedMessagesMenuItemProps
+  extends React.ComponentProps<typeof DropdownMenuItem> {
+  count?: number
+}
+
+export const StarredMessagesMenuItem = React.forwardRef<
+  HTMLDivElement,
+  SavedMessagesMenuItemProps
+>(({ count = 0, className, ...props }, ref) => (
+  <DropdownMenuItem ref={ref} className={cn("cursor-pointer", className)} {...props}>
+    <IconStar className="size-4 text-starred" />
+    <span className="flex-1">Starred messages</span>
+    {count > 0 && (
+      <span className="text-[11px] tabular-nums text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
+        {count}
+      </span>
+    )}
+  </DropdownMenuItem>
+))
+StarredMessagesMenuItem.displayName = "StarredMessagesMenuItem"
+
+export const PinnedMessagesMenuItem = React.forwardRef<
+  HTMLDivElement,
+  SavedMessagesMenuItemProps
+>(({ count = 0, className, ...props }, ref) => (
+  <DropdownMenuItem ref={ref} className={cn("cursor-pointer", className)} {...props}>
+    <IconPin className="size-4 text-primary" />
+    <span className="flex-1">Pinned messages</span>
+    {count > 0 && (
+      <span className="text-[11px] tabular-nums text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
+        {count}
+      </span>
+    )}
+  </DropdownMenuItem>
+))
+PinnedMessagesMenuItem.displayName = "PinnedMessagesMenuItem"
 
 export interface SavedMessagesSheetProps {
   type: "starred" | "pinned"

@@ -35,7 +35,7 @@ export function SidebarItemContextMenu({
   ...props
 }: SidebarItemContextMenuProps) {
   const isUnread = (contact.unreadCount ?? 0) > 0 || contact.isMarkedUnread
-  const isArchived = contact.isArchived
+  const isArchived = contact.tabs.includes("archived")
 
   return (
     <PopoverContent

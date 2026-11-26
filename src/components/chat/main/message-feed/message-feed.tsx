@@ -64,6 +64,13 @@ export function MessageFeed({
     prevChatIdRef.current = contact?.id
   }, [messages.length, contact?.id, searchQuery])
 
+  React.useEffect(() => {
+    if (!activeSearchMessageId) return
+    document
+      .getElementById(`message-${activeSearchMessageId}`)
+      ?.scrollIntoView({ behavior: "smooth", block: "center" })
+  }, [activeSearchMessageId])
+
   // Group messages by date
   const groupedMessages = React.useMemo(() => {
     const groups: { date: string; items: ChatMessage[] }[] = []
@@ -91,21 +98,22 @@ export function MessageFeed({
 
           {/* Messages */}
           {group.items.map((message) => (
-            <MessageItem
-              key={message.id}
-              message={message}
-              contact={contact}
-              searchQuery={searchQuery}
-              isSearchActiveMatch={activeSearchMessageId === message.id}
-              onReply={onReply}
-              onCopy={onCopy}
-              onForward={onForward}
-              onStar={onStar}
-              onPin={onPin}
-              onDeleteMessage={onDeleteMessage}
-              onReact={onReact}
-              onVotePoll={onVotePoll}
-            />
+            <div key={message.id} id={`message-${message.id}`}>
+              <MessageItem
+                message={message}
+                contact={contact}
+                searchQuery={searchQuery}
+                isSearchActiveMatch={activeSearchMessageId === message.id}
+                onReply={onReply}
+                onCopy={onCopy}
+                onForward={onForward}
+                onStar={onStar}
+                onPin={onPin}
+                onDeleteMessage={onDeleteMessage}
+                onReact={onReact}
+                onVotePoll={onVotePoll}
+              />
+            </div>
           ))}
         </div>
       ))}

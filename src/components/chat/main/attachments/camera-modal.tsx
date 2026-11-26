@@ -7,6 +7,44 @@ import {
 } from "@/components/ui/dialog"
 import { IconCamera, IconRefresh, IconCheck, IconAlertCircle } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
+import { cn } from "cn"
+
+export const CameraModalTrigger = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<typeof Button>
+>(({ className, ...props }, ref) => (
+  <Button
+    ref={ref}
+    type="button"
+    variant="secondary"
+    size="icon"
+    className={cn("shrink-0", className)}
+    aria-label="Open camera"
+    {...props}
+  >
+    <IconCamera className="size-4" />
+  </Button>
+))
+CameraModalTrigger.displayName = "CameraModalTrigger"
+
+export const CameraModalMenuItem = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ className, children, ...props }, ref) => (
+  <button
+    ref={ref}
+    type="button"
+    className={cn(
+      "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-foreground hover:bg-muted transition-colors cursor-pointer select-none",
+      className
+    )}
+    {...props}
+  >
+    <IconCamera className="size-4 text-muted-foreground" />
+    <span>{children ?? "Camera"}</span>
+  </button>
+))
+CameraModalMenuItem.displayName = "CameraModalMenuItem"
 
 export interface CameraModalProps {
   open: boolean

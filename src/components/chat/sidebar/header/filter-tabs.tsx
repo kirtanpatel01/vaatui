@@ -8,6 +8,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  CreateTabButton,
+  CreateTabDropdownItem,
+} from "./create-tab-sheet"
 import { motion, AnimatePresence } from "motion/react"
 import { cn } from "cn"
 
@@ -247,10 +251,7 @@ function FilterTabs({
                 {isSelectedFromDropdown && (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={onAddTab}>
-                      <IconPlus className="size-4" />
-                      Add tab
-                    </DropdownMenuItem>
+                    <CreateTabDropdownItem onClick={onAddTab} />
                   </>
                 )}
               </DropdownMenuContent>
@@ -269,21 +270,117 @@ function FilterTabs({
               transition={{ type: "spring", stiffness: 420, damping: 30 }}
               className="shrink-0"
             >
-              <Button
+              <CreateTabButton
                 ref={actionButtonRef}
-                variant="secondary"
-                size="icon"
-                className="shrink-0"
                 onClick={onAddTab}
-                aria-label="Add tab"
-              >
-                <IconPlus />
-              </Button>
+              />
             </motion.div>
           )}
         </AnimatePresence>
       </div>
     </>
+  )
+}
+
+export interface FilterTabProps {
+  tab: FilterTabItem
+  isActive: boolean
+  onSelect: (id: string) => void
+}
+
+export function FilterTab({ tab, isActive, onSelect }: FilterTabProps) {
+  return (
+    <motion.div
+      key={tab.id}
+      layout
+      initial={{ opacity: 0, scale: 0.9, x: -8 }}
+      animate={{ opacity: 1, scale: 1, x: 0 }}
+      exit={{ opacity: 0, scale: 0.85, x: 8 }}
+      transition={{
+        type: "spring",
+        stiffness: 420,
+        damping: 30,
+        opacity: { duration: 0.16 },
+      }}
+      className="relative shrink-0"
+    >
+      {isActive && (
+        <motion.span
+          layoutId="filter-tabs-active-pill"
+          className="absolute inset-0 rounded-4xl bg-primary"
+          transition={{
+            type: "spring",
+            stiffness: 500,
+            damping: 35,
+          }}
+        />
+      )}
+      <button
+        type="button"
+        onClick={() => onSelect(tab.id)}
+        className={cn(
+          "relative z-10 inline-flex h-9 items-center justify-center rounded-4xl px-3 text-sm font-medium transition-colors select-none",
+          isActive
+            ? "text-primary-foreground font-semibold"
+            : "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)]"
+        )}
+      >
+        {tab.label}
+      </button>
+    </motion.div>
+  )
+}
+
+export interface FilterTabsOverflowProps {
+  tabs: FilterTabItem[]
+  showAddTabItem?: boolean
+  onSelectTab: (id: string) => void
+  onAddTab?: () => void
+}
+
+export function FilterTabsOverflow({
+  tabs,
+  showAddTabItem = false,
+  onSelectTab,
+  onAddTab,
+}: FilterTabsOverflowProps) {
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: "spring", stiffness: 420, damping: 30 }}
+      className="shrink-0"
+    >
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="secondary"
+              size="icon"
+              className="shrink-0"
+              aria-label="More tabs"
+            />
+          }
+        >
+          <IconDots />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="min-w-36">
+          {tabs.map((tab) => (
+            <DropdownMenuItem key={tab.id} onClick={() => onSelectTab(tab.id)}>
+              {tab.label}
+            </DropdownMenuItem>
+          ))}
+
+          {showAddTabItem && (
+            <>
+              <DropdownMenuSeparator />
+              <CreateTabDropdownItem onClick={onAddTab} />
+            </>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </motion.div>
   )
 }
 

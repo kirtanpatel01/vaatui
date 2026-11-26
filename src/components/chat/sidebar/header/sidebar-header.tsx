@@ -1,6 +1,6 @@
 import * as React from "react"
 import SidebarSearch from "./sidebar-search"
-import NewChat from "./new-chat"
+import QuickCompose from "./quick-compose"
 import FilterTabs, { type FilterTabItem } from "./filter-tabs"
 import { cn } from "cn"
 
@@ -9,6 +9,7 @@ interface SidebarHeaderProps extends React.ComponentProps<"div"> {
   onSearchChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
   onSearch?: (value: string) => void
   onNewChat?: () => void
+  onSelectContact?: (contact: { name: string; phone: string }) => void
   tabs?: FilterTabItem[]
   activeTab?: string
   onTabChange?: (tabId: string) => void
@@ -21,6 +22,7 @@ function SidebarHeader({
   onSearchChange,
   onSearch,
   onNewChat,
+  onSelectContact,
   tabs,
   activeTab,
   onTabChange,
@@ -35,7 +37,7 @@ function SidebarHeader({
           onChange={onSearchChange}
           onSearch={onSearch}
         />
-        <NewChat onNewChat={onNewChat} />
+        <QuickCompose onOpen={onNewChat} onSelectContact={onSelectContact} />
       </div>
 
       <FilterTabs
