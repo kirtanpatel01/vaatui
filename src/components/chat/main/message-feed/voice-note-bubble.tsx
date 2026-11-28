@@ -219,7 +219,7 @@ export function VoiceNoteBubble({
         type="button"
         onClick={togglePlay}
         className={cn(
-          "flex size-8 shrink-0 items-center justify-center rounded-full transition-transform active:scale-95 cursor-pointer shadow-xs",
+          "flex size-8 shrink-0 items-center justify-center rounded-full transition-transform cursor-pointer shadow-xs",
           isSentByMe
             ? "bg-chat-bubble-sent-foreground text-chat-bubble-sent hover:opacity-90"
             : "bg-foreground text-background hover:opacity-90"
@@ -270,7 +270,7 @@ export function VoiceNoteBubble({
         type="button"
         onClick={toggleSpeed}
         className={cn(
-          "rounded-md px-1.5 py-0.5 text-[10px] font-semibold tabular-nums shrink-0 cursor-pointer transition-all hover:scale-105 active:scale-95",
+          "rounded-md px-1.5 py-0.5 text-[10px] font-semibold tabular-nums shrink-0 cursor-pointer transition-all",
           isSentByMe
             ? "bg-chat-bubble-sent-foreground/15 text-chat-bubble-sent-foreground hover:bg-chat-bubble-sent-foreground/25"
             : "bg-background/80 text-foreground border border-border/60 hover:bg-background"

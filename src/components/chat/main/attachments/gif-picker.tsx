@@ -480,7 +480,7 @@ export function GifPicker({ open, onOpenChange, onSelectGif, children }: GifPick
                     src={gif.previewUrl}
                     alt={gif.title}
                     loading="lazy"
-                    className="size-full object-cover transition-transform duration-200 group-hover:scale-105"
+                    className="size-full object-cover transition-transform duration-200"
                   />
                   <div className="absolute inset-0 bg-background/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-1.5 text-left">
                     <span className="text-[10px] text-foreground truncate font-medium">

@@ -67,7 +67,7 @@ export function MediaPreviewCard({
                     <img
                       src={msg.attachment.thumbnailUrl}
                       alt={msg.attachment.fileName || "Media preview"}
-                      className="size-full object-cover transition-transform duration-200 group-hover/thumb:scale-105"
+                      className="size-full object-cover transition-transform duration-200"
                       loading="lazy"
                     />
                   ) : (

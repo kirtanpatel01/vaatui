@@ -157,7 +157,7 @@ export function MessageReactions({
               </div>
 
               {/* Scrollable list of reactors */}
-              <ScrollArea className="max-h-52 border-t border-border/40">
+              <div className="max-h-52 overflow-y-auto no-scrollbar border-t border-border/40">
                 <div className="p-1.5 space-y-0.5">
                   {reactions.flatMap((r) => {
                     const rows: React.ReactNode[] = []
@@ -207,7 +207,7 @@ export function MessageReactions({
                     return rows
                   })}
                 </div>
-              </ScrollArea>
+              </div>
             </div>
           )}
         </PopoverContent>

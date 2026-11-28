@@ -392,23 +392,48 @@ export const COMPONENTS_CATALOG: ComponentEntry[] = [
     name: "Poll Bubble",
     category: "Message Feed",
     description: "Interactive poll bubble with voting, option percentages, and voter count indicators.",
-    render: () => (
-      <div className="w-full max-w-md">
-        <PollBubble
-          poll={{
-            question: "When should we schedule the design review?",
-            allowMultiple: false,
-            options: [
-              { id: "1", text: "Today 5:00 PM", votes: ["curr_user", "u1", "u2"] },
-              { id: "2", text: "Tomorrow Morning 11:00 AM", votes: ["u3"] },
-              { id: "3", text: "Friday Afternoon", votes: [] },
-            ],
-          }}
-          isSentByMe={false}
-          onVote={() => {}}
-        />
-      </div>
-    ),
+    render: () => {
+      const PollBubbleDemo = () => {
+        const [options, setOptions] = React.useState([
+          { id: "1", text: "Today 5:00 PM", votes: ["curr_user", "u1", "u2"] },
+          { id: "2", text: "Tomorrow Morning 11:00 AM", votes: ["u3"] },
+          { id: "3", text: "Friday Afternoon", votes: [] as string[] },
+        ])
+        const handleVote = (optionId: string) => {
+          setOptions((prev) =>
+            prev.map((opt) => {
+              const hasVoted = opt.votes.includes("curr_user")
+              if (opt.id === optionId) {
+                return {
+                  ...opt,
+                  votes: hasVoted
+                    ? opt.votes.filter((v) => v !== "curr_user")
+                    : [...opt.votes, "curr_user"],
+                }
+              }
+              return {
+                ...opt,
+                votes: opt.votes.filter((v) => v !== "curr_user"),
+              }
+            })
+          )
+        }
+        return (
+          <div className="w-full max-w-md">
+            <PollBubble
+              poll={{
+                question: "When should we schedule the design review?",
+                allowMultiple: false,
+                options,
+              }}
+              isSentByMe={false}
+              onVote={handleVote}
+            />
+          </div>
+        )
+      }
+      return <PollBubbleDemo />
+    },
   },
   {
     id: "contact-bubble",
@@ -437,11 +462,10 @@ export const COMPONENTS_CATALOG: ComponentEntry[] = [
       <div className="w-full max-w-sm">
         <LinkAttachmentBubble
           link={{
-            url: "https://github.com/kirtanpatel01/vaatui",
-            title: "VaatUI — Modern Chat UI Library",
-            description: "Beautifully crafted, modular chat UI components built on shadcn/ui and Tailwind CSS.",
-            domain: "github.com",
-            image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80",
+            url: "https://react.dev/blog/2024/12/05/react-19",
+            title: "React v19 – React Blog",
+            description: "Actions, useActionState, useOptimistic, and new Server Components features.",
+            domain: "react.dev",
           }}
           isSentByMe={false}
         />
@@ -483,7 +507,7 @@ export const COMPONENTS_CATALOG: ComponentEntry[] = [
             <MessageReactions
               reactions={reactions}
               isSentByMe={false}
-              contact={MOCK_CONTACTS[1]}
+              contact={MOCK_CONTACTS.find((c) => c.type === "group") ?? MOCK_CONTACTS[1]}
               className="static"
               onReactionClick={toggle}
             />
@@ -685,9 +709,11 @@ export const COMPONENTS_CATALOG: ComponentEntry[] = [
     category: "Sidebar & Navigation",
     description: "Comprehensive settings sheet covering Profile, Appearance (Dark/Light mode), and Privacy.",
     render: () => (
-      <ModalPreviewTrigger label="Open User Settings Sheet">
-        {(open, setOpen) => <UserSettingsSheet open={open} onOpenChange={setOpen} />}
-      </ModalPreviewTrigger>
+      <div className="relative w-full max-w-[420px] h-[580px] rounded-xl border border-border/60 overflow-hidden bg-background flex items-center justify-center">
+        <ModalPreviewTrigger label="Open User Settings Sheet">
+          {(open, setOpen) => <UserSettingsSheet open={open} onOpenChange={setOpen} />}
+        </ModalPreviewTrigger>
+      </div>
     ),
   },
   {

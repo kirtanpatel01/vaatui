@@ -36,7 +36,7 @@ export function MediaTabContent({
               <img
                 src={msg.attachment.thumbnailUrl}
                 alt={msg.attachment.fileName || "Media thumbnail"}
-                className="size-full object-cover transition-transform duration-200 group-hover/thumb:scale-105"
+                className="size-full object-cover transition-transform duration-200"
                 loading="lazy"
               />
             ) : (

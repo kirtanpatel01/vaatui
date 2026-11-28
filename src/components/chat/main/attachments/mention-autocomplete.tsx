@@ -19,11 +19,25 @@ export function MentionAutocomplete({
   onClose,
 }: MentionAutocompleteProps) {
   const [selectedIndex, setSelectedIndex] = React.useState(0)
+  const containerRef = React.useRef<HTMLDivElement>(null)
+
+  React.useEffect(() => {
+    if (!open) return
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        onClose()
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [open, onClose])
 
   const filteredMembers = React.useMemo(() => {
     const q = filterText.toLowerCase().trim()
-    if (!q) return members
-    return members.filter((m) => m.name.toLowerCase().includes(q))
+    const allOption: GroupMember = { id: "all", name: "all" }
+    const base = !q || "all".includes(q) ? [allOption, ...members] : members
+    if (!q) return base
+    return base.filter((m) => m.name.toLowerCase().includes(q))
   }, [members, filterText])
 
   React.useEffect(() => {
@@ -61,7 +75,10 @@ export function MentionAutocomplete({
   if (!open || filteredMembers.length === 0) return null
 
   return (
-    <div className="absolute bottom-full left-12 mb-2 w-64 rounded-2xl border border-border/80 bg-popover/95 p-1.5 shadow-xl backdrop-blur-md z-40 animate-in fade-in-0 slide-in-from-bottom-2 duration-100">
+    <div
+      ref={containerRef}
+      className="absolute bottom-full left-12 mb-2 w-64 rounded-2xl border border-border/80 bg-popover p-1.5 shadow-xl z-50 animate-in fade-in-0 slide-in-from-bottom-2 duration-100"
+    >
       <div className="px-2 py-1 text-[10px] font-semibold tracking-wider text-muted-foreground uppercase flex items-center gap-1 border-b border-border/40 mb-1">
         <IconAt className="size-3 text-primary" />
         <span>Mention member</span>

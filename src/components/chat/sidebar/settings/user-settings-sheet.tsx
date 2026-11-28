@@ -204,7 +204,7 @@ export function UserSettingsSheet({ open, onOpenChange }: UserSettingsSheetProps
               <button
                 type="button"
                 onClick={() => setView("profile")}
-                className="relative mb-2 px-3 py-1 rounded-full bg-muted/70 hover:bg-muted text-foreground text-xs font-medium border border-border/60 shadow-2xs transition-all hover:scale-102 cursor-pointer flex items-center gap-1.5 max-w-[90%]"
+                className="relative mb-2 px-3 py-1 rounded-full bg-muted/70 hover:bg-muted text-foreground text-xs font-medium border border-border/60 shadow-2xs transition-all cursor-pointer flex items-center gap-1.5 max-w-[90%]"
                 title="Click to edit thought"
               >
                 <IconMessageDots className="size-3 text-primary shrink-0" />
@@ -225,7 +225,7 @@ export function UserSettingsSheet({ open, onOpenChange }: UserSettingsSheetProps
                   <img
                     src={currentUser.avatar}
                     alt={currentUser.name}
-                    className="size-full object-cover transition-transform duration-200 group-hero/thumb:scale-105"
+                    className="size-full object-cover transition-transform duration-200"
                   />
                 ) : (
                   <span>{currentUser.name.charAt(0)}</span>

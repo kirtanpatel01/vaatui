@@ -529,7 +529,7 @@ export function ChatInputBar({
   return (
     <div
       className={cn(
-        "relative flex flex-col gap-2 p-3 bg-background/95 backdrop-blur-md border-t border-border/40 w-full",
+        "relative z-30 flex flex-col gap-2 p-3 bg-background/95 backdrop-blur-md border-t border-border/40 w-full",
         className
       )}
       {...props}

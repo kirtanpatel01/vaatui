@@ -210,9 +210,18 @@ export function MessageItem({
             />
           </div>
         ) : (
-          /* Standard Precision Bubble Card */
-          <div
-            className={cn(
+          <div className="flex flex-col gap-1">
+            {message.attachment?.type === "link" && (
+              <LinkAttachmentBubble
+                link={message.attachment.link}
+                url={message.attachment.url}
+                isSentByMe={isMe}
+              />
+            )}
+
+            {/* Standard Precision Bubble Card */}
+            <div
+              className={cn(
               "relative rounded-2xl px-3.5 py-2 text-sm transition-all duration-200 select-text leading-relaxed",
               isSearchActiveMatch && "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-md",
               isMe
@@ -255,16 +264,6 @@ export function MessageItem({
                 <FileAttachmentBubble
                   fileName={message.attachment.fileName}
                   fileSize={message.attachment.fileSize}
-                  url={message.attachment.url}
-                  isSentByMe={isMe}
-                />
-              </div>
-            )}
-
-            {message.attachment?.type === "link" && (
-              <div className="mb-1.5">
-                <LinkAttachmentBubble
-                  link={message.attachment.link}
                   url={message.attachment.url}
                   isSentByMe={isMe}
                 />
@@ -314,6 +313,7 @@ export function MessageItem({
               contact={contact}
               onReactionClick={(emoji) => onReact?.(message.id, emoji)}
             />
+          </div>
           </div>
         )}
       </div>

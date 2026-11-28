@@ -245,7 +245,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
           .toLowerCase(),
         date: "Today",
         isSentByMe: true,
-        status: "delivered",
+        status: "sent",
         ...(replyTo ? { replyTo } : {}),
         ...(attachment ? { attachment } : {}),
       }
@@ -264,7 +264,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
                 lastMessage: {
                   text: previewText,
                   time: "Just now",
-                  status: "delivered",
+                  status: "sent",
                   isSentByMe: true,
                   contentType,
                 },
@@ -329,40 +329,39 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       const updatedList = chatList.map((msg) => {
         if (msg.id !== messageId) return msg
 
-        const reactions = [...(msg.reactions ?? [])]
+        let reactions = [...(msg.reactions ?? [])]
         const existingIdx = reactions.findIndex((r) => r.emoji === emoji)
+        const alreadyReactedSame =
+          existingIdx >= 0 && reactions[existingIdx].hasReacted
 
-        if (existingIdx >= 0) {
-          const current = reactions[existingIdx]
-          if (current.hasReacted) {
-            if (current.count <= 1) {
-              reactions.splice(existingIdx, 1)
-            } else {
-              reactions[existingIdx] = {
-                ...current,
-                count: current.count - 1,
-                hasReacted: false,
-              }
-            }
-          } else {
-            reactions[existingIdx] = {
-              ...current,
-              count: current.count + 1,
+        // Remove any existing reaction by the current user
+        reactions = reactions
+          .map((r) =>
+            r.hasReacted ? { ...r, count: r.count - 1, hasReacted: false } : r
+          )
+          .filter((r) => r.count > 0)
+
+        // Remove any existing reaction by the current user
+        reactions = reactions
+          .map((r) =>
+            r.hasReacted ? { ...r, count: r.count - 1, hasReacted: false } : r
+          )
+          .filter((r) => r.count > 0)
+
+        if (!alreadyReactedSame) {
+          const targetIdx = reactions.findIndex((r) => r.emoji === emoji)
+          if (targetIdx >= 0) {
+            reactions[targetIdx] = {
+              ...reactions[targetIdx],
+              count: reactions[targetIdx].count + 1,
               hasReacted: true,
             }
+          } else {
+            reactions.push({ emoji, count: 1, hasReacted: true })
           }
-        } else {
-          reactions.push({
-            emoji,
-            count: 1,
-            hasReacted: true,
-          })
         }
 
-        return {
-          ...msg,
-          reactions,
-        }
+        return { ...msg, reactions }
       })
 
       return {
@@ -395,7 +394,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
           timestamp: timeNow,
           date: "Today",
           isSentByMe: true,
-          status: "delivered",
+          status: "sent",
           isForwarded: true,
           reactions: [],
         }
@@ -403,7 +402,27 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         nextMessages[chatId] = [...(nextMessages[chatId] ?? []), forwardedMsg]
       })
 
-      return { allMessages: nextMessages }
+      const previewText =
+        messageToForward.text ||
+        (messageToForward.attachment ? `[${messageToForward.attachment.type}]` : "Forwarded message")
+      const contentType = messageToForward.attachment?.type ?? "text"
+
+      const nextContacts = state.contacts.map((c) =>
+        targetChatIds.includes(c.id)
+          ? {
+              ...c,
+              lastMessage: {
+                text: previewText,
+                time: "Just now",
+                status: "sent" as const,
+                isSentByMe: true,
+                contentType,
+              },
+            }
+          : c
+      )
+
+      return { allMessages: nextMessages, contacts: nextContacts }
     }),
 
   toggleStar: (messageId) =>

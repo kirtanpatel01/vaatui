@@ -480,7 +480,7 @@ export function MediaLightboxModal({
                   className={cn(
                     "relative size-12 shrink-0 rounded-lg overflow-hidden cursor-pointer transition-all border-2",
                     isActive
-                      ? "border-primary ring-2 ring-primary/30 scale-105 opacity-100 shadow-xs"
+                      ? "border-primary ring-2 ring-primary/30 opacity-100 shadow-xs"
                       : "border-transparent opacity-60 hover:opacity-100 hover:border-border"
                   )}
                   title={item.attachment?.fileName || item.timestamp}

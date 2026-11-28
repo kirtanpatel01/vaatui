@@ -113,7 +113,7 @@ export function ProfileSettingsView({ onBack }: ProfileSettingsViewProps) {
                 <img
                   src={currentUser.avatar}
                   alt={currentUser.name}
-                  className="size-full object-cover transition-transform duration-200 group-hover/avatar:scale-105"
+                  className="size-full object-cover transition-transform duration-200"
                 />
               ) : (
                 <span>{currentUser.name.charAt(0)}</span>

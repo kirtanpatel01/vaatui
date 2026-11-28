@@ -2,7 +2,11 @@ import * as React from "react"
 import {
   Dialog,
   DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
 import { Kbd } from "@/components/ui/kbd"
 import { toast } from "@/components/ui/toast"
 import { MOCK_CONTACTS } from "@/data/mock-contacts"
@@ -56,6 +60,7 @@ export function ForwardMessageDialog({
   const [search, setSearch] = React.useState("")
   const [selectedIds, setSelectedIds] = React.useState<string[]>([])
   const [activeIndex, setActiveIndex] = React.useState(0)
+  const [confirmOpen, setConfirmOpen] = React.useState(false)
   const inputRef = React.useRef<HTMLInputElement>(null)
 
   // Reset state when opening
@@ -64,6 +69,7 @@ export function ForwardMessageDialog({
       setSearch("")
       setSelectedIds([])
       setActiveIndex(0)
+      setConfirmOpen(false)
       setTimeout(() => inputRef.current?.focus(), 50)
     }
   }, [open])
@@ -129,12 +135,17 @@ export function ForwardMessageDialog({
     return "Message"
   }
 
+  const selectedNames = MOCK_CONTACTS.filter((c) => selectedIds.includes(c.id)).map(
+    (c) => c.name
+  )
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        showCloseButton={false}
-        className="max-w-lg p-0 gap-0 overflow-hidden"
-      >
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent
+          showCloseButton={false}
+          className="max-w-lg p-0 gap-0 overflow-hidden"
+        >
         {/* Spotlight Top Bar: Search Input */}
         <div className="flex items-center gap-3 px-4 py-3 border-b border-border/60">
           <IconSearch className="size-4.5 text-muted-foreground shrink-0" />
@@ -167,13 +178,36 @@ export function ForwardMessageDialog({
         </div>
 
         {/* Raycast-style List */}
-        <div className="max-h-72 overflow-y-auto p-1.5 space-y-0.5 no-scrollbar select-none">
-          <div className="px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Chats ({filteredContacts.length})
+        <div className="max-h-[480px] overflow-y-auto p-2 space-y-1 no-scrollbar select-none">
+          <div className="flex items-center justify-between px-3 py-1.5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Chats ({filteredContacts.length})
+            </span>
+            {filteredContacts.length > 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  const allFilteredIds = filteredContacts.map((c) => c.id)
+                  const allSelected = allFilteredIds.every((id) =>
+                    selectedIds.includes(id)
+                  )
+                  setSelectedIds(
+                    allSelected
+                      ? selectedIds.filter((id) => !allFilteredIds.includes(id))
+                      : Array.from(new Set([...selectedIds, ...allFilteredIds]))
+                  )
+                }}
+                className="text-xs font-medium text-primary hover:underline cursor-pointer"
+              >
+                {filteredContacts.every((c) => selectedIds.includes(c.id))
+                  ? "Deselect All"
+                  : "Select All"}
+              </button>
+            )}
           </div>
 
           {filteredContacts.length === 0 ? (
-            <div className="py-8 text-center text-xs text-muted-foreground">
+            <div className="py-10 text-center text-sm text-muted-foreground">
               No matching chats found
             </div>
           ) : (
@@ -193,35 +227,35 @@ export function ForwardMessageDialog({
                   onClick={() => toggleContact(contact.id)}
                   onMouseEnter={() => setActiveIndex(index)}
                   className={cn(
-                    "flex items-center justify-between gap-3 px-3 py-2 rounded-xl text-xs cursor-pointer transition-colors",
+                    "flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-sm cursor-pointer transition-colors",
                     isHighlighted ? "bg-muted/80 text-foreground" : "text-muted-foreground hover:bg-muted/50",
                     isSelected && "bg-primary/10 text-primary font-medium"
                   )}
                 >
-                  <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="flex items-center gap-3 min-w-0">
                     {/* Minimal Avatar */}
                     <div
                       className={cn(
-                        "flex size-7 items-center justify-center rounded-lg text-[11px] font-semibold shrink-0 transition-colors",
+                        "flex size-9 items-center justify-center rounded-lg text-xs font-semibold shrink-0 transition-colors",
                         isSelected
                           ? "bg-primary text-primary-foreground"
                           : "bg-secondary text-secondary-foreground"
                       )}
                     >
                       {contact.type === "group" ? (
-                        <IconUsers className="size-3.5" />
+                        <IconUsers className="size-4" />
                       ) : contact.type === "announcement" ? (
-                        <IconSpeakerphone className="size-3.5" />
+                        <IconSpeakerphone className="size-4" />
                       ) : (
                         initials
                       )}
                     </div>
 
                     <div className="min-w-0">
-                      <span className={cn("block truncate font-medium text-xs", isSelected ? "text-primary" : "text-foreground")}>
+                      <span className={cn("block truncate font-medium text-sm", isSelected ? "text-primary" : "text-foreground")}>
                         {contact.name}
                       </span>
-                      <span className="text-[10px] text-muted-foreground block truncate">
+                      <span className="text-xs text-muted-foreground block truncate">
                         {contact.lastMessage?.text || contact.type}
                       </span>
                     </div>
@@ -268,18 +302,53 @@ export function ForwardMessageDialog({
           {selectedIds.length > 0 ? (
             <button
               type="button"
-              onClick={() => handleSendForward()}
-              className="flex items-center gap-1.5 rounded-lg bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer"
+              onClick={() => setConfirmOpen(true)}
+              className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer"
             >
               <span>Send</span>
               <IconArrowForwardUp className="size-3.5" />
             </button>
           ) : (
-            <span className="text-[10px] text-muted-foreground">Esc to cancel</span>
+            <span className="text-xs text-muted-foreground">Esc to cancel</span>
           )}
         </div>
       </DialogContent>
     </Dialog>
+
+    <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Forward Message</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-3 py-2">
+          <div className="rounded-xl bg-muted/60 p-3 text-sm text-foreground">
+            {getPreviewText()}
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {selectedNames.join(", ")}
+          </p>
+        </div>
+        <DialogFooter>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => setConfirmOpen(false)}
+          >
+            Back
+          </Button>
+          <Button
+            type="button"
+            onClick={() => {
+              setConfirmOpen(false)
+              handleSendForward()
+            }}
+          >
+            Confirm Send
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  </>
   )
 }
 

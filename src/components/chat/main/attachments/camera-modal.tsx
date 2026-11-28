@@ -208,7 +208,7 @@ export function CameraModal({ open, onOpenChange, onCapture }: CameraModalProps)
                 type="button"
                 disabled={Boolean(cameraError)}
                 onClick={handleTakePhoto}
-                className="size-14 rounded-full border-4 border-foreground/80 bg-destructive hover:bg-destructive/90 transition-all shadow-lg active:scale-95 disabled:opacity-50 cursor-pointer flex items-center justify-center"
+                className="size-14 rounded-full border-4 border-foreground/80 bg-destructive hover:bg-destructive/90 transition-all shadow-lg disabled:opacity-50 cursor-pointer flex items-center justify-center"
                 aria-label="Take picture"
               >
                 <div className="size-5 rounded-full bg-destructive-foreground/40" />
